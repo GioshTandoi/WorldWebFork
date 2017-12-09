@@ -208,7 +208,10 @@ class URLify {
 		self::init ($language);
 
 		if (preg_match_all (self::$regex, $text, $matches)) {
-			for ($i = 0; $i < count ($matches[0]); $i++) {
+
+		    $counterMatches=count ($matches[0]);
+
+			for ($i = 0; $i < $counterMatches; $i++) {
 				$char = $matches[0][$i];
 				if (isset (self::$map[$char])) {
 					$text = str_replace ($char, self::$map[$char], $text);

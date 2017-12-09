@@ -13,7 +13,10 @@ function loadSmilies() {
 		$smilies[] = $smiley;
 
 	$smiliesReplaceOrig = $smiliesReplaceNew = [];
-	for ($i = 0; $i < count($smilies); $i++) {
+
+	$counterSmilies=count($smilies);
+
+	for ($i = 0; $i < $counterSmilies ; $i++) {
 		$smiliesReplaceOrig[] = "/(?<!\w)".preg_quote($smilies[$i]['code'], "/")."(?!\w)/";
 		$smiliesReplaceNew[] = "<img class=\"smiley\" alt=\"\" src=\"".resourceLink("img/smilies/".$smilies[$i]['image'])."\" />";
 	}

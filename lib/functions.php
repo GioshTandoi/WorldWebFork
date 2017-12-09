@@ -220,10 +220,20 @@ function relativedate($date) {
 	if ($diff < 1) return 'right now';
 	if ($diff >= 3*86400) return formatdate($date);
 
-	if ($diff < 60) { $num = $diff; $unit = 'second'; }
-	elseif ($diff < 3600) { $num = intval($diff/60); $unit = 'minute'; }
-	elseif ($diff < 86400) { $num = intval($diff/3600); $unit = 'hour'; }
-	else { $num = intval($diff/86400); $unit = 'day'; }
+	switch($diff){
+	    case ($diff<60):
+	        $num = $diff; $unit = 'second';
+	        break;
+        case ($diff<3600):
+            $num = intval($diff/60); $unit = 'minute';
+            break;
+        case ($diff < 86400):
+            $num = intval($diff/3600); $unit = 'hour';
+            break;
+        default:
+            $num = intval($diff/86400); $unit = 'day';
+            break;
+    }
 
 	return $num.' '.$unit.($num>1?'s':'').' ago';
 }
@@ -362,24 +372,31 @@ function utfmb4_fix($string) {
 	$new_string = '';
 	while ($i < $len) {
 		$ord = ord($string[$i]);
-		if ($ord < 128)	{
-			$new_string .= $string[$i];
-			$i++;
-		} elseif ($ord < 224) {
-			$new_string .= $string[$i] . $string[$i+1];
-			$i += 2;
-		} elseif ($ord < 240) {
-			$new_string .= $string[$i] . $string[$i+1] . $string[$i+2];
-			$i += 3;
-		} elseif ($ord < 248) {
-			// Magic happens.
-			$val = (ord($string[$i]) & 0x07) << 18;
-			$val += (ord($string[$i+1]) & 0x3F) << 12;
-			$val += (ord($string[$i+2]) & 0x3F) << 6;
-			$val += (ord($string[$i+3]) & 0x3F);
-			$new_string .= '&#' . $val . ';';
-			$i += 4;
-		}
+
+		switch ($ord){
+            case 128:
+                $new_string .= $string[$i];
+                $i++;
+                break;
+            case 224:
+                $new_string .= $string[$i] . $string[$i+1];
+                $i += 2;
+                break;
+            case 240:
+                $new_string .= $string[$i] . $string[$i+1] . $string[$i+2];
+                $i += 3;
+                break;
+            case 248:
+                //Magic happens.
+                $val = (ord($string[$i]) & 0x07) << 18;
+                $val += (ord($string[$i+1]) & 0x3F) << 12;
+                $val += (ord($string[$i+2]) & 0x3F) << 6;
+                $val += (ord($string[$i+3]) & 0x3F);
+                $new_string .= '&#' . $val . ';';
+                $i += 4;
+                break;
+        }
+
 	}
 	return $new_string;
 }

@@ -3,7 +3,7 @@
 define('BLARG', 1);
 $ajaxPage = true;
 define('MAIN_PAGE', 'home');
-include(__DIR__."/lib/common.php");
+include(__DIR__ . "/lib/common.php");
 header("Cache-Control: no-cache");
 header('Content-type: text/plain');
 
@@ -11,13 +11,20 @@ getBirthdaysText(false);
 
 $action = $_GET['a'];
 //Check if things are defined before using them, damnit!
+
+
 if (isset($_GET['id']))
 	$id = (int)$_GET['id'];
 else
 	$id = 0;
+
 $hideTricks = " <a href=\"javascript:void(0)\" onclick=\"hideTricks(".$id.")\">".__("Back")."</a>";
-if($action == "q") {	//Quote
-	$qQuote = "	select
+
+switch ($action){
+
+	case 'q':  //-------------------------------------------------------------------------------------------------------------------------------------Quote
+
+        $qQuote = "	select
 					p.id, p.deleted, pt.text,
 					u.name poster
 				from {posts} p
@@ -25,21 +32,26 @@ if($action == "q") {	//Quote
 					left join {threads} t on t.id=p.thread
 					left join {users} u on u.id=p.user
 				where p.id={0} AND t.forum IN ({1c})";
-	$rQuote = Query($qQuote, $id, ForumsWithPermission('forum.viewforum'));
 
-	if(!NumRows($rQuote))
-		die(__("Unknown post ID."));
+        $rQuote = Query($qQuote, $id, ForumsWithPermission('forum.viewforum'));
 
-	$quote = Fetch($rQuote);
+        if(!NumRows($rQuote))
+            die(__("Unknown post ID."));
 
-	if ($quote['deleted'])
-		$quote['text'] = __("Post is deleted");
+        $quote = Fetch($rQuote);
 
-	$reply = "[quote=\"".$quote['poster']."\" id=\"".$quote['id']."\"]".$quote['text']."[/quote]";
-	$reply = str_replace("/me ", "[b]* ".htmlspecialchars($quote['poster'])."[/b]", $reply);
-	die($reply);
-} else if ($action == 'rp') { // retrieve post
-	$rPost = Query("
+        if ($quote['deleted'])
+            $quote['text'] = __("Post is deleted");
+
+        $reply = "[quote=\"".$quote['poster']."\" id=\"".$quote['id']."\"]".$quote['text']."[/quote]";
+        $reply = str_replace("/me ", "[b]* ".htmlspecialchars($quote['poster'])."[/b]", $reply);
+        die($reply);
+
+	    break;
+
+	case 'rp':   // ----------------------------------------------------------------------------------------------------------------------------retrieve post
+
+        $rPost = Query("
 			SELECT
 				p.id, p.date, p.num, p.deleted, p.deletedby, p.reason, p.options, p.mood, p.ip,
 				pt.text, pt.revision, pt.user AS revuser, pt.date AS revdate,
@@ -57,57 +69,65 @@ if($action == "q") {	//Quote
 			WHERE p.id={0} AND t.forum IN ({1c})", $id, ForumsWithPermission('forum.viewforum'));
 
 
-	if (!NumRows($rPost))
-		die(__("Unknown post ID."));
-	$post = Fetch($rPost);
+        if (!NumRows($rPost))
+            die(__("Unknown post ID."));
+        $post = Fetch($rPost);
 
-	if (!HasPermission('mod.deleteposts', $post['fid']) || $poster['id'] == $loguserid)
-		die(__("No."));
+        if (!HasPermission('mod.deleteposts', $post['fid']) || $poster['id'] == $loguserid)
+            die(__("No."));
 
-	die(MakePost($post, isset($_GET['o']) ? POST_DELETED_SNOOP : POST_NORMAL, ['tid'=>$post['thread'], 'fid'=>$post['fid']]));
-} else if($action == "ou") {	//Online Users
-	die(OnlineUsers((int)$_GET['f'], false));
-} else if($action == "tf") {	//Theme File
-	$theme = $_GET['t'];
+        die(MakePost($post, isset($_GET['o']) ? POST_DELETED_SNOOP : POST_NORMAL, ['tid'=>$post['thread'], 'fid'=>$post['fid']]));
+		break;
 
-	$themeFile = "themes/$theme/style.css";
-	if(!file_exists($themeFile))
-		$themeFile = "themes/$theme/style.php";
+	case 'ou': //--------------------------------------------------------------------------------------------------------------------------------------Online Users
+        die(OnlineUsers((int)$_GET['f'], false));
+        break;
 
-	function checkForImage(&$image, $external, $file) {
-		if($image) return;
+	case 'tf': //---------------------------------------------------------------------------------------------------------------------------------------Theme File
+        $theme = $_GET['t'];
 
-		if($external) {
-			if(file_exists(DATA_DIR.$file))
-				$image = DATA_URL.$file;
-		} else {
-			if(file_exists($file))
-				$image = resourceLink($file);
-		}
-	}
+        $themeFile = "themes/$theme/style.css";
+        if(!file_exists($themeFile))
+            $themeFile = "themes/$theme/style.php";
 
-	$layout_logopic = 'img/logo.png';
+        function checkForImage(&$image, $external, $file) {
+            if($image) return;
 
-	die(resourceLink($themeFile)."|".$layout_logopic);
-} elseif($action == "srl") {	//Show Revision List
-	$qPost = "select currentrevision, thread from {posts} where id={0}";
-	$rPost = Query($qPost, $id);
-	if(NumRows($rPost))
-		$post = Fetch($rPost);
-	else
-		die(format(__("Unknown post ID #{0}."), $id)." ".$hideTricks);
+            if($external) {
+                if(file_exists(DATA_DIR.$file))
+                    $image = DATA_URL.$file;
+            } else {
+                if(file_exists($file))
+                    $image = resourceLink($file);
+            }
+        }
 
-	$qThread = "select forum from {threads} where id={0}";
-	$rThread = Query($qThread, $post['thread']);
-	$thread = Fetch($rThread);
+        $layout_logopic = 'img/logo.png';
 
-	if (!HasPermission('forum.viewforum', $thread['forum']))
-		die('You may not view this forum.');
-	if (!HasPermission('mod.editposts', $thread['forum']))
-		die('No.');
+        die(resourceLink($themeFile)."|".$layout_logopic);
+
+        break;
+
+	case 'srl':  //------------------------------------------------------------------------------------------------------------------------------------Show Revision List
+
+        $qPost = "select currentrevision, thread from {posts} where id={0}";
+        $rPost = Query($qPost, $id);
+        if(NumRows($rPost))
+            $post = Fetch($rPost);
+        else
+            die(format(__("Unknown post ID #{0}."), $id)." ".$hideTricks);
+
+        $qThread = "select forum from {threads} where id={0}";
+        $rThread = Query($qThread, $post['thread']);
+        $thread = Fetch($rThread);
+
+        if (!HasPermission('forum.viewforum', $thread['forum']))
+            die('You may not view this forum.');
+        if (!HasPermission('mod.editposts', $thread['forum']))
+            die('No.');
 
 
-	$qRevs = "SELECT
+        $qRevs = "SELECT
 				revision, date AS revdate,
 				ru.(_userfields)
 			FROM
@@ -115,29 +135,31 @@ if($action == "q") {	//Quote
 				LEFT JOIN {users} ru ON ru.id = user
 			WHERE pid={0}
 			ORDER BY revision ASC";
-	$revs = Query($qRevs, $id);
+        $revs = Query($qRevs, $id);
 
 
-	$reply = __("Show revision:")."<br />";
-	while($revision = Fetch($revs)) {
-		$reply .= " <a href=\"javascript:void(0)\" onclick=\"showRevision(".$id.",".$revision["revision"].")\">".format(__("rev. {0}"), $revision["revision"])."</a>";
+        $reply = __("Show revision:")."<br />";
+        while($revision = Fetch($revs)) {
+            $reply .= " <a href=\"javascript:void(0)\" onclick=\"showRevision(".$id.",".$revision["revision"].")\">".format(__("rev. {0}"), $revision["revision"])."</a>";
 
-		if ($revision['ru_id']) {
-			$ru_link = UserLink(getDataPrefix($revision, "ru_"));
-			$revdetail = " ".format(__("by {0} on {1}"), $ru_link, formatdate($revision['revdate']));
-		} else
-			$revdetail = '';
-		$reply .= $revdetail;
-		$reply .= "<br />";
-	}
+            if ($revision['ru_id']) {
+                $ru_link = UserLink(getDataPrefix($revision, "ru_"));
+                $revdetail = " ".format(__("by {0} on {1}"), $ru_link, formatdate($revision['revdate']));
+            } else
+                $revdetail = '';
+            $reply .= $revdetail;
+            $reply .= "<br />";
+        }
 
-	$hideTricks = " <a href=\"javascript:void(0)\" onclick=\"showRevision(".$id.",".$post["currentrevision"]."); hideTricks(".$id.")\">".__("Back")."</a>";
-	$reply .= $hideTricks;
-	die($reply);
-} elseif($action == "sr") {	//Show Revision
+        $hideTricks = " <a href=\"javascript:void(0)\" onclick=\"showRevision(".$id.",".$post["currentrevision"]."); hideTricks(".$id.")\">".__("Back")."</a>";
+        $reply .= $hideTricks;
+        die($reply);
+        break;
 
-	global $loguser, $blocklayouts;
-	$rPost = Query("
+	case 'sr':  //-------------------------------------------------------------------------------------------------------------------------------------Show Revision
+
+        global $loguser, $blocklayouts;
+        $rPost = Query("
 			SELECT
 				p.*,
 				pt.text, pt.revision, pt.user AS revuser, pt.date AS revdate,
@@ -154,48 +176,55 @@ if($action == "q") {	//Quote
 				LEFT JOIN {users} du ON du.id=p.deletedby
 			WHERE p.id={0} AND t.forum IN ({2c})", $id, (int)$_GET['rev'], ForumsWithPermission('forum.viewforum'));
 
-	if(NumRows($rPost))
-		$post = Fetch($rPost);
-	else
-		die(format(__("Unknown post ID #{0} or revision missing."), $id));
+        if(NumRows($rPost))
+            $post = Fetch($rPost);
+        else
+            die(format(__("Unknown post ID #{0} or revision missing."), $id));
 
-	if (!HasPermission('mod.editposts', $post['fid']))
-		die('No.');
+        if (!HasPermission('mod.editposts', $post['fid']))
+            die('No.');
 
-	$poster = getDataPrefix($post, 'u_');
+        $poster = getDataPrefix($post, 'u_');
 
-	LoadBlockLayouts();
-	$pltype = Settings::get('postLayoutType');
-	$isBlocked = $poster['globalblock'] || $loguser['blocklayouts'] || isset($blocklayouts[$poster['id']]);
+        LoadBlockLayouts();
+        $pltype = Settings::get('postLayoutType');
+        $isBlocked = $poster['globalblock'] || $loguser['blocklayouts'] || isset($blocklayouts[$poster['id']]);
 
-	$post['haslayout'] = false;
-	$post['fulllayout'] = false;
+        $post['haslayout'] = false;
+        $post['fulllayout'] = false;
 
-	if(!$isBlocked) {
-		$poster['postheader'] = $pltype ? trim($poster['postheader']) : '';
-		$poster['signature'] = trim($poster['signature']);
+        if(!$isBlocked) {
+            $poster['postheader'] = $pltype ? trim($poster['postheader']) : '';
+            $poster['signature'] = trim($poster['signature']);
 
-		$post['haslayout'] = $poster['postheader']?1:0;
-		$post['fulllayout'] = $poster['fulllayout'] && $post['haslayout'] && ($pltype==2);
+            $post['haslayout'] = $poster['postheader']?1:0;
+            $post['fulllayout'] = $poster['fulllayout'] && $post['haslayout'] && ($pltype==2);
 
-		if (!$post['haslayout'] && $poster['signature'])
-			$poster['signature'] = '<div class="signature">'.$poster['signature'].'</div>';
-	} else {
-		$poster['postheader'] = '';
-		$poster['signature'] = '';
-	}
+            if (!$post['haslayout'] && $poster['signature'])
+                $poster['signature'] = '<div class="signature">'.$poster['signature'].'</div>';
+        } else {
+            $poster['postheader'] = '';
+            $poster['signature'] = '';
+        }
 
-	die(makePostText($post, $poster));
-} elseif($action == "em") {	//Email
-	$privacy = HasPermission('admin.editusers') ? '' : ' and showemail=1';
-	$blah = FetchResult("select email from {users} where id={0}{$privacy}", $id);
-	die(htmlspecialchars($blah));
-} elseif($action == "vc") {	//View Counter
-	$blah = FetchResult("select views from {misc}");
-	die(number_format($blah));
-} else if ($action == 'no') { // notification list
-	$notif = getNotifications();
-	die(json_encode($notif));
+        die(makePostText($post, $poster));
+        break;
+
+	case 'em':  	//------------------------------------------------------------------------------------------------------------------------------------Email
+        $privacy = HasPermission('admin.editusers') ? '' : ' and showemail=1';
+        $blah = FetchResult("select email from {users} where id={0}{$privacy}", $id);
+        die(htmlspecialchars($blah));
+        break;
+
+	case 'vc': //------------------------------------------------------------------------------------------------------------------------------------------View Counter
+        $blah = FetchResult("select views from {misc}");
+        die(number_format($blah));
+        break;
+
+	case 'no': //------------------------------------------------------------------------------------------------------------------------------------------ notification list
+        $notif = getNotifications();
+        die(json_encode($notif));
+        break;
 }
 
 die(__("Unknown action."));

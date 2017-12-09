@@ -23,7 +23,7 @@ function Upgrade() {
 	global $dbname, $dbpref;
 
 	//Load the board tables.
-	include(__DIR__."/schema.php");
+	include(__DIR__ . "/schema.php");
 
 	//Allow plugins to add their own tables!
 	if (NumRows(Query("show table status from $dbname like '{enabledplugins}'"))) {

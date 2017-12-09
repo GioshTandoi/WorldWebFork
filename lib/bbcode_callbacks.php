@@ -413,28 +413,30 @@ function bbcodeColorgreen($contents, $arg, $parenttag)
 {
 	return "<div style=\"color: #008000;\">$contents</div>";
 }
-function bbcodeColorblue($contents, $arg, $parenttag)
-{
-	if ($arg == 'dark')
-		return "<div style=\"color: #00008B;\">$contents</div>";
-	elseif ($arg == 'light')
-		return "<div style=\"color: #ADD8E6;\">$contents</div>";
-	elseif ($arg == 'alice')
-		return "<div style=\"color: #F0F8FF;\">$contents</div>";
-	else
-		return "<div style=\"color: #0000FF;\">$contents</div>";
+
+function bbcodeColorblue($contents, $arg, $parenttag){
+
+	switch($arg){
+        case 'dark':
+            return "<div style=\"color: #00008B;\">$contents</div>";
+            break;
+
+        case 'light':
+            return "<div style=\"color: #ADD8E6;\">$contents</div>";
+            break;
+
+        case 'alice':
+            return "<div style=\"color: #F0F8FF;\">$contents</div>";
+            break;
+
+        default:
+            return "<div style=\"color: #0000FF;\">$contents</div>";
+            break;
+
+    }
 }
-function bbcodeColorbleu($contents, $arg, $parenttag)
-{
-	if ($arg == 'dark')
-		return "<div style=\"color: #00008B;\">$contents</div>";
-	elseif ($arg == 'light')
-		return "<div style=\"color: #ADD8E6;\">$contents</div>";
-	elseif ($arg == 'alice')
-		return "<div style=\"color: #F0F8FF;\">$contents</div>";
-	else
-		return "<div style=\"color: #0000FF;\">$contents</div>";
-}
+
+
 function bbcodeColorwhite($contents, $arg, $parenttag)
 {
 	return "<div style=\"color: #FFFFFF;\">$contents</div>";

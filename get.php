@@ -1,7 +1,7 @@
 <?php
 
 define('BLARG', 1);
-include(__DIR__."/lib/common.php");
+include(__DIR__ . "/lib/common.php");
 
 $entry = Fetch(Query("select * from {uploadedfiles} where id = {0}", $_GET['id']));
 if (!$entry)

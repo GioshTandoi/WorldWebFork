@@ -52,7 +52,10 @@ function importLanguagePack($file)
 	global $languagePack;
 	$f = file_get_contents($file);
 	$f = explode("\n", $f);
-	for($i = 0; $i < count($f); $i++)
+
+	$counterF=count($f);
+
+	for($i = 0; $i < $counterF; $i++)
 	{
 		$k = trim($f[$i]);
 		if($k == "" || $k[0] == "#")

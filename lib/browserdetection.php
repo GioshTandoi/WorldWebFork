@@ -321,17 +321,19 @@ class BrowserDetection
 			$compareVer[$k] = $this->parseInt($v);
 		}
 
-		if (count($sourceVer) != count($compareVer)) {
-			if (count($sourceVer) > count($compareVer)) {
-				for ($i = count($compareVer); $i < count($sourceVer); $i++) {
+        $counterCompareVer=count($compareVer);
+		$counterSourceVer= count($sourceVer);
+
+		if ($counterSourceVer != $counterCompareVer) {
+			if ($counterSourceVer > $counterCompareVer)
+
+				for ($i = $counterCompareVer; $i < $counterSourceVer; $i++)
 					$compareVer[$i] = 0;
-				}
-			} else {
-				for ($i = count($sourceVer); $i < count($compareVer); $i++) {
+
+			 else
+				for ($i = $counterSourceVer; $i < $counterCompareVer; $i++)
 					$sourceVer[$i] = 0;
-				}
-			}
-		}
+        }
 
 		foreach ($sourceVer as $i => $srcVerPart) {
 			if ($srcVerPart > $compareVer[$i]) {
@@ -1634,7 +1636,10 @@ class BrowserDetection
 		$verParts = explode('.', $version);
 
 		//We need a 3 parts version (version 2 will becomes 2.0.0)
-		while (count($verParts) < 3) {
+
+        $counterVerParts=count($verParts);
+
+		while ($counterVerParts < 3) {
 			$verParts[] = 0;
 		}
 		foreach ($verParts as $i => $currPart) {
@@ -1829,7 +1834,10 @@ class BrowserDetection
 		$verParts = explode('.', $version);
 
 		//We need a 3 parts version (version 2 will becomes 2.0.0)
-		while (count($verParts) < 3) {
+
+        $counterVerParts=count($verParts);
+
+		while ($counterVerParts < 3) {
 			$verParts[] = 0;
 		}
 		foreach ($verParts as $i => $currPart) {
@@ -1938,7 +1946,10 @@ class BrowserDetection
 		//https://en.wikipedia.org/wiki/List_of_Microsoft_Windows_versions
 
 		$cleanWinVer = explode('.', $winVer);
-		while (count($cleanWinVer) > 2) {
+
+		$counterCleanWinVer=count($cleanWinVer);
+
+		while ($counterCleanWinVer > 2) {
 			array_pop($cleanWinVer);
 		}
 		$cleanWinVer = implode('.', $cleanWinVer);
