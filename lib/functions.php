@@ -21,18 +21,18 @@ function startsWithIns($a, $b){
 
 
 //	Not really much different to kill()
-function Alert($s, $t="") {
-	if($t=="")
-		$t = __("Notice");
+function Alert($s, $t='') {
+	if($t=='')
+		$t = __('Notice');
 
 	RenderTemplate('messagebox', 
 		[	'msgtitle' => $t,
 				'message' => $s]);
 }
 
-function Kill($s, $t="") {
-	if($t=="")
-		$t = __("Error");
+function Kill($s, $t='') {
+	if($t=='')
+		$t = __('Error');
 	Alert($s, $t);
 	throw new KillException();
 }
@@ -76,7 +76,7 @@ function format() {
 	for($i = 1; $i < $argc; $i++) {
 		// TODO kill that hack
 		$splicethis = preg_replace("'\{([0-9]+)\}'", "&#x7B;\\1&#x7D;", $args[$i]);
-		$output = str_replace("{".($i-1)."}", $splicethis, $output);
+		$output = str_replace('{'.($i-1).'}', $splicethis, $output);
 	}
 	return $output;
 }
@@ -93,7 +93,7 @@ function write() {
 	for($i = 1; $i < $argc; $i++) {
 		// TODO kill that hack
 		$splicethis = preg_replace("'\{([0-9]+)\}'", "&#x7B;\\1&#x7D;", $args[$i]);
-		$output = str_replace("{".($i-1)."}", $splicethis, $output);
+		$output = str_replace('{'.($i-1).'}', $splicethis, $output);
 	}
 	echo $output;
 }
@@ -105,7 +105,7 @@ function OptimizeLayouts($text) {
 	$regexps = ["@<style(.*?)</style(.*?)>(\r?\n?)@si", "@<link(.*?)>(\r?\n?)@si", "@<script(.*?)</script(.*?)>(\r?\n?)@si"];
 	foreach ($regexps as $regexp) {
 		preg_match_all($regexp, $text, $temp, PREG_PATTERN_ORDER);
-		$text = preg_replace($regexp, "", $text);
+		$text = preg_replace($regexp, '', $text);
 		$bucket = array_merge($bucket, $temp[0]);
 	}
 
@@ -113,9 +113,9 @@ function OptimizeLayouts($text) {
 	$bucket = array_unique($bucket);
 
 	// Put the tags back
-	$newStyles = "<!-- head tags -->".implode("", $bucket)."<!-- /head tags -->";
-	$text = str_replace("</head>", $newStyles."</head>", $text);
-	$text = str_replace("<recaptcha", "<script", $text);
+	$newStyles = '<!-- head tags -->'.implode('', $bucket).'<!-- /head tags -->';
+	$text = str_replace('</head>', $newStyles.'</head>', $text);
+	$text = str_replace('<recaptcha', "<script", $text);
 	return $text;
 }
 
@@ -125,10 +125,10 @@ function LoadPostToolbar() {
 }
 
 function TimeUnits($sec) {
-	if($sec <	60) return "$sec sec.";
-	if($sec <  3600) return floor($sec/60)." min.";
-	if($sec < 86400) return floor($sec/3600)." hour".($sec >= 7200 ? "s" : "");
-	return floor($sec/86400)." day".($sec >= 172800 ? "s" : "");
+	if($sec <	60) return '$sec sec.';
+	if($sec <  3600) return floor($sec/60).' min.';
+	if($sec < 86400) return floor($sec/3600).' hour'.($sec >= 7200 ? 's' : '');
+	return floor($sec/86400).' day'.($sec >= 172800 ? 's' : '');
 }
 
 function cdate($format, $date = 0) {
@@ -139,17 +139,17 @@ function cdate($format, $date = 0) {
 
 function Report($stuff, $hidden = 0, $severity = 0) {
 	$full = GetFullURL();
-	$here = substr($full, 0, strrpos($full, "/"))."/";
+	$here = substr($full, 0, strrpos($full, '/')).'/';
 
 	$req = 'NULL';
 
-	Query("insert into {reports} (ip,user,time,text,hidden,severity,request)
-		values ({0}, {1}, {2}, {3}, {4}, {5}, {6})", $_SERVER['REMOTE_ADDR'], (int)$loguserid, time(), str_replace("#HERE#", $here, $stuff), $hidden, $severity, $req);
+	Query('insert into {reports} (ip,user,time,text,hidden,severity,request)
+		values ({0}, {1}, {2}, {3}, {4}, {5}, {6})', $_SERVER['REMOTE_ADDR'], (int)$loguserid, time(), str_replace('#HERE#', $here, $stuff), $hidden, $severity, $req);
 }
 
 function Shake() {
-	$cset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPRQSTUVWXYZ0123456789";
-	$salt = "";
+	$cset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPRQSTUVWXYZ0123456789';
+	$salt = '';
 	$chct = strlen($cset) - 1;
 	while (strlen($salt) < 16)
 		$salt .= $cset[mt_rand(0, $chct)];
@@ -189,11 +189,11 @@ function makeThemeArrays() {
 	global $themes, $themefiles;
 	$themes = [];
 	$themefiles = [];
-	$dir = @opendir("themes");
+	$dir = @opendir('themes');
 	while ($file = readdir($dir)) {
-		if ($file != "." && $file != "..") {
+		if ($file != '.' && $file != '..') {
 			$themefiles[] = $file;
-			$name = explode("\n", @file_get_contents("./themes/".$file."/themeinfo.txt"));
+			$name = explode("\n", @file_get_contents('./themes/'.$file.'/themeinfo.txt'));
 			$themes[] = trim($name[0]);
 		}
 	}
@@ -204,9 +204,9 @@ function getdateformat() {
 	global $loguserid, $loguser;
 
 	if($loguserid)
-		return $loguser['dateformat'].", ".$loguser['timeformat'];
+		return $loguser['dateformat'].', '.$loguser['timeformat'];
 	else
-		return Settings::get("dateformat");
+		return Settings::get('dateformat');
 }
 
 function formatdate($date) {
@@ -239,14 +239,14 @@ function relativedate($date) {
 }
 
 function formatBirthday($b) {
-	return format("{0} ({1} old)", date("F j, Y", $b), Plural(floor((time() - $b) / 86400 / 365.2425), "year"));
+	return format('{0} ({1} old)', date('F j, Y', $b), Plural(floor((time() - $b) / 86400 / 365.2425), 'year'));
 }
 
 function getSexName($sex) {
 	$sexes = [
-		0 => __("Male"),
-		1 => __("Female"),
-		2 => __("N/A"),
+		0 => __('Male'),
+		1 => __('Female'),
+		2 => __('N/A'),
 	];
 
 	return $sexes[$sex];
@@ -256,11 +256,11 @@ function formatIP($ip) {
 	global $loguser;
 
 	$res = $ip;
-	$res .=  " " . IP2C($ip);
+	$res .=  ' ' . IP2C($ip);
 	$res = "<nobr>$res</nobr>";
 	$ip = ip2long_better($ip);
 	if (HasPermission('admin.ipsearch'))
-		return actionLinkTag($res, "ipquery", $ip);
+		return actionLinkTag($res, 'ipquery', $ip);
 	else
 		return $res;
 }
@@ -279,17 +279,17 @@ function IP2C($ip) {
 	global $dblink;
 	//This nonsense is because ips can be greater than 2^31, which will be interpreted as negative numbers by PHP.
 	$ipl = ip2long($ip);
-	$r = Fetch(Query("SELECT * 
+	$r = Fetch(Query('SELECT * 
 				 FROM {ip2c}
 				 WHERE ip_from <= {0s} 
 				 ORDER BY ip_from DESC
-				 LIMIT 1", 
-				 sprintf("%u", $ipl)));
+				 LIMIT 1',
+				 sprintf('%u', $ipl)));
 
-	if($r && $r["ip_to"] >= ip2long_better($ip))
-		return " <img src=\"".resourceLink("img/flags/".strtolower($r['cc']).".png")."\" alt=\"".$r['cc']."\" title=\"".$r['cc']."\" />";
+	if($r && $r['ip_to'] >= ip2long_better($ip))
+		return ' <img src=\"'.resourceLink('img/flags/'.strtolower($r['cc']).'.png')."\" alt=\"".$r['cc']."\" title=\"".$r['cc']."\" />";
 	else
-		return "";
+		return '';
 }
 
 function getBirthdaysText($ret = true) {
@@ -298,32 +298,32 @@ function getBirthdaysText($ret = true) {
 	$luckybastards = [];
 	$today = gmdate('m-d', time()+$loguser['timezone']);
 
-	$rBirthdays = Query("select u.birthday, u.(_userfields) from {users} u where u.birthday > 0 and u.primarygroup!={0} order by u.name", Settings::get('bannedGroup'));
+	$rBirthdays = Query('select u.birthday, u.(_userfields) from {users} u where u.birthday > 0 and u.primarygroup!={0} order by u.name', Settings::get('bannedGroup'));
 	$birthdays = [];
 	while($user = Fetch($rBirthdays)) {
 		$b = $user['birthday'];
-		if(gmdate("m-d", $b) == $today) {
+		if(gmdate('m-d', $b) == $today) {
 			$luckybastards[] = $user['u_id'];
 			if ($ret) {
-				$y = gmdate("Y") - gmdate("Y", $b);
-				$birthdays[] = UserLink(getDataPrefix($user, 'u_'))." (".$y.")";
+				$y = gmdate('Y') - gmdate('Y', $b);
+				$birthdays[] = UserLink(getDataPrefix($user, 'u_')).' ('.$y.')';
 			}
 		}
 	}
 	if (!$ret) return '';
 	if(count($birthdays))
-		$birthdaysToday = implode(", ", $birthdays);
+		$birthdaysToday = implode(', ', $birthdays);
 	if(isset($birthdaysToday))
-		return __("Birthdays today:")." ".$birthdaysToday;
+		return __('Birthdays today:').' '.$birthdaysToday;
 	else
-		return "";
+		return '';
 }
 
 function getKeywords($stuff) {
 	$common = ['the', 'and', 'that', 'have', 'for', 'not', 'this'];
 
 	$stuff = strtolower($stuff);
-	$stuff = str_replace('\'s', '', $stuff);
+	$stuff = str_replace("\'s", '', $stuff);
 	$stuff = preg_replace('@[^\w\s]+@', '', $stuff);
 	$stuff = preg_replace('@\s+@', ' ', $stuff);
 
