@@ -2,7 +2,7 @@
 // AcmlmBoard XD support - MySQL database wrapper functions
 if (!defined('BLARG')) die();
 
-include(__DIR__."/../config/database.php");
+include(__DIR__.'/../config/database.php');
 
 $queries = 0;
 
@@ -45,13 +45,13 @@ function Query_AddUserInput($match) {
 	if ($format == 'c') {
 		if (empty($var)) return 'NULL';
 		$final = '';
-		foreach ($var as $v) $final .= '\''.SqlEscape($v).'\',';
+		foreach ($var as $v) $final .= "\'".SqlEscape($v)."\',";
 		return substr($final,0,-1);
 	}
 
-	if($format == "i") return (string)((int)$var);
-	if($format == "u") return (string)max((int)$var, 0);
-	if($format == "l")  {
+	if($format == 'i') return (string)((int)$var);
+	if($format == 'u') return (string)max((int)$var, 0);
+	if($format == 'l')  {
 		//This is used for storing integers using the full 32bit range.
 		//TODO: add code to emulate the 32bit overflow on 64bit.
 		return (string)((int)$var);
@@ -89,15 +89,15 @@ function query() {
 	$query = $args[0];
 
 	// expand compacted field lists
-	$query = preg_replace("@(\w+)\.\(\*\)@s", '$1.*', $query);
-	$query = str_replace(".(_userfields)", ".(".$fieldLists["userfields"].")", $query);
-	$query = preg_replace_callback("@(\w+)\.\(([\w,\s]+)\)@s", 'Query_ExpandFieldLists', $query);
+	$query = preg_replace('@(\w+)\.\(\*\)@s', '$1.*', $query);
+	$query = str_replace('.(_userfields)', '.('.$fieldLists['userfields'].')', $query);
+	$query = preg_replace_callback('@(\w+)\.\(([\w,\s]+)\)@s', 'Query_ExpandFieldLists', $query);
 
 	// add table prefixes
-	$query = preg_replace_callback("@\{([a-z]\w*)\}@si", "Query_MangleTables", $query);
+	$query = preg_replace_callback('@\{([a-z]\w*)\}@si', 'Query_MangleTables', $query);
 
 	// add the user input
-	$query = preg_replace_callback("@\{(\d+\w?)\}@s", 'Query_AddUserInput', $query);
+	$query = preg_replace_callback('@\{(\d+\w?)\}@s', 'Query_AddUserInput', $query);
 
 	return RawQuery($query);
 }
@@ -118,7 +118,7 @@ function rawQuery($query) {
 
 		if($logSqlErrors) {
 			$thequery = sqlEscape($query);
-			$ip = sqlEscape($_SERVER["REMOTE_ADDR"]);
+			$ip = sqlEscape($_SERVER['REMOTE_ADDR']);
 			$time = time();
 			if(!$loguserid) $loguserid = 0;
 			$get = sqlEscape(var_export($_GET, true));
@@ -130,23 +130,23 @@ function rawQuery($query) {
 		}
 
 		if($debugMode) {
-			$bt = "";
-			if(function_exists("backTrace"))
+			$bt = '';
+			if(function_exists('backTrace'))
 				$bt = backTrace();
 			die(nl2br($bt).
-				"<br /><br />".htmlspecialchars($theError).
-				"<br /><br />Query was: <code>".htmlspecialchars($query)."</code>");
+				'<br /><br />'.htmlspecialchars($theError).
+				'<br /><br />Query was: <code>'.htmlspecialchars($query).'</code>');
 		} else
-				trigger_error("MySQL Error.", E_USER_ERROR);
-		die("MySQL Error.");
+				trigger_error('MySQL Error.', E_USER_ERROR);
+		die('MySQL Error.');
 	}
 
 	$queries++;
 
 	if($debugMode) {
 		$mysqlCellClass = ($mysqlCellClass+1)%2;
-		$querytext .= "<tr class=\"cell$mysqlCellClass\"><td><pre style=\"white-space:pre-wrap;\">".htmlspecialchars(preg_replace('/^\s*/m', "", $query))."</pre></td><td>";
-		if(function_exists("backTrace"))
+		$querytext .= '<tr class=\"cell$mysqlCellClass\"><td><pre style=\"white-space:pre-wrap;\">'.htmlspecialchars(preg_replace('/^\s*/m', "", $query)).'</pre></td><td>';
+		if(function_exists('backTrace'))
 			$querytext .= backTrace();
 	}
 
@@ -201,12 +201,13 @@ function getDataPrefix($data, $pref) {
 
 
 $fieldLists = [
-	"userfields" => "id,name,displayname,primarygroup,sex,picture,minipic"
+	'userfields' => 'id,name,displayname,primarygroup,sex,picture,minipic'
 ];
 
 function loadFieldLists() {
 	global $fieldLists, $tableLists;
 
 	//Allow plugins to add their own!
-	$bucket = "fieldLists"; include(__DIR__."/pluginloader.php");
+	$bucket = 'fieldLists';
+	include(__DIR__.'/pluginloader.php');
 }

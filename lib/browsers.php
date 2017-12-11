@@ -106,7 +106,8 @@ foreach($knownOSes as $code => $name) {
 		if(strpos($name, '%') !== FALSE) {
 			$versionStart = strpos($ua, $code) + strlen($code);
 			$version = GetVersion($ua, $versionStart);
-			$os = str_replace('%', $version, $os);
+			if(strpos($os,'%')!==FALSE)
+			    $os = str_replace('%', $version, $os);
 		}
 		//If we're using the default Android browser, just report the version of Android being used ~Nina
 		$lkbhax = explode(' ', $lastKnownBrowser);

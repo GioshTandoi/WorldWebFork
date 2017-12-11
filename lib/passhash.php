@@ -33,9 +33,7 @@ namespace {
 				trigger_error("Crypt must be loaded for password_hash to function", E_USER_WARNING);
 				return null;
 			}
-			if (is_null($password) || is_int($password)) {
-				$password = (string) $password;
-			}
+			if (is_null($password) || is_int($password))  $password = (string) $password;
 			if (!is_string($password)) {
 				trigger_error("password_hash(): Password must be a string", E_USER_WARNING);
 				return null;
@@ -55,12 +53,9 @@ namespace {
 							return null;
 						}
 					}
-					// The length of salt to generate
 					$raw_salt_len = 16;
-					// The length required in the final serialization
 					$required_salt_len = 22;
 					$hash_format = sprintf("$2y$%02d$", $cost);
-					// The expected length of the final crypt() output
 					$resultLength = 60;
 					break;
 				default:
@@ -69,25 +64,7 @@ namespace {
 			}
 			$salt_req_encoding = false;
 			if (isset($options['salt'])) {
-				switch (gettype($options['salt'])) {
-					case 'NULL':
-					case 'boolean':
-					case 'integer':
-					case 'double':
-					case 'string':
-						$salt = (string) $options['salt'];
-						break;
-					case 'object':
-						if (method_exists($options['salt'], '__tostring')) {
-							$salt = (string) $options['salt'];
-							break;
-						}
-					case 'array':
-					case 'resource':
-					default:
-						trigger_error('password_hash(): Non-string salt parameter supplied', E_USER_WARNING);
-						return null;
-				}
+                $salt = salt_switch($options);
 				if (PasswordCompat\binary\_strlen($salt) < $required_salt_len) {
 					trigger_error(sprintf("password_hash(): Provided salt is too short: %d expecting %d", PasswordCompat\binary\_strlen($salt), $required_salt_len), E_USER_WARNING);
 					return null;
@@ -135,22 +112,41 @@ namespace {
 				$salt_req_encoding = true;
 			}
 			if ($salt_req_encoding) {
-				// encode string with the Base64 variant used by crypt
-				$base64_digits =
-					'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-				$bcrypt64_digits =
-					'./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+				$base64_digits = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+				$bcrypt64_digits = './ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 				$base64_string = base64_encode($salt);
 				$salt = strtr(rtrim($base64_string, '='), $base64_digits, $bcrypt64_digits);
 			}
 			$salt = PasswordCompat\binary\_substr($salt, 0, $required_salt_len);
 			$hash = $hash_format . $salt;
 			$ret = crypt($password, $hash);
-			if (!is_string($ret) || PasswordCompat\binary\_strlen($ret) != $resultLength) {
-				return false;
-			}
+			if (!is_string($ret) || PasswordCompat\binary\_strlen($ret) != $resultLength) return false;
 			return $ret;
 		}
+
+		// Funzione creata ad-hoc per #8758
+		function salt_switch($options){
+            switch (gettype($options['salt'])) {
+                case 'NULL':
+                case 'boolean':
+                case 'integer':
+                case 'double':
+                case 'string':
+                    $salt = (string) $options['salt'];
+                    break;
+                case 'object':
+                    if (method_exists($options['salt'], '__tostring')) {
+                        $salt = (string) $options['salt'];
+                        break;
+                    }
+                case 'array':
+                case 'resource':
+                default:
+                    trigger_error('password_hash(): Non-string salt parameter supplied', E_USER_WARNING);
+                    return null;
+            }
+            return $salt;
+        }
 		/**
 		 * Get information about the password hash. Returns an array of the information
 		 * that was used to generate the password hash.

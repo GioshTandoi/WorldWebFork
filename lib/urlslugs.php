@@ -213,9 +213,8 @@ class URLify {
 
 			for ($i = 0; $i < $counterMatches; $i++) {
 				$char = $matches[0][$i];
-				if (isset (self::$map[$char])) {
+				if (isset (self::$map[$char]) && strpos($text,$char)!==FALSE)
 					$text = str_replace ($char, self::$map[$char], $text);
-				}
 			}
 		}
 		return $text;

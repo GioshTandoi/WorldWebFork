@@ -1542,6 +1542,7 @@ class BrowserDetection
 		$cleanVer = trim($cleanVer);
 		//Remove double spaces if any
 		while (strpos($cleanVer, '  ') !== false) {
+
 			$cleanVer = str_replace('  ', ' ', $cleanVer);
 		}
 

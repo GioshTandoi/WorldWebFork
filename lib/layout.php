@@ -240,60 +240,52 @@ function sForums($parent, $boardlol='') {
         $loguserid, $f['minl'], $f['maxr']);
     return $sForums;
 }
+
+/*
+ * modifiche fatte da Giosh96 in data 11/12 per risolvere la issue 8757: nell'assegnamento successivo di $fdata['lastpostuser']=.... invece di assegnare direttamente
+ * ad 'avatar' la stringa $user['picture'] con tutte le occorrenze di '$root/' con DATA_URL, bisogna controllare che effettivamente capiti almeno una volta
+ * una occorrenza di '$root/' in $user['picture'], e solo in questo caso effettuare la sostituzione
+ *'avatar' => @str_replace('$root/', DATA_URL, $user['picture']) questo è invece come era prima
+ *
+ * @Da Gabriele: ho spostato questo commento dalla riga 328, per via della issue mia circa le funzioni lunghe
+ */
 function makeForumListing($parent, $boardlol='') {
-
 	global $loguserid, $loguser, $usergroups;
-
     $viewableforums = ForumsWithPermission('forum.viewforum');
     $viewhidden = HasPermission('user.viewhiddenforums');
     $rFora = rForaQuery($parent,$boardlol, $viewableforums, $viewhidden);
-
 	if (!NumRows($rFora)) return;
-
 	$rSubfora = rSubfora($parent,$parent, $boardlol, $viewableforums, $viewhidden);
     $subfora = [];
     $mods = [];
-
 	while ($sf = Fetch($rSubfora)) $subfora[-$sf['catid']][] = $sf;
     $rMods = rMods();
-
 	while($mod = Fetch($rMods)) $mods[$mod['p_arg']][] = $mod['p_applyto'] ? getDataPrefix($mod, 'u_') : ['groupid' => $mod['p_id']];
-
 	$categories = [];
-
 	while($forum = Fetch($rFora)) {
 		$skipThisOne = false;
 		$bucket = 'forumListMangler'; include(__DIR__.'/pluginloader.php');
-
 		if($skipThisOne) continue;
-
 		if (!isset($categories[$forum['catid']]))
 			$categories[$forum['catid']] = ['id' => $forum['catid'], 'name' => ($parent==0)?$forum['cname']:'Subforums', 'forums' => []];
-
 		$fdata = ['id' => $forum['id']];
 		$tag = urlencode($forum['title']);
 		$hash = -151;
-
 		for($i = 0; $i < strlen($tag); $i++) $hash += ord($tag[$i]);
-
 		$fdata['color'] = hsl2Hex([(($hash * 777) % 360), 0.5, 0.18]);
-
 		if ($forum['redirect']) {
 			$redir = $forum['redirect'];
-
 			if ($redir[0] == ':') {
 				$redir = explode(':', $redir);
 				$fdata['link'] = actionLinkTag($forum['title'], $redir[1], $redir[2], $redir[3], $redir[4]);
 				$forum['numthreads'] = '-';
 				$forum['numposts'] = '-';
-
 				if ($redir[1] == 'board') {
 					$tboard = $redir[2];
 					$f = Fetch(Query('SELECT MIN(l) minl, MAX(r) maxr FROM {forums} WHERE board={0}', $tboard));
 					$forum['numthreads'] = 0;
 					$forum['numposts'] = 0;
 					$sforums = sForums($parent, $boardlol);
-
 					while ($sforum = Fetch($sforums)) {
 						$forum['numthreads'] += $sforum['numthreads'];
 						$forum['numposts'] += $sforum['numposts'];
@@ -313,16 +305,12 @@ function makeForumListing($parent, $boardlol='') {
 					}
 				}
 			} else $fdata['link'] = '<a href="'.htmlspecialchars($redir).'">'.$forum['title'].'</a>';
-		} else
-			$fdata['link'] = actionLinkTag($forum['title'], 'forum',  $forum['id'], '', HasPermission('forum.viewforum', $forum['id'], true) ? $forum['title'] : '');
-
+		} else $fdata['link'] = actionLinkTag($forum['title'], 'forum',  $forum['id'], '', HasPermission('forum.viewforum', $forum['id'], true) ? $forum['title'] : '');
 		$fdata['ignored'] = $forum['ignored'];
 		$localMods = '';
 		$subforaList = '';
 		$newstuff = $forum['ignored'] ? 0 : $forum['numnew'];
-		if ($newstuff > 0)
-			$fdata['new'] = "<div class=\"statusIcon new\">$newstuff</div>";
-
+		if ($newstuff > 0) $fdata['new'] = "<div class=\"statusIcon new\">$newstuff</div>";
 		$fdata['description'] = $forum['description'];
 		if (isset($mods[$forum['id']])) {
 			foreach($mods[$forum['id']] as $user) {
@@ -346,31 +334,16 @@ function makeForumListing($parent, $boardlol='') {
 			$avatar = false;
 			$user = getDataPrefix($forum, 'lu_');
 			$fdata['lastpostdate'] = formatdate($forum['lastpostdate']);
-
-
-// modifiche fatte da Giosh96 in data 11/12 per risolvere la issue 8757: nell'assegnamento successivo di $fdata['lastpostuser']=.... invece di assegnare direttamente
-            // ad 'avatar' la stringa $user['picture'] con tutte le occorrenze di '$root/' con DATA_URL, bisogna controllare che effettivamente capiti almeno una volta
-            // una occorrenza di '$root/' in $user['picture'], e solo in questo caso effettuare la sostituzione
-
-            // 'avatar' => @str_replace('$root/', DATA_URL, $user['picture']) questo è invece come era prima
-
             $pictureUrl= $user['picture'];
-
-			if(strpos($pictureUrl,'$root/'!==FALSE))
+			if(strpos($pictureUrl,'$root/')!==FALSE)
                 $pictureUrl=str_replace('$root/', DATA_URL,$pictureUrl);
-
-
-//-----------------------------------------------------------------------
-
 			$fdata['lastpostuser'] = [
 				'name' => $user['displayname'] ? $user['displayname'] : $user['name'], 'link' => UserLink($user),
 				'href' => UserLink($user, false, false, true), 'avatar' => $pictureUrl,
 			];
 			$fdata['lastpostname'] = $forum['lastpostname'];
 			$fdata['lastpostlink'] = actionLink('post', $forum['lastpostid'], false, $forum['lastpostname']);
-
 		} else $fdata['lastpostdate'] = 0;
-
 		$categories[$forum['catid']]['forums'][$forum['id']] = $fdata;
 	}
 RenderTemplate('forumlist1', ['categories' => $categories]);

@@ -3,8 +3,8 @@
 define('BLARG', 1);
 $ajaxPage = true;
 define('MAIN_PAGE', 'home');
-include(__DIR__ . "/lib/common.php");
-header("Cache-Control: no-cache");
+include(__DIR__ . '/lib/common.php');
+header('Cache-Control: no-cache');
 header('Content-type: text/plain');
 
 getBirthdaysText(false);
@@ -18,40 +18,40 @@ if (isset($_GET['id']))
 else
 	$id = 0;
 
-$hideTricks = " <a href=\"javascript:void(0)\" onclick=\"hideTricks(".$id.")\">".__("Back")."</a>";
+$hideTricks = ' <a href=\"javascript:void(0)\" onclick=\"hideTricks('.$id.')\">'.__('Back').'</a>';
 
 switch ($action){
 
 	case 'q':  //-------------------------------------------------------------------------------------------------------------------------------------Quote
 
-        $qQuote = "	select
+        $qQuote = '	select
 					p.id, p.deleted, pt.text,
 					u.name poster
 				from {posts} p
 					left join {posts_text} pt on pt.pid = p.id and pt.revision = p.currentrevision
 					left join {threads} t on t.id=p.thread
 					left join {users} u on u.id=p.user
-				where p.id={0} AND t.forum IN ({1c})";
+				where p.id={0} AND t.forum IN ({1c})';
 
         $rQuote = Query($qQuote, $id, ForumsWithPermission('forum.viewforum'));
 
         if(!NumRows($rQuote))
-            die(__("Unknown post ID."));
+            die(__('Unknown post ID.'));
 
         $quote = Fetch($rQuote);
 
         if ($quote['deleted'])
-            $quote['text'] = __("Post is deleted");
+            $quote['text'] = __('Post is deleted');
 
-        $reply = "[quote=\"".$quote['poster']."\" id=\"".$quote['id']."\"]".$quote['text']."[/quote]";
-        $reply = str_replace("/me ", "[b]* ".htmlspecialchars($quote['poster'])."[/b]", $reply);
+        $reply = "[quote=\"".$quote['poster']."\" id=\"".$quote['id']."\"]".$quote['text'].'[/quote]';
+        $reply = str_replace('/me ', '[b]* '.htmlspecialchars($quote['poster']).'[/b]', $reply);
         die($reply);
 
 	    break;
 
 	case 'rp':   // ----------------------------------------------------------------------------------------------------------------------------retrieve post
 
-        $rPost = Query("
+        $rPost = Query('
 			SELECT
 				p.id, p.date, p.num, p.deleted, p.deletedby, p.reason, p.options, p.mood, p.ip,
 				pt.text, pt.revision, pt.user AS revuser, pt.date AS revdate,
@@ -66,15 +66,15 @@ switch ($action){
 				LEFT JOIN {users} ru ON ru.id=pt.user
 				LEFT JOIN {users} du ON du.id=p.deletedby
 				LEFT JOIN {threads} t ON t.id=p.thread
-			WHERE p.id={0} AND t.forum IN ({1c})", $id, ForumsWithPermission('forum.viewforum'));
+			WHERE p.id={0} AND t.forum IN ({1c})', $id, ForumsWithPermission('forum.viewforum'));
 
 
         if (!NumRows($rPost))
-            die(__("Unknown post ID."));
+            die(__('Unknown post ID.'));
         $post = Fetch($rPost);
 
         if (!HasPermission('mod.deleteposts', $post['fid']) || $poster['id'] == $loguserid)
-            die(__("No."));
+            die(__('No.'));
 
         die(MakePost($post, isset($_GET['o']) ? POST_DELETED_SNOOP : POST_NORMAL, ['tid'=>$post['thread'], 'fid'=>$post['fid']]));
 		break;
@@ -104,7 +104,7 @@ switch ($action){
 
         $layout_logopic = 'img/logo.png';
 
-        die(resourceLink($themeFile)."|".$layout_logopic);
+        die(resourceLink($themeFile).'|'.$layout_logopic);
 
         break;
 
@@ -115,9 +115,9 @@ switch ($action){
         if(NumRows($rPost))
             $post = Fetch($rPost);
         else
-            die(format(__("Unknown post ID #{0}."), $id)." ".$hideTricks);
+            die(format(__('Unknown post ID #{0}.'), $id).' '.$hideTricks);
 
-        $qThread = "select forum from {threads} where id={0}";
+        $qThread = 'select forum from {threads} where id={0}';
         $rThread = Query($qThread, $post['thread']);
         $thread = Fetch($rThread);
 
@@ -127,31 +127,31 @@ switch ($action){
             die('No.');
 
 
-        $qRevs = "SELECT
+        $qRevs = 'SELECT
 				revision, date AS revdate,
 				ru.(_userfields)
 			FROM
 				{posts_text}
 				LEFT JOIN {users} ru ON ru.id = user
 			WHERE pid={0}
-			ORDER BY revision ASC";
+			ORDER BY revision ASC';
         $revs = Query($qRevs, $id);
 
 
-        $reply = __("Show revision:")."<br />";
+        $reply = __('Show revision:').'<br />';
         while($revision = Fetch($revs)) {
-            $reply .= " <a href=\"javascript:void(0)\" onclick=\"showRevision(".$id.",".$revision["revision"].")\">".format(__("rev. {0}"), $revision["revision"])."</a>";
+            $reply .= ' <a href=\"javascript:void(0)\" onclick=\"showRevision('.$id.','.$revision['revision'].')\">'.format(__('rev. {0}'), $revision['revision']).'</a>';
 
             if ($revision['ru_id']) {
-                $ru_link = UserLink(getDataPrefix($revision, "ru_"));
-                $revdetail = " ".format(__("by {0} on {1}"), $ru_link, formatdate($revision['revdate']));
+                $ru_link = UserLink(getDataPrefix($revision, 'ru_'));
+                $revdetail = ' '.format(__('by {0} on {1}'), $ru_link, formatdate($revision['revdate']));
             } else
                 $revdetail = '';
             $reply .= $revdetail;
-            $reply .= "<br />";
+            $reply .= '<br />';
         }
 
-        $hideTricks = " <a href=\"javascript:void(0)\" onclick=\"showRevision(".$id.",".$post["currentrevision"]."); hideTricks(".$id.")\">".__("Back")."</a>";
+        $hideTricks = ' <a href=\"javascript:void(0)\" onclick=\"showRevision('.$id.','.$post['currentrevision'].'); hideTricks('.$id.')\">'.__('Back').'</a>';
         $reply .= $hideTricks;
         die($reply);
         break;
@@ -159,7 +159,7 @@ switch ($action){
 	case 'sr':  //-------------------------------------------------------------------------------------------------------------------------------------Show Revision
 
         global $loguser, $blocklayouts;
-        $rPost = Query("
+        $rPost = Query('
 			SELECT
 				p.*,
 				pt.text, pt.revision, pt.user AS revuser, pt.date AS revdate,
@@ -174,12 +174,12 @@ switch ($action){
 				LEFT JOIN {users} u ON u.id = p.user
 				LEFT JOIN {users} ru ON ru.id=pt.user
 				LEFT JOIN {users} du ON du.id=p.deletedby
-			WHERE p.id={0} AND t.forum IN ({2c})", $id, (int)$_GET['rev'], ForumsWithPermission('forum.viewforum'));
+			WHERE p.id={0} AND t.forum IN ({2c})', $id, (int)$_GET['rev'], ForumsWithPermission('forum.viewforum'));
 
         if(NumRows($rPost))
             $post = Fetch($rPost);
         else
-            die(format(__("Unknown post ID #{0} or revision missing."), $id));
+            die(format(__('Unknown post ID #{0} or revision missing.'), $id));
 
         if (!HasPermission('mod.editposts', $post['fid']))
             die('No.');
@@ -217,7 +217,7 @@ switch ($action){
         break;
 
 	case 'vc': //------------------------------------------------------------------------------------------------------------------------------------------View Counter
-        $blah = FetchResult("select views from {misc}");
+        $blah = FetchResult('select views from {misc}');
         die(number_format($blah));
         break;
 
@@ -227,5 +227,5 @@ switch ($action){
         break;
 }
 
-die(__("Unknown action."));
+die(__('Unknown action.'));
 ?>

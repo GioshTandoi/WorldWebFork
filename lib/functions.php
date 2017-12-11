@@ -76,7 +76,9 @@ function format() {
 	for($i = 1; $i < $argc; $i++) {
 		// TODO kill that hack
 		$splicethis = preg_replace("'\{([0-9]+)\}'", "&#x7B;\\1&#x7D;", $args[$i]);
-		$output = str_replace('{'.($i-1).'}', $splicethis, $output);
+
+		if(strpos($output,'{'.($i-1).'}')!==FALSE)
+		    $output = str_replace('{'.($i-1).'}', $splicethis, $output);
 	}
 	return $output;
 }
@@ -93,7 +95,9 @@ function write() {
 	for($i = 1; $i < $argc; $i++) {
 		// TODO kill that hack
 		$splicethis = preg_replace("'\{([0-9]+)\}'", "&#x7B;\\1&#x7D;", $args[$i]);
-		$output = str_replace('{'.($i-1).'}', $splicethis, $output);
+
+		if(strpos($output,'{'.($i-1).'}')!==FALSE)
+		    $output = str_replace('{'.($i-1).'}', $splicethis, $output);
 	}
 	echo $output;
 }
@@ -114,8 +118,12 @@ function OptimizeLayouts($text) {
 
 	// Put the tags back
 	$newStyles = '<!-- head tags -->'.implode('', $bucket).'<!-- /head tags -->';
-	$text = str_replace('</head>', $newStyles.'</head>', $text);
-	$text = str_replace('<recaptcha', "<script", $text);
+	if(strpos($text,'</head>')!==FALSE)
+	    $text = str_replace('</head>', $newStyles.'</head>', $text);
+
+	if(strpos($text,'<recaptcha')!==FALSE)
+	    $text = str_replace('<recaptcha', "<script", $text);
+
 	return $text;
 }
 

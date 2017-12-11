@@ -140,7 +140,8 @@ class Text_Diff_Renderer_inline extends Text_Diff_Renderer {
             // Eat a word with any preceding whitespace.
             $spaces = strspn(substr($string, $pos), " \n");
             $nextpos = strcspn(substr($string, $pos + $spaces), " \n");
-            $words[] = str_replace("\n", $newlineEscape, substr($string, $pos, $spaces + $nextpos));
+            if(strpos(substr($string, $pos, $spaces + $nextpos),"\n" )!==FALSE)
+                $words[] = str_replace("\n", $newlineEscape, substr($string, $pos, $spaces + $nextpos));
             $pos += $spaces + $nextpos;
         }
 

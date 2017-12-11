@@ -146,9 +146,10 @@ class AltoRouter {
 					$block = substr($block, 1);
 				}
 
-				if(isset($params[$param])) {
-					$url = str_replace($block, $params[$param], $url);
-				} elseif ($optional) {
+				if(isset($params[$param]) && strpos($url, $block)!==FALSE) {
+
+                   $url = str_replace($block, $params[$param], $url);
+				} elseif ($optional  && strpos($url, $pre . $block)!==FALSE) {
 					$url = str_replace($pre . $block, '', $url);
 				}
 			}
@@ -259,7 +260,8 @@ class AltoRouter {
 						. '))'
 						. ($optional !== '' ? '?' : null);
 
-				$route = str_replace($block, $pattern, $route);
+				if(strpos($route, $block)!==FALSE)
+				    $route = str_replace($block, $pattern, $route);
 			}
 
 		}

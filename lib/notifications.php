@@ -63,7 +63,10 @@ function GetNotifications() {
 			$ndesc = htmlspecialchars($n['type'].':'.$n['id']);
 
 		$ts = '<span class="nobr">'; $te = '</span>';
-		$ndesc = $ts.str_replace("\n", $te.'<br/>'.$ts, $ndesc).$te;
+        $stringConcat=$ndesc;
+		if(strpos($ndesc,"\n")!==FALSE)
+		    $stringConcat=str_replace("\n", $te.'<br/>'.$ts, $ndesc);
+        $ndesc = $ts.$stringConcat.$te;
 
 		$notifs[] = [
 			'date' => $n['date'], 

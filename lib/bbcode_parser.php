@@ -187,11 +187,9 @@ function parseBBCode($text) {
 	global $TagList, $TagAllowedIn;
 	$spacechars = [' ', "\t", "\r", "\n", "\f"];
 	$attrib_bad = [' ', "\t", "\r", "\n", "\f", '<', '[', '/', '='];
-
 	$raw = preg_split("@(</?[a-zA-Z][^\s\f/>]*|\[/?[a-zA-Z][a-zA-Z0-9]*)@", $text, 0, PREG_SPLIT_DELIM_CAPTURE);
 	$outputstack = [0 => ['tag' => '', 'attribs' => '', 'contents' => '']];
 	$si = 0;
-
 	$currenttag = '';
 	$currentmask = 0;
 
@@ -203,26 +201,19 @@ function parseBBCode($text) {
 			$isclosing = $cur[1] == '/';
 			$tagname = $cur[0].substr($cur, ($isclosing ? 2:1));
 			$closechar = ($cur[0] == '<') ? '>' : ']';
-
 			// raw contents tags (<style> & co)
 			// continue outputting RAW content until we meet a matching closing tag
 			if (($currentmask & TAG_RAWCONTENTS) && (!$isclosing || $currenttag != $tagname)) {
 				$outputstack[$si]['contents'] .= $rawcur;
 				continue;
 			}
-
-			// invalid tag -- output it escaped
-			$test = trim($raw[$i]);
-			if (!array_key_exists($tagname, $TagList) || $test[0] == '<' || $test[0] == '[') {
+			$test = trim($raw[$i]); 			// invalid tag -- output it escaped
+            if (!array_key_exists($tagname, $TagList) || $test[0] == '<' || $test[0] == '[') {
 				$outputstack[$si]['contents'] .= filterText(htmlspecialchars($rawcur), $currenttag, $currentmask);
 				continue;
 			}
-
-			// we got a proper tag? find where it ends
-			$tagmask = $TagList[$tagname];
-
-			$next = $raw[$i++];
-
+			$tagmask = $TagList[$tagname]; 			// we got a proper tag? find where it ends
+            $next = $raw[$i++];
 			$j = 0;
 			$endfound = false;
 			$inquote = false; $inattrib = ($cur[0]=='<')?0:1;
@@ -231,28 +222,19 @@ function parseBBCode($text) {
 				for (; $j < $nlen; $j++) {
 					$ch = $next[$j];
 					$isspace = in_array($ch, $spacechars);
-
 					if (!$inquote) {
 						if ($ch == $closechar) {
 							$endfound = true;
 							break;
 						}
-
-						if ($inattrib == 0 && !in_array($ch, $attrib_bad))
-							$inattrib = 1;
+						if ($inattrib == 0 && !in_array($ch, $attrib_bad)) $inattrib = 1;
 						else if ($inattrib == 1) {
-							if ($ch == '=')
-								$inattrib = 2;
-							else if (!$isspace)
-								$inattrib = 0;
+							if ($ch == '=') $inattrib = 2;
+							else if (!$isspace) $inattrib = 0;
 						} else if ($inattrib == 2) {
-							if ($isspace)
-								continue;
-
-							if ($ch == '"' || $ch == '\'')
-								$inquote = $ch;
-							else
-								$inquote = ' ';
+							if ($isspace) continue;
+							if ($ch == '"' || $ch == '\'') $inquote = $ch;
+							else $inquote = ' ';
 						}
 					} else if ($ch == $inquote || ($inquote == ' ' && $isspace)) {
 						$inquote = false;
@@ -262,124 +244,103 @@ function parseBBCode($text) {
 						break;
 					}
 				}
-
-				if ($endfound)
-					break;
-
-				if ($i >= $nraw)
-					break;
-
-				if ($j >= $nlen)
-					$next .= $raw[$i++];
-				else
-					break;
-			}
-
-			if (!$endfound) // tag end not found-- call it invalid
-				$outputstack[$si]['contents'] .= filterText(htmlspecialchars($rawcur.$next), $currenttag, $currentmask);
+				if ($endfound) break;
+				if ($i >= $nraw)  break;
+				if ($j >= $nlen) $next .= $raw[$i++];
+				else break;
+			}             // tag end not found-- call it invalid
+            if (!$endfound) $outputstack[$si]['contents'] .= filterText(htmlspecialchars($rawcur.$next), $currenttag, $currentmask);
 			else {
 				$tagattribs = substr($next,0,$j+1);
 				$followingtext = substr($next,$j+1);
-
-				if ($tagmask & TAG_BLOCK)
-					$followingtext = preg_replace("@^\r?\n@", '', $followingtext);
+				if ($tagmask & TAG_BLOCK) $followingtext = preg_replace("@^\r?\n@", '', $followingtext);
 
 				if ($isclosing) {
-					$tgood = false;
-
-					// tag closing. Close any tags that need it before.
-
-					$k = $si;
-					while ($k > 0) {
-						$closer = $outputstack[$k--];
-						if ($closer['tag'] == $tagname) {
-							$tgood = true;
-							break;
-						}
-					}
-
-					if ($tgood) {
-						while ($si > 0) {
-							$closer = $outputstack[$si--];
-							$ccontents = $closer['contents'];
-							$cattribs = $closer['attribs'];
-							$ctag = $closer['tag'];
-							$ctagname = substr($ctag,1);
-
-							if ($ctag != $tagname)
-								$outputstack[$si]['contents'] .= filterTag($ctag, $cattribs, $ccontents, false, $outputstack[$si]['tag']);
-							else
-								break;
-						}
-
-						$currenttag = $outputstack[$si]['tag'];
-						$currentmask = $TagList[$currenttag];
-
-						$outputstack[$si]['contents'] .= filterTag($ctag, $cattribs, $ccontents, true, $currenttag).filterText($followingtext, $currenttag, $currentmask);
-					}
-					else
-						$outputstack[$si]['contents'] .= filterText(htmlspecialchars($followingtext), $currenttag, $currentmask);
-				} else if ($tagmask & TAG_SELFCLOSING) {
-					// self-closing tag (<br>, <img>, ...)
-
+                    closing($si, $outputstack, $tagname, $TagList, $followingtext, $currenttag, $currentmask);
+				} else if ($tagmask & TAG_SELFCLOSING) {// self-closing tag (<br>, <img>, ...)
 					$followingtext = filterText($followingtext, $currenttag, $currentmask);
 					$outputstack[$si]['contents'] .= filterTag($cur, $tagattribs, '', false, $currenttag).$followingtext;
 				} else {
-					// tag opening. See if we need to close some tags before.
-
-					if ($currentmask & TAG_CLOSEOPTIONAL) {
-						$tgood = false;
-						$k = $si;
-						while ($k > 0) {
-							$closer = $outputstack[$k--];
-							if (tagAllowedIn($tagname, $closer['tag'])) {
-								$tgood = true;
-								break;
-							}
-						}
-						$k++;
-
-						if ($tgood) {
-							while ($si > $k) {
-								$closer = $outputstack[$si--];
-								$ccontents = $closer['contents'];
-								$cattribs = $closer['attribs'];
-								$ctag = $closer['tag'];
-								$ctagname = substr($ctag,1);
-
-								$outputstack[$si]['contents'] .= filterTag($ctag, $cattribs, $ccontents, false, $outputstack[$si]['tag']);
-							}
-
-							$outputstack[++$si] = ['tag' => $cur, 'attribs' => $tagattribs, 'contents' => filterText($followingtext, $cur, $tagmask)];
-
-							$currenttag = $cur;
-							$currentmask = $tagmask;
-						} else
-							$outputstack[$si]['contents'] .= filterText(htmlspecialchars($followingtext), $currenttag, $currentmask);
-					} else if (tagAllowedIn($tagname, $currenttag)) {
-						$outputstack[++$si] = ['tag' => $cur, 'attribs' => $tagattribs, 'contents' => filterText($followingtext, $cur, $tagmask)];
-
-						$currenttag = $cur;
-						$currentmask = $tagmask;
-					} else
-						$outputstack[$si]['contents'] .= filterText(htmlspecialchars($followingtext), $currenttag, $currentmask);
+				    // tag opening. See if we need to close some tags before.
+                    tagOpening($currentmask, $outputstack, $tagname, $si, $cur, $tagattribs, $followingtext, $tagmask, $currenttag);
 				}
 			}
 		}
-		else if ($rawcur)
-			$outputstack[$si]['contents'] .= filterText($rawcur, $currenttag, $currentmask);
+		else if ($rawcur) $outputstack[$si]['contents'] .= filterText($rawcur, $currenttag, $currentmask);
 	}
-
-	// close any leftover opened tags
-	while ($si > 0) {
-		$closer = $outputstack[$si--];
-		$ccontents = $closer['contents'];
-		$cattribs = $closer['attribs'];
-		$ctag = $closer['tag'];
-
-		if (!($TagList[$ctag] & TAG_SELFCLOSING))
-			$outputstack[$si]['contents'] .= filterTag($ctag, $cattribs, $ccontents, false, $outputstack[$si]['tag']);
-	}
-
+	closeLeftoverOpenedTags($si, $outputstack, $TagList);
 	return $outputstack[$si]['contents'];
+}
+
+// Funzioni create ad-hoc per ridurre la grandezza della funzione principale (ISSUE: #8758)
+function closing($si, $outputstack, $tagname, $TagList, $followingtext, $currenttag, $currentmask, $ctag, $cattribs, $ccontents) {
+    $tgood = false;
+    $k = $si;
+    // tag closing. Close any tags that need it before.
+    while ($k > 0) {
+        $closer = $outputstack[$k--];
+        if ($closer['tag'] == $tagname) {
+            $tgood = true;
+            break;
+        }
+    }
+    if ($tgood) {
+        while ($si > 0) {
+            $closer = $outputstack[$si--];
+            $ccontents = $closer['contents'];
+            $cattribs = $closer['attribs'];
+            $ctag = $closer['tag'];
+            $ctagname = substr($ctag,1);
+            if ($ctag != $tagname) $outputstack[$si]['contents'] .= filterTag($ctag, $cattribs, $ccontents, false, $outputstack[$si]['tag']);
+            else break;
+        }
+        $currenttag = $outputstack[$si]['tag'];
+        $currentmask = $TagList[$currenttag];
+        $outputstack[$si]['contents'] .= filterTag($ctag, $cattribs, $ccontents, true, $currenttag).filterText($followingtext, $currenttag, $currentmask);
+    }
+    else $outputstack[$si]['contents'] .= filterText(htmlspecialchars($followingtext), $currenttag, $currentmask);
+}
+
+// Funzioni create ad-hoc per ridurre la grandezza della funzione principale (ISSUE: #8758)
+function tagOpening($currentmask, $outputstack, $tagname, $si, $cur, $tagattribs, $followingtext, $tagmask, $currenttag) {
+    if ($currentmask & TAG_CLOSEOPTIONAL) {
+        $tgood = false;
+        $k = $si;
+        while ($k > 0) {
+            $closer = $outputstack[$k--];
+            if (tagAllowedIn($tagname, $closer['tag'])) {
+                $tgood = true;
+                break;
+            }
+        }
+        $k++;
+        if ($tgood) {
+            while ($si > $k) {
+                $closer = $outputstack[$si--];
+                $ccontents = $closer['contents'];
+                $cattribs = $closer['attribs'];
+                $ctag = $closer['tag'];
+                $ctagname = substr($ctag,1);
+                $outputstack[$si]['contents'] .= filterTag($ctag, $cattribs, $ccontents, false, $outputstack[$si]['tag']);
+            }
+            $outputstack[++$si] = ['tag' => $cur, 'attribs' => $tagattribs, 'contents' => filterText($followingtext, $cur, $tagmask)];
+            $currenttag = $cur;
+            $currentmask = $tagmask;
+        } else $outputstack[$si]['contents'] .= filterText(htmlspecialchars($followingtext), $currenttag, $currentmask);
+    } else if (tagAllowedIn($tagname, $currenttag)) {
+        $outputstack[++$si] = ['tag' => $cur, 'attribs' => $tagattribs, 'contents' => filterText($followingtext, $cur, $tagmask)];
+        $currenttag = $cur;
+        $currentmask = $tagmask;
+    } else $outputstack[$si]['contents'] .= filterText(htmlspecialchars($followingtext), $currenttag, $currentmask);
+}
+
+// Funzioni create ad-hoc per ridurre la grandezza della funzione principale (ISSUE: #8758)
+function closeLeftoverOpenedTags($si, $outputstack, $TagList) {
+    while ($si > 0) { // close any leftover opened tags
+        $closer = $outputstack[$si--];
+        $ccontents = $closer['contents'];
+        $cattribs = $closer['attribs'];
+        $ctag = $closer['tag'];
+        if (!($TagList[$ctag] & TAG_SELFCLOSING)) $outputstack[$si]['contents'] .= filterTag($ctag, $cattribs, $ccontents, false, $outputstack[$si]['tag']);
+    }
 }

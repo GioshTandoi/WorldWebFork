@@ -74,8 +74,9 @@ print '<?xml version="1.0" encoding="UTF-8"?>';
 		$text = preg_replace('@<img[^>]+?src\s*=\s*([^\s>]+?)(\s+[^>]*?)?>@si', '<a href="$1">(image)</a>', $text);
 		
 		$text = preg_replace('@([="\'])\?page=@si', '$1'.$fullurl.'/?page=', $text);
-		
-		$text = str_replace(']]>', ']]&gt;', $text);
+
+		if(strpos($text,']]>')!==FALSE)
+		    $text = str_replace(']]>', ']]&gt;', $text);
 		
 		$username = htmlspecialchars($username);
 		
