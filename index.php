@@ -55,7 +55,7 @@ $match = $router->match();
 ob_start();
 $layout_crumbs = "";
 
-if($useBuffering)
+if($useBuffering == true)
 	ob_start();
 
 $fakeerror = false;
@@ -66,7 +66,7 @@ if ($loguser['flags'] & 0x2) {
 	}
 }
 
-if (!$fakeerror) {
+if ($fakeerror == false) {
 	try {
 		// Throw the 404 page if we don't have a match already.
 		if ($match === false)
@@ -106,8 +106,8 @@ if (!$fakeerror) {
 	}
 }
 
-if($ajaxPage) {
-	if($useBuffering) {
+if($ajaxPage == true) {
+	if($useBuffering == true) {
 		header("Content-Type: text/plain");
 		ob_end_flush();
 	}
@@ -130,9 +130,9 @@ require(__DIR__ . '/layouts/menus.php');
 $mobileswitch = '';
 
 if (Settings::get('defaultLayout') !== "mobile") {
-	if ($mobileLayout) $mobileswitch .= 'Mobile view <noscript>(Requires JS enabled for it to work.)</noscript> - ';
+	if (isset($mobileLayout)) $mobileswitch .= 'Mobile view <noscript>(Requires JS enabled for it to work.)</noscript> - ';
 	if (isset($_COOKIE['forcelayout']) && $_COOKIE['forcelayout']) $mobileswitch .= '<a href="?forcelayout=0" rel="nofollow">Auto view</a>';
-	else if ($mobileLayout) $mobileswitch .= '<a href="?forcelayout=-1" rel="nofollow">Force normal view</a>';
+	else if (isset($mobileLayout)) $mobileswitch .= '<a href="?forcelayout=-1" rel="nofollow">Force normal view</a>';
 	else $mobileswitch .= '<a href="?forcelayout=1" rel="nofollow">Force mobile view [BETA]</a>';
 }
 
@@ -199,8 +199,8 @@ if (file_exists(URL_ROOT.'/themes/$theme/logo.png')) {
 
 function checkForImage(&$image, $external, $file) {
 	global $dataDir, $dataUrl;
-	if($image) return;
-	if($external) {
+	if(isset($image)) return;
+	if(isset($external)) {
 		if(file_exists($dataDir.$file))
 			$image = $dataUrl.$file;
 	} else {
@@ -240,11 +240,11 @@ $perfdata = 'Page rendered in '.sprintf('%.03f',microtime(true)-$starttime).' se
 	<meta http-equiv="X-UA-Compatible" content="IE=10">
 	<meta name="description" content="<?php print $metaStuff['description']; ?>">
 	<meta name="keywords" content="<?php print $metaStuff['tags']; ?>">
-	<?php if ($mobileLayout) { ?>
+	<?php if (isset($mobileLayout)) { ?>
 		<meta name="viewport" content="user-scalable=yes, initial-scale=1.0, width=device-width">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<script src="<?php echo resourceLink('js/mobile.js'); ?>"></script>
-		<?php if ($oldAndroid) { ?>
+		<?php if (isset($oldAndroid)) { ?>
 			<style>
 				#mobile-sidebar { height: auto!important; max-height: none!important; }
 				#realbody { max-height: none!important; max-width: none!important; overflow: scroll!important; }

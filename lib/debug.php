@@ -6,7 +6,7 @@ function backTrace() {
 	foreach ($backtrace as $bt) {
 		$args = '';
 		foreach ($bt['args'] as $a) {
-			if ($args) {
+			if (isset($args)) {
 				$args .= ', ';
 			}
 			if (in_array(strtolower($bt['function']), ['rawquery', 'query', 'fetchresult']) && !$args)

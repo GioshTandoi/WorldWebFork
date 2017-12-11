@@ -26,12 +26,12 @@ function actionLink($action, $id='', $args='', $urlname='') {
 	// rewritten links
 	if ($action == MAIN_PAGE)
 		$action = '';
-	else if ($hasid)
+	else if ($hasid == true)
 		$action .= '/';
 	else
 		$action .= '';
 
-	if ($hasid) {
+	if ($hasid == true) {
 		if ($urlname) $id .= '-'.urlNamify($urlname);
 		$id .= '';
 	} else
@@ -181,7 +181,7 @@ function userLink($user, $showMinipic = false, $customID = false, $returnOnlyHre
 	if (!$isbanned && $luckybastards && in_array($user['id'], $luckybastards)) {
 		$classing = ' style="text-shadow:0px 0px 4px;"';
 		$fname = prettyRainbow($fname);
-	} else if ($dorainbow) {
+	} else if ($dorainbow == true) {
 		if (!$isbanned)
 			$classing = ' style="color:hsl('.$poptart.',100%,80.4%);"';
 		$poptart += 31;

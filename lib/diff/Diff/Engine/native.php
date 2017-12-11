@@ -102,7 +102,7 @@ class Text_Diff_Engine_native {
                 $copy[] = $from_lines[$xi++];
                 ++$yi;
             }
-            if ($copy) {
+            if (isset($copy)) {
                 $edits[] = new Text_Diff_Op_copy($copy);
             }
 
@@ -119,9 +119,9 @@ class Text_Diff_Engine_native {
 
             if ($delete && $add) {
                 $edits[] = new Text_Diff_Op_change($delete, $add);
-            } elseif ($delete) {
+            } elseif (isset($delete)) {
                 $edits[] = new Text_Diff_Op_delete($delete);
-            } elseif ($add) {
+            } elseif (isset($add)) {
                 $edits[] = new Text_Diff_Op_add($add);
             }
         }
@@ -157,7 +157,7 @@ class Text_Diff_Engine_native {
                 = [$yoff, $ylim, $xoff, $xlim];
         }
 
-        if ($flip) {
+        if (isset($flip)) {
             for ($i = $ylim - 1; $i >= $yoff; $i--) {
                 $ymatches[$this->xv[$i]][] = $i;
             }

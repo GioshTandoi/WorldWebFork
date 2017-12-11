@@ -76,17 +76,17 @@ namespace {
 				$buffer_valid = false;
 				if (function_exists('mcrypt_create_iv') && !defined('PHALANGER')) {
 					$buffer = mcrypt_create_iv($raw_salt_len, MCRYPT_DEV_URANDOM);
-					if ($buffer) {
+					if (isset($buffer)) {
 						$buffer_valid = true;
 					}
 				}
-				if (!$buffer_valid && function_exists('openssl_random_pseudo_bytes')) {
+				if ($buffer_valid == false && function_exists('openssl_random_pseudo_bytes')) {
 					$buffer = openssl_random_pseudo_bytes($raw_salt_len);
-					if ($buffer) {
+					if (isset($buffer)) {
 						$buffer_valid = true;
 					}
 				}
-				if (!$buffer_valid && @is_readable('/dev/urandom')) {
+				if ($buffer_valid == false && @is_readable('/dev/urandom')) {
 					$file = fopen('/dev/urandom', 'r');
 					$read = PasswordCompat\binary\_strlen($buffer);
 					while ($read < $raw_salt_len) {
@@ -98,7 +98,7 @@ namespace {
 						$buffer_valid = true;
 					}
 				}
-				if (!$buffer_valid || PasswordCompat\binary\_strlen($buffer) < $raw_salt_len) {
+				if ($buffer_valid == false || PasswordCompat\binary\_strlen($buffer) < $raw_salt_len) {
 					$buffer_length = PasswordCompat\binary\_strlen($buffer);
 					for ($i = 0; $i < $raw_salt_len; $i++) {
 						if ($i < $buffer_length) {
@@ -111,7 +111,7 @@ namespace {
 				$salt = $buffer;
 				$salt_req_encoding = true;
 			}
-			if ($salt_req_encoding) {
+			if ($salt_req_encoding == true) {
 				$base64_digits = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 				$bcrypt64_digits = './ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 				$base64_string = base64_encode($salt);

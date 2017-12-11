@@ -48,7 +48,7 @@ function GetNotifications() {
 	global $loguserid, $NotifFormat;
 	$notifs = [];
 
-	if (!$loguserid) return $notifs;
+	if (!isset($loguserid)) return $notifs;
 
 	// TODO do it better!
 	$staffnotif = '';

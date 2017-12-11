@@ -61,7 +61,7 @@ function rainbowify($s)
 function postDoReplaceText($s, $parentTag, $parentMask) {
 	global $postNoSmilies, $postPoster, $smiliesReplaceOrig, $smiliesReplaceNew;
 
-	if($postPoster)
+	if(isset($postPoster))
 		$s = preg_replace("'/me '","<b>* ".htmlspecialchars($postPoster)."</b> ", $s);
 
 	// silly filters
@@ -69,7 +69,7 @@ function postDoReplaceText($s, $parentTag, $parentMask) {
 	//$s = str_replace(':3', ':3 '.rainbowify('ALL THE INSULTS I JUST SAID NOW BECOME LITTLE COLOURFUL FLOWERS'), $s);
 
 	//Smilies
-	if(!$postNoSmilies) {
+	if(!isset($postNoSmilies)) {
 		if(!isset($smiliesReplaceOrig))
 			LoadSmilies();
 		$s = preg_replace($smiliesReplaceOrig, $smiliesReplaceNew, $s);

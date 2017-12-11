@@ -33,7 +33,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 		do403();
 }
 
-if ($isBot) {
+if (isset($isBot) && $isBot==true) {
 	// keep SE bots out of certain pages that don't interest them anyway
 	// TODO move that code to those individual pages
 	$forbidden = ['register', 'login', 'online', 'referrals', 'records', 'lastknownbrowsers'];

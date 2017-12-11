@@ -4,12 +4,16 @@ if (!defined('BLARG')) die();
 //Plugin loader -- By Nikolaj
 global $pluginbuckets, $plugins, $plugin;
 
-$oldplugin = $plugin;
+if(isset($plugin))
+    $oldplugin = $plugin;
+
 if(!isset($self))
 	$self = NULL;
 $oldself = $self;
 
-if (isset($pluginbuckets[$bucket])) {
+
+
+if (isset($bucket) && isset($pluginbuckets[$bucket])) {
 	foreach ($pluginbuckets[$bucket] as $plugin) {
 		if (isset($plugins[$plugin])) {
 			$self = $plugins[$plugin];

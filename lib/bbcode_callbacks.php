@@ -83,7 +83,7 @@ function bbcodeURL($contents, $arg, $parenttag)
 	$dest = htmlentities($contents);
 	$title = $contents;
 
-	if($arg)
+	if(isset($arg))
 		$dest = htmlentities($arg);
 
 	return '<a href="'.$dest.'">'.$title.'</a>';
@@ -93,7 +93,7 @@ function bbcodeURLnf($contents, $arg, $parenttag)
 	$dest = htmlentities($contents);
 	$title = $contents;
 
-	if($arg)
+	if(isset($arg))
 		$dest = htmlentities($arg);
 
 	return '<a href="'.$dest.'" rel="nofollow">'.$title.'</a>';
@@ -109,8 +109,7 @@ function bbcodeImage($contents, $arg, $parenttag)
 {
 	$dest = $contents;
 	$title ='';
-	if($arg)
-	{
+    if(isset($arg))	{
 		$title = $contents;
 		$dest = $arg;
 	}
@@ -136,8 +135,7 @@ function bbcodeImageScale($contents, $arg, $parenttag)
 	$dest = $contents;
 	$orig = $dest;
 	$title = '';
-	if($arg)
-	{
+    if(isset($arg))	{
 		$title = $contents;
 		$dest = $arg;
 		$orig = $dest;
@@ -210,8 +208,8 @@ function bbcodeReply($contents, $arg, $parenttag)
 
 function bbcodeQuoteGeneric($contents, $arg, $text)
 {
-	if(!$arg)
-		return "<div class='quote'><div class='quotecontent'>$contents</div></div>";
+    if(!isset($arg))
+        return "<div class='quote'><div class='quotecontent'>$contents</div></div>";
 
 	// Possible formats:
 	// [quote=blah]
@@ -233,8 +231,8 @@ function bbcodeQuoteGeneric($contents, $arg, $text)
 
 function bbcodeSpoiler($contents, $arg, $parenttag)
 {
-	if($arg)
-		return "<div class=\"spoiler\"><button class=\"spoilerbutton named\">".htmlspecialchars($arg)."</button><div class=\"spoiled hidden\">$contents</div></div>";
+    if(isset($arg))
+        return "<div class=\"spoiler\"><button class=\"spoilerbutton named\">".htmlspecialchars($arg)."</button><div class=\"spoiled hidden\">$contents</div></div>";
 	else
 		return "<div class=\"spoiler\"><button class=\"spoilerbutton\">Show spoiler</button><div class=\"spoiled hidden\">$contents</div></div>";
 }
@@ -303,7 +301,7 @@ function bbcodeYoutube($contents, $arg, $parenttag)
 {
 	$contents = trim($contents);
 	$id = getYoutubeIdFromUrl($contents);
-	if($id)
+	if(isset($id))
 		$contents = $id;
 
 	if(!preg_match("/^[\-0-9_a-zA-Z]+$/", $contents))
@@ -336,7 +334,7 @@ function getVimeoIdFromUrl($url)
 function bbcodeVimeo($contents, $arg, $parenttag) {
 	$contents = trim($contents);
 	$id = getVimeoIdFromUrl($contents);
-	if($id)
+	if(isset($id))
 		$contents = $id;
 
 	if(!preg_match("/^[\-0-9_a-zA-Z]+$/", $contents))

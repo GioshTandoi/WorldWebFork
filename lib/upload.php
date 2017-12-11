@@ -77,7 +77,7 @@ function HandlePostAttachments($postid, $final) {
 				DeleteUpload($targetdir.'/'.$entry['physicalname'], $entry['user']);
 				Query("DELETE FROM {uploadedfiles} WHERE id={0}", $fileid);
 			} else {
-				if ($final) Query("UPDATE {uploadedfiles} SET parentid={0}, deldate=0 WHERE id={1}", $postid, $fileid);
+				if (isset($final)) Query("UPDATE {uploadedfiles} SET parentid={0}, deldate=0 WHERE id={1}", $postid, $fileid);
 				$attachs[$fileid] = FetchResult("SELECT filename FROM {uploadedfiles} WHERE id={0}", $fileid);
 			}
 		}

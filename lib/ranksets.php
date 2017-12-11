@@ -60,7 +60,7 @@ function loadRanksets() {
 function getRankHtml($rankset, $rank) {
 	$text = htmlspecialchars($rank['text']);
 	$img = '';
-	if ($rank['image']) {
+	if (isset($rank['image'])) {
 		$img = htmlspecialchars(resourceLink('ranksets/'.$rankset.'/'.$rank['image']));
 		$img = "<img src=\"$img\" alt=\"\" /><br/>";
 	}
@@ -69,7 +69,7 @@ function getRankHtml($rankset, $rank) {
 
 function getRank($rankset, $posts) {
 	global $ranksetData;
-	if(!$rankset) return '';
+	if(!isset($rankset)) return '';
 	if(!isset($ranksetData)) loadRanksets(); 
 
 	$thisSet = $ranksetData[$rankset];
@@ -81,13 +81,13 @@ function getRank($rankset, $posts) {
 		$ret = $row;
 	}
 	
-	if(!$ret) return '';
+	if(!isset($ret)) return '';
 	return getRankHtml($rankset, $ret);
 }
 
 function getToNextRank($rankset, $posts) {
 	global $ranksetData;
-	if(!$rankset) return '';
+	if(!isset($rankset)) return '';
 	if(!isset($ranksetData)) loadRanksets(); 
 
 	$thisSet = $ranksetData[$rankset];

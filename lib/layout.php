@@ -16,7 +16,7 @@ function RenderTemplate($template, $options=null) {
 	} else
 		$tplroot = BOARD_ROOT.'/layouts/';
 
-	if ($mobileLayout) {
+	if (isset($mobileLayout)) {
 		$tplname = $tplroot.'mobile/'.$template.'.tpl';
 		if (!file_exists($tplname))
 			$tplname = $tplroot.'wwxd/'.$template.'.tpl';
@@ -105,7 +105,7 @@ function makeForumList($fieldname, $selectedID, $allowNone=false) {
 			continue;
 
 		$cname = $cat['name'];
-		if ($cat['board']) $cname = $forumBoards[$cat['board']].' - '.$cname;
+		if (isset($cat['board'])) $cname = $forumBoards[$cat['board']].' - '.$cname;
 
 		$theList .=
 '			<optgroup label="'.htmlspecialchars($cname).'">
@@ -265,7 +265,7 @@ function makeForumListing($parent, $boardlol='') {
 	while($forum = Fetch($rFora)) {
 		$skipThisOne = false;
 		$bucket = 'forumListMangler'; include(__DIR__.'/pluginloader.php');
-		if($skipThisOne) continue;
+		if($skipThisOne == true) continue;
 		if (!isset($categories[$forum['catid']]))
 			$categories[$forum['catid']] = ['id' => $forum['catid'], 'name' => ($parent==0)?$forum['cname']:'Subforums', 'forums' => []];
 		$fdata = ['id' => $forum['id']];
@@ -273,7 +273,7 @@ function makeForumListing($parent, $boardlol='') {
 		$hash = -151;
 		for($i = 0; $i < strlen($tag); $i++) $hash += ord($tag[$i]);
 		$fdata['color'] = hsl2Hex([(($hash * 777) % 360), 0.5, 0.18]);
-		if ($forum['redirect']) {
+		if (isset($forum['redirect'])) {
 			$redir = $forum['redirect'];
 			if ($redir[0] == ':') {
 				$redir = explode(':', $redir);
@@ -314,23 +314,23 @@ function makeForumListing($parent, $boardlol='') {
 		$fdata['description'] = $forum['description'];
 		if (isset($mods[$forum['id']])) {
 			foreach($mods[$forum['id']] as $user) {
-				if ($user['groupid']) $localMods .= htmlspecialchars($usergroups[$user['groupid']]['name']).', ';
+				if (isset($user['groupid'])) $localMods .= htmlspecialchars($usergroups[$user['groupid']]['name']).', ';
 				else $localMods .= UserLink($user).', ';
 			}
 		}
-		if($localMods) $fdata['localmods'] = substr($localMods,0,-2);
+		if(isset($localMods)) $fdata['localmods'] = substr($localMods,0,-2);
 		if (isset($subfora[$forum['id']])) {
 			foreach ($subfora[$forum['id']] as $subforum) {
 				$link = actionLinkTag($subforum['title'], 'forum', $subforum['id'], '', HasPermission('forum.viewforum', $subforum['id'], true) ? $subforum['title'] : '');
-				if ($subforum['ignored']) $link = '<span class="ignored">'.$link.'</span>';
+				if (isset($subforum['ignored'])) $link = '<span class="ignored">'.$link.'</span>';
 				else if ($subforum['numnew'] > 0) $link = '<div class="statusIcon new"></div> '.$link;
 				$subforaList .= $link.', ';
 			}
 		}
-		if($subforaList) $fdata['subforums'] = substr($subforaList,0,-2);
+		if(isset($subforaList)) $fdata['subforums'] = substr($subforaList,0,-2);
 		$fdata['threads'] = $forum['numthreads'];
 		$fdata['posts'] = $forum['numposts'];
-		if($forum['lastpostdate']) {
+		if(isset($forum['lastpostdate'])) {
 			$avatar = false;
 			$user = getDataPrefix($forum, 'lu_');
 			$fdata['lastpostdate'] = formatdate($forum['lastpostdate']);
@@ -371,7 +371,7 @@ function makeThreadListing($threads, $pagelinks, $dostickies = true, $showforum 
 		$tdata['gotonew'] = '';
 		$tdata['hasUnread'] = false;
 
-		if($thread['closed'])
+		if(isset($thread['closed']))
 			$NewIcon = 'off';
 		if($thread['replies'] >= $misc['hotcount'])
 			$NewIcon .= 'hot';
@@ -379,14 +379,14 @@ function makeThreadListing($threads, $pagelinks, $dostickies = true, $showforum 
 			($loguserid && $thread['lastpostdate'] > $thread['readdate'])) {
 			$NewIcon .= 'new';
 			$tdata['hasUnread'] = true;
-			if ($loguserid) {
+			if (isset($loguserid)) {
 				$tdata['gotonew'] = actionLinkTag('<img src="'.resourceLink('img/gotounread.png').'" alt="[go to first unread post]">',
 					'post', '', 'tid='.$thread['id'].'&time='.(int)$thread['readdate']);
 			}
 		} else if(!$thread['closed'] && !$thread['sticky'] && Settings::get('oldThreadThreshold') > 0 && $thread['lastpostdate'] < time() - (2592000 * Settings::get('oldThreadThreshold')))
 			$NewIcon = 'old';
 
-		if($NewIcon)
+		if(isset($NewIcon))
 			$tdata['new'] = '<div class="statusIcon '.$NewIcon.'"></div>';
 		else
 			$tdata['new'] = '';
@@ -394,7 +394,7 @@ function makeThreadListing($threads, $pagelinks, $dostickies = true, $showforum 
 		$tdata['sticky'] = $thread['sticky'];
 		$tdata['closed'] = $thread['closed'];
 
-		if($thread['icon']) {
+		if(isset($thread['icon'])) {
 			//This is a hack, but given how icons are stored in the DB, I can do nothing about it without breaking DB compatibility.
 			if(startsWith($thread['icon'], 'img/'))
 				$thread['icon'] = resourceLink($thread['icon']);
@@ -409,7 +409,7 @@ function makeThreadListing($threads, $pagelinks, $dostickies = true, $showforum 
 		$total = $thread['replies'];
 
 		$ppp = $loguser['postsperpage'];
-		if(!$ppp) $ppp = 20;
+		if(!isset($ppp)) $ppp = 20;
 
 		$numpages = floor($total / $ppp);
 		$pl = '';
@@ -423,7 +423,7 @@ function makeThreadListing($threads, $pagelinks, $dostickies = true, $showforum 
 			for($i = $numpages - $n + 1; $i <= $numpages; $i++)
 				$pl .= ' '.actionLinkTag($i+1, 'thread', $thread['id'], 'from='.($i * $ppp), $urlname);
 		}
-		if($pl)
+		if(isset($pl))
 			$tdata['pagelinks'] = actionLinkTag(1, 'thread', $thread['id'], '', $urlname).$pl;
 		else
 			$tdata['pagelinks'] = '';

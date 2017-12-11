@@ -72,7 +72,7 @@ function eatThatPork($s) {
 
 function checkKosher($matches) {
 	$num = ltrim($matches[3], '0');
-	if($matches[2])
+	if(isset($matches[2]))
 		$num = hexdec($num);
 	if($num < 127)
 		return ''; //"&#xA4;";

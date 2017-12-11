@@ -83,7 +83,7 @@ class Text_Diff_Renderer {
                     if (count($edit->orig) <= $keep) {
                         $block[] = $edit;
                     } else {
-                        if ($ntrail) {
+                        if (isset($ntrail)) {
                             $context = array_slice($edit->orig, 0, $ntrail);
                             $block[] = new Text_Diff_Op_copy($context);
                         }
@@ -100,7 +100,7 @@ class Text_Diff_Renderer {
                     $x0 = $xi - count($context);
                     $y0 = $yi - count($context);
                     $block = [];
-                    if ($context) {
+                    if (isset($context)) {
                         $block[] = new Text_Diff_Op_copy($context);
                     }
                 }

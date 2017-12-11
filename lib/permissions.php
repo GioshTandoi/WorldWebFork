@@ -19,7 +19,7 @@ function LoadPermset($res) {
 		if ($perm['value'] == 0) continue;
 
 		$k = $perm['perm'];
-		if ($perm['arg']) $k .= '_'.$perm['arg'];
+		if (isset($perm['arg'])) $k .= '_'.$perm['arg'];
 
 		if ((isset($permord[$k]) && ($perm['ord'] > $permord[$k])) || (!isset($perms[$k]) || $perms[$k] != -1))
 			$perms[$k] = $perm['value'];
@@ -38,7 +38,7 @@ function LoadGroups() {
 	$res = Query("SELECT *, 1 ord FROM {permissions} WHERE applyto=0 AND id={0} AND perm IN ({1c})", $guestGroup['id'], $guestPerms);
 	$guestPermset = LoadPermset($res);
 
-	if (!$loguserid) {
+	if (!isset($loguserid)) {
 		$loguserGroup = $guestGroup;
 		$loguserPermset = $guestPermset;
 
@@ -99,7 +99,7 @@ function HasPermission($perm, $arg=0, $guest=false) {
 	// if it's set to revoke it revokes the general permission
 	if ($arg) {
 		$perm .= '_'.$arg;
-		if ($needspecific) {
+		if (isset($needspecific)) {
 			if (!isset($permset[$perm]) || $permset[$perm] != 1)
 				return false;
 		} else {
@@ -115,9 +115,9 @@ function CheckPermission($perm, $arg=0, $guest=false) {
 	global $loguserid, $loguser;
 
 	if (!HasPermission($perm, $arg, $guest)) {
-		if (!$loguserid)
+		if (!isset($loguserid))
 			Kill(__('You must be logged in to perform this action.'));
-		else if ($loguser['banned'])
+		else if (isset($loguser['banned']))
 			Kill(__('You may not perform this action because you are banned.'));
 		else
 			Kill(__('You may not perform this action.'));
@@ -155,7 +155,7 @@ function ForumsWithPermission($perm, $guest=false) {
 	while ($forum = Fetch($forumlist)) {
 		if ($check && (isset($permset[$perm.'_'.$forum['id']]) && $permset[$perm.'_'.$forum['id']] != -1))
 			$ret[] = $forum['id'];
-		elseif (!$check && ((isset($permset[$perm.'_'.$forum['id']]) && $permset[$perm.'_'.$forum['id']] == 1)))
+		elseif (!isset($check) && ((isset($permset[$perm.'_'.$forum['id']]) && $permset[$perm.'_'.$forum['id']] == 1)))
 			$ret[] = $forum['id'];
 		// We're still checking if this exists but since the others failed, it's a neutral perm.
 		elseif (!isset($permset[$perm.'_'.$forum['id']]))
@@ -186,7 +186,7 @@ function GetUserPermissions($users, $perms=null) {
 	$groupusers = [];	// array of user IDs for each group
 
 	while ($g = Fetch($allgroups)) {
-		if ($g['type'])
+		if (isset($g['type']))
 			$secgroups[] = $g['gid'];
 		else
 			$primgroups[] = $g['gid'];
@@ -221,7 +221,7 @@ function GetUserPermissions($users, $perms=null) {
 		if ($p['value'] == 0) continue;
 
 		$k = $p['perm'];
-		if ($p['arg']) $k .= '_'.$p['arg'];
+		if (isset($p['arg'])) $k .= '_'.$p['arg'];
 
 		if ($p['applyto'] == 0) {	// group perm -- apply it to all the matching users
 			foreach ($groupusers[$p['id']] as $uid) {

@@ -4,7 +4,7 @@ define('BLARG', 1);
 include(__DIR__ . '/lib/common.php');
 
 $entry = Fetch(Query('select * from {uploadedfiles} where id = {0}', $_GET['id']));
-if (!$entry)
+if (!isset($entry))
 	die(__('Unknown file ID.'));
 
 if ($entry['deldate'] != 0)
@@ -16,8 +16,10 @@ if(!file_exists($path))
 	die(__('No such file.'));
 	
 //Count downloads!
-if (!$isBot)
-	Query('update {uploadedfiles} set downloads = downloads+1 where id = {0}', $entry['id']);
+if(isset($isBot)){
+        Query('update {uploadedfiles} set downloads = downloads+1 where id = {0}', $entry['id']);
+}
+
 
 // TODO detect/store MIME type instead of all that junk?
 $fsize = filesize($path);
@@ -44,8 +46,9 @@ $cachetime = 604800; // 1 week. Should be more than okay. Uploaded files aren't 
 header('Pragma: public');
 header('Expires: 0');
 header('Cache-Control: private, post-check={$cachetime}, pre-check=999999999, min-fresh={$cachetime}, max-age={$cachetime}');
-header('Content-Type: '.$ctype);
-if($download)
+if(isset($ctype))
+    header('Content-Type: '.$ctype);
+if(isset($download))
 	header("Content-Disposition: attachment; filename=\"".addslashes($entry['filename'])."\";");
 else
 	header("Content-Disposition: filename=\"".addslashes($entry['filename'])."\"");

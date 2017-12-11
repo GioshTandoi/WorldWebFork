@@ -7,7 +7,7 @@ function OnlineUsers($forum = 0, $update = true) {
 	$browseLocation = __('online');
 
 	if ($update) {
-		if ($loguserid)
+		if (isset($loguserid))
 			Query('UPDATE {users} SET lastforum={0} WHERE id={1}', $forum, $loguserid);
 		else
 			Query('UPDATE {guests} SET lastforum={0} WHERE ip={1}', $forum, $_SERVER['REMOTE_ADDR']);
@@ -38,9 +38,9 @@ function OnlineUsers($forum = 0, $update = true) {
 	$guests = $data['guests'];
 	$bots = $data['bots'];
 
-	if($guests)
+	if(isset($guests))
 		$onlineUsers .= ' | '.Plural($guests,__('guest'));
-	if($bots)
+	if(isset($bots))
 		$onlineUsers .= ' | '.Plural($bots,__('bot'));
 
 //	$onlineUsers = "<div style=\"display: inline-block; height: 16px; overflow: hidden; padding: 0px; line-height: 16px;\">".$onlineUsers."</div>";
@@ -69,7 +69,7 @@ function getOnlineUsersText() {
 
 	$onlineUsers = OnlineUsers($OnlineUsersFid);
 
-	if($loguserid)
+	if(isset($loguserid))
 		return "<a href=\"".pageLink('online')."\"><div style=\"min-height:16px;\" id=\"onlineUsers\">$onlineUsers</div>$refreshCode</a>";
 	else
 		return "<div style=\"min-height:16px;\" id=\"onlineUsers\">$onlineUsers</div>$refreshCode";

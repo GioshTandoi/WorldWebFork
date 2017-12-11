@@ -970,7 +970,7 @@ class BrowserDetection
 			}
 		}
 
-		if ($found) {
+		if ($found == true) {
 			$this->setBrowser(self::BROWSER_NETSCAPE);
 			$this->setVersion($version);
 			$this->setMobile(false);
@@ -1048,13 +1048,13 @@ class BrowserDetection
 			$version = $this->getVersion();
 		}
 
-		if (!$found || $version == '') {
+		if ($found == false || $version == '') {
 			if ($this->checkSimpleBrowserUA('Opera', $this->_agent, self::BROWSER_OPERA)) {
 				return true;
 			}
 		}
 
-		if (!$found && $this->checkSimpleBrowserUA('Chrome', $this->_agent, self::BROWSER_CHROME) ) {
+		if ($found == false && $this->checkSimpleBrowserUA('Chrome', $this->_agent, self::BROWSER_CHROME) ) {
 			if ($this->checkSimpleBrowserUA('OPR/', $this->_agent, self::BROWSER_OPERA)) {
 				return true;
 			}
@@ -1141,20 +1141,20 @@ class BrowserDetection
 		}
 
 		//Safari 1-2 didn't had a "Version" string in the UA, only a WebKit build and/or Safari build, extract version from these...
-		if (!$found || $version == '') {
+		if ($found == false || $version == '') {
 			if (preg_match('/.*Safari[ (\/]*([a-z0-9.-]*)/i', $this->_agent, $matches)) {
 				$version = $this->safariBuildToSafariVer($matches[1]);
 				$found = true;
 			}
 		}
-		if (!$found || $version == '') {
+		if ($found  == false|| $version == '') {
 			if (preg_match('/.*AppleWebKit[ (\/]*([a-z0-9.-]*)/i', $this->_agent, $matches)) {
 				$version = $this->webKitBuildToSafariVer($matches[1]);
 				$found = true;
 			}
 		}
 
-		if ($found) {
+		if ($found == true) {
 			$this->setBrowser(self::BROWSER_SAFARI);
 			$this->setVersion($version);
 			$this->setMobile(false);

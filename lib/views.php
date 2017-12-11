@@ -3,7 +3,7 @@
 if (!defined('BLARG')) die();
 
 //Update view counter
-if(!$isBot)
+if(isset($isBot) && $isBot == false)
 {
 	$rViewCounter = Query("update {misc} set views = views + 1");
 	$misc['views']++;
@@ -12,7 +12,7 @@ if(!$isBot)
 	//Milestone reporting
 	if($viewcountInterval > 0 && $misc['views'] > 0 && $misc['views'] % $viewcountInterval == 0)
 	{
-		if($loguserid) {
+		if(isset($loguserid)) {
 			$who = UserLink($loguser); //$loguser['name'];
 			//3.0 update: give a badge
 			Query("insert ignore into {badges} values({0}, {1}, 0)", $loguserid, 'View '.number_format($misc['views']));

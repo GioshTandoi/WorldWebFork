@@ -246,7 +246,7 @@ class Spyc {
 	if (!$no_opening_dashes) $string = "---\n";
 
 	// Start at the base of the array and move through it.
-	if ($array) {
+	if (isset($array)) {
 	  $array = (array)$array;
 	  $previous_key = -1;
 	  foreach ($array as $key => $value) {
@@ -503,7 +503,7 @@ class Spyc {
 	  $this->path = $tempPath;
 
 	  $literalBlockStyle = self::startsLiteralBlock($line);
-	  if ($literalBlockStyle) {
+	  if (isset($literalBlockStyle)) {
 		$line = rtrim ($line, $literalBlockStyle . " \n");
 		$literalBlock = '';
 		$line .= ' '.$this->LiteralPlaceHolder;
@@ -526,7 +526,7 @@ class Spyc {
 
 	  $lineArray = $this->_parseLine($line);
 
-	  if ($literalBlockStyle)
+	  if (isset($literalBlockStyle))
 		$lineArray = $this->revertLiteralPlaceHolder ($lineArray, $literalBlock);
 
 	  $this->addArray($lineArray, $this->indent);
@@ -562,14 +562,14 @@ class Spyc {
 	 * @param string $line A line from the YAML file
 	 */
   private function _parseLine($line) {
-	if (!$line) return [];
+	if (!isset($line)) return [];
 	$line = trim($line);
-	if (!$line) return [];
+	if (!isset($line)) return [];
 
 	$array = [];
 
 	$group = $this->nodeContainsGroup($line);
-	if ($group) {
+	if (isset($group)) {
 	  $this->addGroup($line, $group);
 	  $line = $this->stripGroup ($line, $group);
 	}
@@ -604,20 +604,20 @@ class Spyc {
 
 	$is_quoted = false;
 	do {
-	  if (!$value) break;
+	  if (!isset($value)) break;
 	  if ($first_character != '"' && $first_character != "'") break;
 	  if ($last_character != '"' && $last_character != "'") break;
 	  $is_quoted = true;
 	} while (0);
 
-	if ($is_quoted) {
+	if (isset($is_quoted)) {
 	  $value = str_replace('\n', "\n", $value);
 	  if ($first_character == "'")
 		return strtr(substr ($value, 1, -1), ["\'\'" => "\'", "\\\'"=> "\'"]);
 	  return strtr(substr ($value, 1, -1), ['\\"' => "'", "\\\'"=> "\'"]);
 	}
 
-	if (strpos($value, ' #') !== false && !$is_quoted)
+	if (strpos($value, ' #') !== false && !isset($is_quoted))
 	  $value = preg_replace('/\s+#(.+)$/','',$value);
 
 	if ($first_character == '[' && $last_character == ']') {
@@ -756,7 +756,7 @@ class Spyc {
 		$finished = false; break;
 	  }
 	}
-	if ($finished) break;
+	if (isset($finished)) break;
 
 	$i++;
 	if ($i > 10)
@@ -1003,7 +1003,7 @@ class Spyc {
 
 
   private static function isComment ($line) {
-	if (!$line) return false;
+	if (!isset($line)) return false;
 	if ($line[0] == '#') return true;
 	if (trim($line, " \r\n\t") == '---') return true;
 	return false;
@@ -1015,7 +1015,7 @@ class Spyc {
 
 
   private function isArrayElement ($line) {
-	if (!$line || !is_scalar($line)) return false;
+	if (!isset($line )|| !is_scalar($line)) return false;
 	if (substr($line, 0, 2) != '- ') return false;
 	if (strlen ($line) > 3)
 	  if (substr($line,0,3) == '---') return false;
@@ -1035,7 +1035,7 @@ class Spyc {
 
 
   private static function unquote ($value) {
-	if (!$value) return $value;
+	if (!isset($value)) return $value;
 	if (!is_string($value)) return $value;
 	if ($value[0] == "\'") return trim ($value, "\'");
 	if ($value[0] == '"') return trim ($value, '"');

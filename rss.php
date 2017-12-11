@@ -26,23 +26,29 @@ else
 
 header('Content-type: application/rss+xml');
 
-$title = Settings::get('rssTitle');
-$desc = Settings::get('rssDesc');
-
-$url = "http".($ishttps?'s':'')."://{$_SERVER['SERVER_NAME']}{$serverport}";
-$fullurl = getServerURLNoSlash($ishttps);
-
 print '<?xml version="1.0" encoding="UTF-8"?>';
 ?>
 
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
-		<title><?php echo htmlspecialchars($title); ?></title>
-		<link><?php echo htmlspecialchars($url); ?></link>
-		<description><?php echo htmlspecialchars($desc); ?></description>
-		<atom:link href="<?php echo htmlspecialchars($fullurl); ?>/rss.php" rel="self" type="application/rss+xml" />
+		<title><?php $title = Settings::get('rssTitle');
+		            echo htmlspecialchars($title); ?></title>
+
+        /*$ishttps è un booleano che in questo punto non è stato inizializzato, così come non è stata inizializzata
+        la variabile $serverport*/
+		<link><?php $url = "http".($ishttps?'s':'')."://{$_SERVER['SERVER_NAME']}{$serverport}";
+                        echo htmlspecialchars($url); ?></link>
+		<description><?php $desc = Settings::get('rssDesc');
+		                        echo htmlspecialchars($desc); ?></description>
+
+        //$ishttps è un booleano che in questo punto non è stato inizializzato
+		<atom:link href="<?php $fullurl = getServerURLNoSlash($ishttps);
+                               echo htmlspecialchars($fullurl); ?>/rss.php" rel="self" type="application/rss+xml" />
 
 <?php
+
+    $fid = Settings::get('newsForum');
+
 	$entries = Query("	SELECT 
 							t.id, t.title, 
 							p.date,

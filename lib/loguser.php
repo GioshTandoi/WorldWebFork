@@ -137,15 +137,15 @@ $newToday = FetchResult('select count(*) from {posts} where date > {0}', (time()
 $newLastHour = FetchResult('select count(*) from {posts} where date > {0}', (time() - 3600));
 if($newToday > $misc['maxpostsday'])
 {
-	if($_qRecords) $_qRecords .= ', ';
+	if(isset($_qRecords)) $_qRecords .= ', ';
 	$_qRecords .= 'maxpostsday = {3}, maxpostsdaydate = {1}';
 }
 if($newLastHour > $misc['maxpostshour'])
 {
-	if($_qRecords) $_qRecords .= ', ';
+	if(isset($_qRecords)) $_qRecords .= ', ';
 	$_qRecords .= 'maxpostshour = {4}, maxpostshourdate = {1}';
 }
-if($_qRecords)
+if(isset($_qRecords))
 {
 	$_qRecords = 'update {misc} set '.$_qRecords;
 	$rRecords = Query($_qRecords, $onlineUserCt, time(), $onlineUsers, $newToday, $newLastHour);
@@ -176,7 +176,7 @@ function isIPBanned($ip) {
 		return $ipban;
 
 		if (IPMatches($ip, $ipban['ip']))
-			if ($ipban['whitelisted'])
+			if (isset($ipban['whitelisted']))
 				return false;
 			else
 				$result = $ipban;
@@ -190,12 +190,12 @@ function IPMatches($ip, $mask) {
 
 $ipban = isIPBanned($_SERVER['REMOTE_ADDR']);
 
-if($ipban) {
+if(isset($ipban)) {
 	$adminemail = Settings::get('ownerEmail');
 	
 	print 'You have been IP-banned from this board'.($ipban['date'] ? " until ".gmdate("M jS Y, G:i:s",$ipban['date'])." (GMT). That's ".TimeUnits($ipban['date']-time())." left" : "").". Attempting to get around this in any way will result in worse things.";
 	print '<br>Reason: '.$ipban['reason'];
-	if ($adminemail) print '<br><br>If you were erroneously banned, contact the board owner at: '.$adminemail;
+	if (isset($adminemail)) print '<br><br>If you were erroneously banned, contact the board owner at: '.$adminemail;
 	exit();
 }
 
@@ -208,14 +208,14 @@ $loguser = NULL;
 
 if(isset($_COOKIE['logsession']) && !$ipban) {
 	$session = Fetch(Query('SELECT * FROM {sessions} WHERE id={0}', doHash($_COOKIE['logsession'].SALT)));
-	if($session) {
+	if(isset($session)) {
 		$loguser = Fetch(Query('SELECT * FROM {users} WHERE id={0}', $session['user']));
-		if($session['autoexpire'])
+		if(isset($session['autoexpire']))
 			Query('UPDATE {sessions} SET expiration={0} WHERE id={1}', time()+10*60, $session['id']); //10 minutes
 	}
 }
 
-if($loguser) {
+if(isset($loguser)) {
 	$loguser['token'] = hash('sha1', "{$loguser['id']},{$loguser['pss']},".SALT.',dr567hgdf546guol89ty896rd7y56gvers9t');
 	$loguserid = (int)$loguser['id'];
 
@@ -249,7 +249,7 @@ if ($loguser['flags'] & 0x1) {
 	die(header('Location: '.$_SERVER['REQUEST_URI']));
 }
 
-if ($mobileLayout) {
+if (isset($mobileLayout) && $mobileLayout) {
 	$loguser['blocklayouts'] = 1;
 	$loguser['fontsize'] = 80;
 	//$loguser['dateformat'] = 'm/d/y';
@@ -262,7 +262,7 @@ function setLastActivity() {
 
 	Query('delete from {guests} where ip = {0}', $_SERVER['REMOTE_ADDR']);
 
-	if($ipban) return;
+	if(isset($ipban)) return;
 
 	$url = getRequestedURL();
 	$url = substr($url, 0, 127);

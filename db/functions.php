@@ -6,7 +6,7 @@ function Import($sqlFile) {
 	$res = $dblink->multi_query(str_replace('{$dbpref}', $dbpref, file_get_contents($sqlFile)));
 
 	$i = 0; 
-	if ($res)  {
+	if (isset($res))  {
 		do {
 			$i++; 
 		} while ($dblink->more_results() && $dblink->next_result()); 
@@ -36,7 +36,7 @@ function creaQuery($table, $tableSchema)  {
     return $create;
 }
 
-// Devo finire di togliere qualche riga
+
 function Upgrade() {
 	global $dbname, $dbpref;
 	//Load the board tables.
@@ -95,13 +95,7 @@ function Upgrade() {
 					}
 				}
 			}
-			foreach($tableSchema['fields'] as $fieldName => $type) {
-				if(!in_array($fieldName, $foundFields)) {
-					print " \"".$fieldName."\" missing&hellip;";
-					Query('ALTER TABLE {'.$table.'} ADD `$fieldName` $type');
-					$changes++;
-				}
-			}
+            $changes =  alterTable($tableSchema, $foundFields, $changes, $table);
 			$newindexes = [];
 			preg_match_all('@((primary|unique|fulltext)\s*)?key\s+(`(\w+)`\s+)?\(([\w`,\s]+)\)@si', $tableSchema['special'], $idxs, PREG_SET_ORDER);
 			foreach ($idxs as $idx) {
@@ -113,7 +107,6 @@ function Upgrade() {
 			$idxs = Query('SHOW INDEX FROM `{'.$table.'}`');
 			while ($idx = Fetch($idxs)) {
 				$name = $idx['Key_name'];
-				
 				if ($name == 'PRIMARY')
 					$curindexes[$name]['type'] = 'primary';
 				else if ($idx['Non_unique'] == 0)
@@ -128,36 +121,50 @@ function Upgrade() {
 			if (!compareIndexes($curindexes, $newindexes)) {
 				$changes++;
 				print '<br>Recreating indexes...<br>';
-				foreach ($curindexes as $name=>$idx) {
-					if ($newindexes[$name]['type'] == $idx['type'] && $newindexes[$name]['fields'] == $idx['fields']) {
-						unset($newindexes[$name]);
-						continue;
-					}
-					
-					print " - removing index {$name} ({$idx['type']}, {$idx['fields']})<br>";
-					if ($idx['type'] == 'primary')
-						Query('ALTER TABLE `{'.$table.'}` DROP PRIMARY KEY');
-					else
-						Query('ALTER TABLE `{'.$table.'}` DROP INDEX `'.$name.'`');
-				}
-				foreach ($newindexes as $name=>$idx) {
-					print " - adding index {$name} ({$idx['type']}, {$idx['fields']})<br>";
-					if ($idx['type'] == 'primary')
-						$add = 'PRIMARY KEY';
-					else if ($idx['type'] == 'unique')
-						$add = 'UNIQUE `'.$name.'`';
-					else if ($idx['type'] == 'fulltext')
-						$add = 'FULLTEXT `'.$name.'`';
-					else
-						$add = 'INDEX `'.$name.'`';
-					Query('ALTER TABLE `{'.$table.'}` ADD '.$add.' ('.$idx['fields'].')');
-				}
+                recreateIndex($curindexes, $newindexes, $table);
 			}
 			if($changes == 0)
 				print ' OK.';
 		}
 		print '</li>';
 	}
+}
+
+function recreateIndex($curindexes, $newindexes, $table) {
+    foreach ($curindexes as $name=>$idx) {
+        if ($newindexes[$name]['type'] == $idx['type'] && $newindexes[$name]['fields'] == $idx['fields']) {
+            unset($newindexes[$name]);
+            continue;
+        }
+
+        print " - removing index {$name} ({$idx['type']}, {$idx['fields']})<br>";
+        if ($idx['type'] == 'primary')
+            Query('ALTER TABLE `{'.$table.'}` DROP PRIMARY KEY');
+        else
+            Query('ALTER TABLE `{'.$table.'}` DROP INDEX `'.$name.'`');
+    }
+    foreach ($newindexes as $name=>$idx) {
+        print " - adding index {$name} ({$idx['type']}, {$idx['fields']})<br>";
+        if ($idx['type'] == 'primary')
+            $add = 'PRIMARY KEY';
+        else if ($idx['type'] == 'unique')
+            $add = 'UNIQUE `'.$name.'`';
+        else if ($idx['type'] == 'fulltext')
+            $add = 'FULLTEXT `'.$name.'`';
+        else
+            $add = 'INDEX `'.$name.'`';
+        Query('ALTER TABLE `{'.$table.'}` ADD '.$add.' ('.$idx['fields'].')');
+    }
+}
+function alterTable($tableSchema, $foundFields, $changes, $table){
+    foreach ($tableSchema['fields'] as $fieldName => $type) {
+        if (!in_array($fieldName, $foundFields)) {
+            print " \"" . $fieldName . "\" missing&hellip;";
+            Query('ALTER TABLE {' . $table . '} ADD `$fieldName` $type');
+            $changes++;
+        }
+    }
+    return $changes;
 }
 
 function compareIndexes($a, $b)

@@ -40,7 +40,7 @@ switch ($action){
 
         $quote = Fetch($rQuote);
 
-        if ($quote['deleted'])
+        if (isset($quote['deleted']))
             $quote['text'] = __('Post is deleted');
 
         $reply = "[quote=\"".$quote['poster']."\" id=\"".$quote['id']."\"]".$quote['text'].'[/quote]';
@@ -91,9 +91,9 @@ switch ($action){
             $themeFile = "themes/$theme/style.php";
 
         function checkForImage(&$image, $external, $file) {
-            if($image) return;
+            if(isset($image)) return;
 
-            if($external) {
+            if(isset($external)) {
                 if(file_exists(DATA_DIR.$file))
                     $image = DATA_URL.$file;
             } else {
@@ -142,7 +142,7 @@ switch ($action){
         while($revision = Fetch($revs)) {
             $reply .= ' <a href=\"javascript:void(0)\" onclick=\"showRevision('.$id.','.$revision['revision'].')\">'.format(__('rev. {0}'), $revision['revision']).'</a>';
 
-            if ($revision['ru_id']) {
+            if (isset($revision['ru_id'])) {
                 $ru_link = UserLink(getDataPrefix($revision, 'ru_'));
                 $revdetail = ' '.format(__('by {0} on {1}'), $ru_link, formatdate($revision['revdate']));
             } else
@@ -193,7 +193,7 @@ switch ($action){
         $post['haslayout'] = false;
         $post['fulllayout'] = false;
 
-        if(!$isBlocked) {
+        if(!isset($isBlocked)) {
             $poster['postheader'] = $pltype ? trim($poster['postheader']) : '';
             $poster['signature'] = trim($poster['signature']);
 

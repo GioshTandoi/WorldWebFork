@@ -21,7 +21,7 @@ function ParseThreadTags($title) {
 
 		$tags .= '<span class=\"threadTag\" style=\"background-color: '.$color.';\">'.$tag.'</span>';
 	}
-	if($tags)
+	if(isset($tags))
 		$tags = ' '.$tags;
 
 	$title = str_replace('<', '&lt;', $title);
@@ -105,14 +105,14 @@ function makePostText($post, $poster) {
 	];
 	$bucket = 'amperTags'; include(__DIR__.'/pluginloader.php');
 
-	if($poster['signature'])
+	if(isset($poster['signature']))
 		if(!$poster['signsep'])
 			$separator = '<br/>_________________________<br/>';
 		else
 			$separator = '<br/>';
 
 	$attachblock = '';
-	if ($post['has_attachments']){
+	if (isset($post['has_attachments'])){
 		if (isset($post['preview_attachs'])) {
 			$ispreview = true;
 			$fileids = array_keys($post['preview_attachs']);
@@ -145,7 +145,7 @@ function makePostText($post, $poster) {
 				$link = '<a href="'.$linkurl.'">'.htmlspecialchars($attach['filename']).'</a>';
 
 				$desc = htmlspecialchars($attach['description']);
-				if ($desc) $desc .= '<br/>';
+				if (isset($desc)) $desc .= '<br/>';
 
 				$attachblock .= '<strong>'.__('Attachment: ').$link.'</strong><br/>';
 				$attachblock .= '<div class="smallFonts">'.$desc;
@@ -207,14 +207,14 @@ function makePost($post, $type, $params=[]) {
 		$notclosed = (!$post['closed'] || HasPermission('mod.closethreads', $forum));
 		$extraLinks = [];
 
-		if (!$isBot) {
+		if (!isset($isBot)) {
 			if ($type == POST_DELETED_SNOOP) {
 				if ($notclosed && HasPermission('mod.deleteposts', $forum))
 					$links['undelete'] = actionLinkTag(__('Undelete'), 'editpost', $post['id'], 'delete=2&key='.$loguser['token']);
 
 				$links['close'] = '<a href=\"#\" onclick=\"replacePost('.$post['id'].',false); return false;\">'.__('Close').'</a>';
 			} else if ($type == POST_NORMAL) {
-				if ($notclosed) {
+				if (isset($notclosed)) {
 					if ($loguserid && HasPermission('forum.postreplies', $forum) && !$params['noreplylinks'])
 						$links['quote'] = actionLinkTag(__('Quote'), 'newreply', $thread, 'quote='.$post['id']);
 
@@ -242,7 +242,7 @@ function makePost($post, $type, $params=[]) {
 			$links['extra'] = $extraLinks;
 		}
 		//Threadlinks for listpost.php
-		if ($params['threadlink']) {
+		if (isset($params['threadlink'])) {
 			$thread = [];
 			$thread['id'] = $post['thread'];
 			$thread['title'] = $post['threadname'];
@@ -257,7 +257,7 @@ function makePost($post, $type, $params=[]) {
     $sidebar = [];
     $poster['title'] = preg_replace('@Affected by \'?.*?Syndrome\'?@si', '', $poster['title']);
 	$sidebar['rank'] = GetRank($poster['rankset'], $poster['posts']);
-	if($poster['title'])
+	if(isset($poster['title']))
 		$sidebar['title'] = strip_tags(CleanUpPost($poster['title'], '', true), '<b><strong><i><em><span><s><del><img><a><br/><br><small>');
 	else
 		$sidebar['title'] = htmlspecialchars($usergroups[$poster['primarygroup']]['title']);
@@ -266,7 +266,7 @@ function makePost($post, $type, $params=[]) {
     $post = $array[0]; $sidebar = $array[1]; $pic = $array[2];
     $array = modificaVars($poster, $post, $loguser);
     $sidebar= $array[0]; $post = $array[0]; $bucket = $array[1];
-	if(!$isBlocked) {
+	if(!isset($isBlocked)) {
         funIsBlocked($poster, $pltype);
 	} else {
 		$poster['postheader'] = '';
@@ -286,7 +286,7 @@ function funIsBlocked($poster, $pltype) {
     return $post;
 }
 function printRevisions($post,$forum) {
-    if($post['revision']) {
+    if(isset($post['revision'])) {
         $ru_link = UserLink(getDataPrefix($post, 'ru_'));
         $revdetail = ' '.format(__('by {0} on {1}'), $ru_link, formatdate($post['revdate']));
         if (HasPermission('mod.editposts', $forum))
@@ -302,7 +302,7 @@ function managePostMood($post, $sidebar, $poster) {
     if($post['mood'] > 0) {
         if(file_exists(DATA_DIR.'avatars/'.$poster['id'].'_'.$post['mood']))
             $sidebar['avatar'] = '<img src=\"'.DATA_URL.'avatars/'.$poster['id'].'_'.$post['mood']."\" alt=\"\">";
-    } else if ($poster['picture']) {
+    } else if (isset($poster['picture'])) {
         $pic = str_replace('$root/', DATA_URL, $poster['picture']);
         $sidebar['avatar'] = "<img src=\"".htmlspecialchars($pic)."\" alt=\"\">";
     }

@@ -211,7 +211,7 @@ function makeThemeArrays() {
 function getdateformat() {
 	global $loguserid, $loguser;
 
-	if($loguserid)
+	if(isset($loguserid))
 		return $loguser['dateformat'].', '.$loguser['timeformat'];
 	else
 		return Settings::get('dateformat');

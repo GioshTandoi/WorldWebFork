@@ -6,7 +6,9 @@ include(__DIR__.'/../config/database.php');
 
 $queries = 0;
 
-$dblink = new mysqli($dbserv, $dbuser, $dbpass, $dbname);
+if(isset($dbserv) && isset($dbuser) && isset($dbpass) && isset($dbname));
+    $dblink = new mysqli($dbserv, $dbuser, $dbpass, $dbname);
+
 unset($dbpass);
 
 $dblink->set_charset('utf8');
@@ -113,14 +115,14 @@ function rawQuery($query) {
 
 	$res = @$dblink->query($query);
 
-	if(!$res) {
+	if(!isset($res)) {
 		$theError = $dblink->error;
 
-		if($logSqlErrors) {
+		if(isset($logSqlErrors)) {
 			$thequery = sqlEscape($query);
 			$ip = sqlEscape($_SERVER['REMOTE_ADDR']);
 			$time = time();
-			if(!$loguserid) $loguserid = 0;
+			if(!isset($loguserid)) $loguserid = 0;
 			$get = sqlEscape(var_export($_GET, true));
 			$post = sqlEscape(var_export($_POST, true));
 			$cookie = sqlEscape(var_export($_COOKIE, true));
@@ -129,7 +131,7 @@ function rawQuery($query) {
 			$res = @$dblink->query($logQuery);
 		}
 
-		if($debugMode) {
+		if($debugMode == true) {
 			$bt = '';
 			if(function_exists('backTrace'))
 				$bt = backTrace();
@@ -143,7 +145,7 @@ function rawQuery($query) {
 
 	$queries++;
 
-	if($debugMode) {
+	if($debugMode == true) {
 		$mysqlCellClass = ($mysqlCellClass+1)%2;
 		$querytext .= '<tr class=\"cell$mysqlCellClass\"><td><pre style=\"white-space:pre-wrap;\">'.htmlspecialchars(preg_replace('/^\s*/m', "", $query)).'</pre></td><td>';
 		if(function_exists('backTrace'))

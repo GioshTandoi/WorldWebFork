@@ -222,7 +222,7 @@ function parseBBCode($text) {
 				for (; $j < $nlen; $j++) {
 					$ch = $next[$j];
 					$isspace = in_array($ch, $spacechars);
-					if (!$inquote) {
+					if ($inquote==false) {
 						if ($ch == $closechar) {
 							$endfound = true;
 							break;
@@ -230,9 +230,9 @@ function parseBBCode($text) {
 						if ($inattrib == 0 && !in_array($ch, $attrib_bad)) $inattrib = 1;
 						else if ($inattrib == 1) {
 							if ($ch == '=') $inattrib = 2;
-							else if (!$isspace) $inattrib = 0;
+							else if ($isspace==false) $inattrib = 0;
 						} else if ($inattrib == 2) {
-							if ($isspace) continue;
+							if ($isspace == true) continue;
 							if ($ch == '"' || $ch == '\'') $inquote = $ch;
 							else $inquote = ' ';
 						}
@@ -244,12 +244,12 @@ function parseBBCode($text) {
 						break;
 					}
 				}
-				if ($endfound) break;
+				if ($endfound == true) break;
 				if ($i >= $nraw)  break;
 				if ($j >= $nlen) $next .= $raw[$i++];
 				else break;
 			}             // tag end not found-- call it invalid
-            if (!$endfound) $outputstack[$si]['contents'] .= filterText(htmlspecialchars($rawcur.$next), $currenttag, $currentmask);
+            if ($endfound == false) $outputstack[$si]['contents'] .= filterText(htmlspecialchars($rawcur.$next), $currenttag, $currentmask);
 			else {
 				$tagattribs = substr($next,0,$j+1);
 				$followingtext = substr($next,$j+1);
@@ -266,7 +266,7 @@ function parseBBCode($text) {
 				}
 			}
 		}
-		else if ($rawcur) $outputstack[$si]['contents'] .= filterText($rawcur, $currenttag, $currentmask);
+		else if ($rawcur == true) $outputstack[$si]['contents'] .= filterText($rawcur, $currenttag, $currentmask);
 	}
 	closeLeftoverOpenedTags($si, $outputstack, $TagList);
 	return $outputstack[$si]['contents'];
@@ -284,7 +284,7 @@ function closing($si, $outputstack, $tagname, $TagList, $followingtext, $current
             break;
         }
     }
-    if ($tgood) {
+    if ($tgood == true) {
         while ($si > 0) {
             $closer = $outputstack[$si--];
             $ccontents = $closer['contents'];
@@ -314,7 +314,7 @@ function tagOpening($currentmask, $outputstack, $tagname, $si, $cur, $tagattribs
             }
         }
         $k++;
-        if ($tgood) {
+        if ($tgood == true) {
             while ($si > $k) {
                 $closer = $outputstack[$si--];
                 $ccontents = $closer['contents'];
