@@ -149,8 +149,9 @@ class AltoRouter {
 				if(isset($params[$param]) && strpos($url, $block)!==FALSE) {
 
                    $url = str_replace($block, $params[$param], $url);
-				} elseif ($optional  && strpos($url, $pre . $block)!==FALSE) {
-					$url = str_replace($pre . $block, '', $url);
+				} elseif ($optional) {
+				    if(strpos($url, $pre . $block)!==FALSE)
+					    $url = str_replace($pre . $block, '', $url);
 				}
 			}
 
