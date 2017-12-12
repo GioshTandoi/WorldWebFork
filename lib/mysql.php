@@ -6,7 +6,7 @@ include(__DIR__.'/../config/database.php');
 
 $queries = 0;
 
-if(isset($dbserv) && isset($dbuser) && isset($dbpass) && isset($dbname));
+if(isset($dbserv) && isset($dbuser) && isset($dbpass) && isset($dbname))
     $dblink = new mysqli($dbserv, $dbuser, $dbpass, $dbname);
 
 unset($dbpass);

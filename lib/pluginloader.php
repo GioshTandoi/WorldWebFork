@@ -12,16 +12,18 @@ if(!isset($self))
 $oldself = $self;
 
 
-
-if (isset($bucket) && isset($pluginbuckets[$bucket])) {
-	foreach ($pluginbuckets[$bucket] as $plugin) {
-		if (isset($plugins[$plugin])) {
-			$self = $plugins[$plugin];
-			include(__DIR__.'/../plugins/'.$self['dir'].'/'.$bucket.'.php');
-			unset($self);
-		}
-	}
+if(isset($bucket)){
+    if (isset($pluginbuckets[$bucket])) {
+        foreach ($pluginbuckets[$bucket] as $plugin) {
+            if (isset($plugins[$plugin])) {
+                $self = $plugins[$plugin];
+                include(__DIR__.'/../plugins/'.$self['dir'].'/'.$bucket.'.php');
+                unset($self);
+            }
+        }
+    }
 }
+
 
 $self = $oldself;
 $plugin = $oldplugin;
