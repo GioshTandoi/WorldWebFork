@@ -6,8 +6,17 @@ include(__DIR__.'/../config/database.php');
 
 $queries = 0;
 
-if(isset($dbserv) && isset($dbuser) && isset($dbpass) && isset($dbname))
-    $dblink = new mysqli($dbserv, $dbuser, $dbpass, $dbname);
+if(isset($dbserv)){
+    if(isset($dbuser)){
+        if(isset($dbpass)){
+            if(isset($dbname))
+                $dblink = new mysqli($dbserv, $dbuser, $dbpass, $dbname);
+            }
+        }
+    }
+
+
+
 
 unset($dbpass);
 
@@ -58,7 +67,7 @@ function Query_AddUserInput($match) {
 		//TODO: add code to emulate the 32bit overflow on 64bit.
 		return (string)((int)$var);
 	}
-	return '\''.SqlEscape($var).'\'';
+	return "\''.SqlEscape($var).'\'";
 }
 
 /*
@@ -147,7 +156,7 @@ function rawQuery($query) {
 
 	if($debugMode == true) {
 		$mysqlCellClass = ($mysqlCellClass+1)%2;
-		$querytext .= '<tr class=\"cell$mysqlCellClass\"><td><pre style=\"white-space:pre-wrap;\">'.htmlspecialchars(preg_replace('/^\s*/m', "", $query)).'</pre></td><td>';
+		$querytext .= '<tr class=\"cell$mysqlCellClass\"><td><pre style=\"white-space:pre-wrap;\">'.htmlspecialchars(preg_replace('/^\s*/m', '', $query)).'</pre></td><td>';
 		if(function_exists('backTrace'))
 			$querytext .= backTrace();
 	}

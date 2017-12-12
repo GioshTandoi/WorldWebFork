@@ -415,7 +415,7 @@ function makeThreadListing($threads, $pagelinks, $dostickies = true, $showforum 
 		$pl = '';
 		if($numpages <= $n * 2) {
 			for($i = 1; $i <= $numpages; $i++)
-				$pl .= " ".actionLinkTag($i+1, 'thread', $thread['id'], 'from='.($i * $ppp), $urlname);
+				$pl .= ' '.actionLinkTag($i+1, 'thread', $thread['id'], 'from='.($i * $ppp), $urlname);
 		} else {
 			for($i = 1; $i < $n; $i++)
 			$pl .= ' '.actionLinkTag($i+1, 'thread', $thread['id'], 'from='.($i * $ppp), $urlname);
@@ -520,29 +520,29 @@ function DoPostHelp() {
 		<tr class=\"cell0\"><td>
 			<button class=\"expander\" id=\"postHelpExpand\" onclick=\"expandPostHelp();\">&#x25BC;</button>
 			<div id=\"commonHelp\" class=\"left\">
-				<h4>".__('Presentation')."</h4>
-				[b]&hellip;[/b] &mdash; <strong>".__('bold type')."</strong> <br />
+				<h4>'.__('Presentation').'</h4>
+				[b]&hellip;[/b] &mdash; <strong>'.__('bold type').'</strong> <br />
 				[i]&hellip;[/i] &mdash; <em>".__('italic')."</em> <br />
-				[u]&hellip;[/u] &mdash; <span class=\"underline\">".__('underlined')."</span> <br />
+				[u]&hellip;[/u] &mdash; <span class=\"underline\">'.__('underlined').'</span> <br />
 				[s]&hellip;[/s] &mdash; <del>".__('strikethroug')."</del><br />
 			</div>
 			<div id=\"expandedHelp\" class=\"left\">
-				[code]&hellip;[/code] &mdash; <code>".__('code block')."</code> <br />
-				[spoiler]&hellip;[/spoiler] &mdash; ".__('spoiler block"')." <br />
+				[code]&hellip;[/code] &mdash; <code>'.__('code block').'</code> <br />
+				[spoiler]&hellip;[/spoiler] &mdash; '.__('spoiler block').' <br />
 				[spoiler=&hellip;]&hellip;[/spoiler] <br />
-				[source]&hellip;[/source] &mdash; ".__('colorcoded block, assuming C#')." <br />
-				[source=&hellip;]&hellip;[/source] &mdash; ".__('colorcoded block, specific language')."<sup title=\"bnf, c, cpp, csharp, html4strict, irc, javascript, lolcode, lua, mysql, php, qbasic, vbnet, xml\">[".__('which?')."]</sup> <br />
+				[source]&hellip;[/source] &mdash; '.__('colorcoded block, assuming C#').' <br />
+				[source=&hellip;]&hellip;[/source] &mdash; '.__('colorcoded block, specific language').'<sup title=\"bnf, c, cpp, csharp, html4strict, irc, javascript, lolcode, lua, mysql, php, qbasic, vbnet, xml\">['.__('which?').']</sup> <br />
 	");
 	$bucket = 'postHelpPresentation'; include('./lib/pluginloader.php');
-	write("
+	write('
 				<br />
-				<h4>".__('Links')."</h4>
-				[img]http://&hellip;[/img] &mdash; ".__('insert image')." <br />
+				<h4>'.__('Links').'</h4>
+				[img]http://&hellip;[/img] &mdash; '.__('insert image').' <br />
 				[url]http://&hellip;[/url] <br />
 				[url=http://&hellip;]&hellip;[/url] <br />
-				>>&hellip; &mdash; ".__('link to post by ID')." <br />
-				[user=##] &mdash; ".__("link to user's profile by ID")." <br />
-	");
+				>>&hellip; &mdash; '.__('link to post by ID').' <br />
+				[user=##] &mdash; '.__('link to users profile by ID').' <br />
+	');
 	$bucket = 'postHelpLinks'; include('./lib/pluginloader.php');
 
 	write('
@@ -552,11 +552,11 @@ function DoPostHelp() {
 				[quote=&hellip;]&hellip;[/quote] &mdash; ".__("\"Posted by &hellip;\"")." <br />
 				[quote=\"&hellip;\" id=\"&hellip;\"]&hellip;[/quote] &mdash; \"".__("\"Post by &hellip;\" with link by post ID")." <br />
 	');
-	$bucket = "postHelpQuotations"; include("./lib/pluginloader.php");
-	write("
+	$bucket = 'postHelpQuotations'; include('./lib/pluginloader.php');
+	write('
 				<br />
-				<h4>".__('Embeds')."</h4>
-	");
+				<h4>'.__('Embeds').'</h4>
+	');
 	$bucket = 'postHelpEmbeds'; include('./lib/pluginloader.php');
 	write('
 			</div>

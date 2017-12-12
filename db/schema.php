@@ -129,7 +129,7 @@ $tables = [
 
 	'loginbans' => [
 		'fields' => [
-			'name' => "varchar(45)".$notNull,
+			'name' => 'varchar(45)'.$notNull,
 			'whitelisted' => $bool,
 		],
 		'special' => 'unique key `name` (`name`)'
@@ -185,7 +185,7 @@ $tables = [
 		'fields' => [
 			'applyto' => "tinyint(4) NOT NULL DEFAULT '0'",
 			'id' => $genericInt,
-			'perm' => "varchar(32)".$notNull,
+			'perm' => 'varchar(32)'.$notNull,
 			'arg' => $genericInt,
 			'value' => "tinyint(4) NOT NULL DEFAULT '0'",
 		],
@@ -243,7 +243,7 @@ $tables = [
 			'choice' => $var256,
 			'color' => 'varchar(25)'.$notNull,
 		],
-		'special' => $keyID.", key `poll` (`poll`)"
+		'special' => $keyID.', key `poll` (`poll`)'
 	],
 
 	'posts' => [
@@ -262,7 +262,7 @@ $tables = [
 			'currentrevision' => $genericInt,
 			'has_attachments' => $bool,
 		],
-		'special'=> $keyID.", key `thread` (`thread`), key `date` (`date`), key `user` (`user`), key `ip` (`ip`), key `id` (`id`, `currentrevision`), key `deletedby` (`deletedby`)"
+		'special'=> $keyID.', key `thread` (`thread`), key `date` (`date`), key `user` (`user`), key `ip` (`ip`), key `id` (`id`, `currentrevision`), key `deletedby` (`deletedby`)'
 	],
 
 	'posts_text' => [
@@ -273,7 +273,7 @@ $tables = [
 			'user' => $genericInt,
 			'date' => $genericInt,
 		],
-		'special' => "fulltext key `text` (`text`), key `pidrevision` (`pid`, `revision`), key `user` (`user`)"
+		'special' => 'fulltext key `text` (`text`), key `pidrevision` (`pid`, `revision`), key `user` (`user`)'
 	],
 
 	'queryerrors' => [
@@ -334,7 +334,7 @@ $tables = [
 			'lasturl' => $var128,
 			'lasttime' => $genericInt,
 		],
-		'special' => $keyID.", key `user` (`user`), key `expiration` (`expiration`)"
+		'special' => $keyID.', key `user` (`user`), key `expiration` (`expiration`)'
 	],
 
 	'settings' => [
@@ -361,7 +361,7 @@ $tables = [
 			'date' => $genericInt,
 			'pmid' => $genericInt,
 		],
-		'special' => "KEY `userid` (`userid`), KEY `date` (`date`)"
+		'special' => 'KEY `userid` (`userid`), KEY `date` (`date`)'
 	],
 
 	'threads' => [
@@ -383,7 +383,7 @@ $tables = [
 			'poll' => $genericInt,
 			'description' => 'varchar(100)'.$utf8ci.$notNull,
 		],
-		'special' => $keyID.", key `forum` (`forum`), key `user` (`user`), key `sticky` (`sticky`), key `lastpostdate` (`lastpostdate`), key `date` (`date`), fulltext key `title` (`title`)"
+		'special' => $keyID.', key `forum` (`forum`), key `user` (`user`), key `sticky` (`sticky`), key `lastpostdate` (`lastpostdate`), key `date` (`date`), fulltext key `title` (`title`)'
 	],
 
 	'threadsread' => [
@@ -408,7 +408,7 @@ $tables = [
 			'downloads' => $genericInt,
 			'deldate' => $genericInt,
 		],
-		'special' => $keyID.", KEY `user` (`user`), KEY `parent` (`parenttype`,`parentid`), KEY `deldate` (`deldate`)"
+		'special' => $keyID.', KEY `user` (`user`), KEY `parent` (`parenttype`,`parentid`), KEY `deldate` (`deldate`)'
 	],
 
 	// cid = user who commented
@@ -421,7 +421,7 @@ $tables = [
 			'text' => $text,
 			'date' => $genericInt,
 		],
-		'special' => $keyID.", key `uid` (`uid`), key `date` (`date`)"
+		'special' => $keyID.', key `uid` (`uid`), key `date` (`date`)'
 	],
 
 	'usergroups' => [
@@ -491,7 +491,7 @@ $tables = [
 			'lostkeytimer' => $genericInt,
 			'loggedin' => $bool,
 		],
-		'special' => $keyID.", key `posts` (`posts`), key `name` (`name`), key `lastforum` (`lastforum`), key `lastposttime` (`lastposttime`), key `lastactivity` (`lastactivity`), key `lastip` (`lastip`)"
+		'special' => $keyID.', key `posts` (`posts`), key `name` (`name`), key `lastforum` (`lastforum`), key `lastposttime` (`lastposttime`), key `lastactivity` (`lastactivity`), key `lastip` (`lastip`)'
 	],
 ];
 

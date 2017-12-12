@@ -49,7 +49,7 @@ class Settings {
 
 	public static function load() {
 		self::$settingsArray = [];
-		$rSettings = Query("select * from {settings}");
+		$rSettings = Query('select * from {settings}');
 
 		while($setting = Fetch($rSettings)) {
 			self::$settingsArray[$setting['plugin']][$setting['name']] = $setting['value'];
@@ -62,10 +62,10 @@ class Settings {
 		$settings = [];
 
 		//Get the setting list.
-		if($pluginname == "main")
-			include(__DIR__."/settingsfile.php");
+		if($pluginname == 'main')
+			include(__DIR__.'/settingsfile.php');
 		else {
-			@include(__DIR__."/../plugins/".$plugins[$pluginname]['dir']."/settingsfile.php");
+			@include(__DIR__.'/../plugins/'.$plugins[$pluginname]['dir'].'/settingsfile.php');
 		}
 		return $settings;
 	}
@@ -82,7 +82,7 @@ class Settings {
 			$type = $data['type'];
 			$default = $data['default'];
 
-			if(!isset(self::$settingsArray[$pluginname][$name]) || !self::validate(self::$settingsArray[$pluginname][$name], $type, (isset($data["options"]) ? $data["options"] : []))) {
+			if(!isset(self::$settingsArray[$pluginname][$name]) || !self::validate(self::$settingsArray[$pluginname][$name], $type, (isset($data['options']) ? $data['options'] : []))) {
 				if (isset($data['defaultfile']))
 					self::$settingsArray[$pluginname][$name] = file_get_contents($data['defaultfile']);
 				else
@@ -101,35 +101,35 @@ class Settings {
 	}
 
 	public static function saveSetting($pluginname, $settingname) {
-		Query("insert into {settings} (plugin, name, value) values ({0}, {1}, {2}) ".
-			"on duplicate key update value=VALUES(value)",
+		Query('insert into {settings} (plugin, name, value) values ({0}, {1}, {2}) '.
+			'on duplicate key update value=VALUES(value)',
 			$pluginname, $settingname, self::$settingsArray[$pluginname][$settingname]);
 	}
 
 
 	public static function validate($value, $type, $options = []) {
-		if($type == "boolean" || $type == "integer" || $type == "float" || $type == "user" || $type == "forum" || $type == 'group' || $type == "layout" || $type == "theme" || $type == "language")
-			if(trim($value) == "")
+		if($type == 'boolean' || $type == 'integer' || $type == 'float' || $type == 'user' || $type == 'forum' || $type == 'group' || $type == 'layout' || $type == 'theme' || $type == 'language')
+			if(trim($value) == '')
 				return false;
 
-		if($type == "boolean")
+		if($type == 'boolean')
 			if($value != 0 && $value != 1)
 				return false;
 
-		if($type == "integer" || $type == "user" || $type == "forum" || $type == 'group')
-			if(!ctype_digit($value) || $value === "")
+		if($type == 'integer' || $type == 'user' || $type == 'forum' || $type == 'group')
+			if(!ctype_digit($value) || $value === '')
 				return false;
 
-		if($type == "float")
+		if($type == 'float')
 			if (!is_numeric($value))
 				return false;
 
-		if($type == "options")
+		if($type == 'options')
 			if (!isset($options[$value]))
 				return false;
 
 		//These should be alphanumeric with underscores.
-		if($type == "layout" || $type == "theme" || $type == "language")
+		if($type == 'layout' || $type == 'theme' || $type == 'language')
 			if(!preg_match("/^[a-zA-Z0-9_]+$/", $value))
 				return false;
 

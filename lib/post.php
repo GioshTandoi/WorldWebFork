@@ -48,7 +48,7 @@ function loadBlockLayouts() {
 
 function getSyndrome($activity) {
 	include(__DIR__.'/syndromes.php');
-	$soFar = "";
+	$soFar = '';
 	foreach($syndromes as $minAct => $syndrome)
 		if($activity >= $minAct)
 			$soFar = '<em style=\"color: '.$syndrome[1].';\">'.$syndrome[0].'</em><br/>';
@@ -231,7 +231,7 @@ function makePost($post, $type, $params=[]) {
 					if (HasPermission('mod.deleteposts', $forum) && $post['id'] != $post['firstpostid']) {
 							$link = htmlspecialchars(actionLink('editpost', $post['id'], 'delete=3&key='.$loguser['token']));
 							$onclick = 
-								' onclick= if(!confirm(\'Really wipe this post? This action can\'t be undone\'))return false;';
+								" onclick= if(!confirm(\'Really wipe this post? This action can\'t be undone\'))return false;";
 							$links['delete'] = '<a href=\"{$link}\"{$onclick}>'.__('Wipe').'</a>';
 					}
 					if (HasPermission('user.reportposts'))
@@ -255,7 +255,7 @@ function makePost($post, $type, $params=[]) {
 	}
 	$post['links'] = $links;
     $sidebar = [];
-    $poster['title'] = preg_replace('@Affected by \'?.*?Syndrome\'?@si', '', $poster['title']);
+    $poster['title'] = preg_replace("@Affected by \'?.*?Syndrome\'?@si", '', $poster['title']);
 	$sidebar['rank'] = GetRank($poster['rankset'], $poster['posts']);
 	if(isset($poster['title']))
 		$sidebar['title'] = strip_tags(CleanUpPost($poster['title'], '', true), '<b><strong><i><em><span><s><del><img><a><br/><br><small>');

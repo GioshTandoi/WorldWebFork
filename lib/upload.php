@@ -22,16 +22,16 @@ function UploadFile($file, $parenttype, $parentid, $cap, $description='', $tempo
 
 		$temp = $filedata['tmp_name'];
 
-		Query("
+		Query('
 			INSERT INTO {uploadedfiles} (id, physicalname, filename, description, user, date, parenttype, parentid, downloads, deldate) 
-			VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, 0, {8})",
+			VALUES ({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, 0, {8})',
 			$randomid, $pname, $filename, $description, $loguserid, time(), $parenttype, $parentid, $temporary?time():0);
 
 		$fullpath = $targetdir.'/'.$pname;
 		copy($temp, $fullpath);
 		file_put_contents($fullpath.'.hash', hash_hmac_file('sha256', $fullpath, SALT));
 
-		Report("[b]".$loguser['name']."[/] uploaded file \"[b]".$filename."[/]\"", false);
+		Report('[b]'.$loguser['name'].'[/] uploaded file \"[b]'.$filename.'[/]\"', false);
 
 		return $randomid;
 	}
@@ -44,21 +44,21 @@ function DeleteUpload($path, $userid) {
 		@unlink($path);
 		@unlink($path.'.hash');
 	}
-	Report("[b]".$loguser['name']."[/] deleted file \"[b]".$filename."[/]\"", false);
+	Report('[b]'.$loguser['name'].'[/] deleted file \"[b]'.$filename.'[/]\"', false);
 }
 
 function CleanupUploads() {
 	$targetdir = DATA_DIR.'uploads';
 	
 	$timebeforedel = time()-604800; // one week
-	$todelete = Query("SELECT physicalname, user, filename FROM {uploadedfiles} WHERE deldate!=0 AND deldate<{0}", $timebeforedel);
+	$todelete = Query('SELECT physicalname, user, filename FROM {uploadedfiles} WHERE deldate!=0 AND deldate<{0}', $timebeforedel);
 	if (NumRows($todelete)) {
 		while ($entry = Fetch($todelete)) {
 			Report("[b]{$entry['filename']}[/] deleted by auto-cleanup", false);
 			DeleteUpload($targetdir.'/'.$entry['physicalname'], $entry['user']);
 		}
 
-		Query("DELETE FROM {uploadedfiles} WHERE deldate!=0 AND deldate<{0}", $timebeforedel);
+		Query('DELETE FROM {uploadedfiles} WHERE deldate!=0 AND deldate<{0}', $timebeforedel);
 	}
 }
 
@@ -73,12 +73,12 @@ function HandlePostAttachments($postid, $final) {
 	if (isset($http->post('files')) && !empty($http->post('files'))) {
 		foreach ($http->post('files') as $fileid=>$blarg) {
 			if (isset($http->post('deletefile')) && $http->post('deletefile')[$fileid]) {
-				$todelete = Query("SELECT physicalname, user FROM {uploadedfiles} WHERE id={0}", $fileid);
+				$todelete = Query('SELECT physicalname, user FROM {uploadedfiles} WHERE id={0}', $fileid);
 				DeleteUpload($targetdir.'/'.$entry['physicalname'], $entry['user']);
-				Query("DELETE FROM {uploadedfiles} WHERE id={0}", $fileid);
+				Query('DELETE FROM {uploadedfiles} WHERE id={0}' , $fileid);
 			} else {
-				if (isset($final)) Query("UPDATE {uploadedfiles} SET parentid={0}, deldate=0 WHERE id={1}", $postid, $fileid);
-				$attachs[$fileid] = FetchResult("SELECT filename FROM {uploadedfiles} WHERE id={0}", $fileid);
+				if (isset($final)) Query('UPDATE {uploadedfiles} SET parentid={0}, deldate=0 WHERE id={1}', $postid, $fileid);
+				$attachs[$fileid] = FetchResult('SELECT filename FROM {uploadedfiles} WHERE id={0}', $fileid);
 			}
 		}
 	}

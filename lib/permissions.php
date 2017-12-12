@@ -1,11 +1,11 @@
 <?php
 if (!defined('BLARG')) die();
 
-require __DIR__."/permstrings.php";
+require __DIR__.'/permstrings.php';
 
 $usergroups = [];
 $grouplist = [];
-$res = Query("SELECT * FROM {usergroups} ORDER BY id");
+$res = Query('SELECT * FROM {usergroups} ORDER BY id');
 while ($g = Fetch($res)) {
 	$usergroups[$g['id']] = $g;
 	$grouplist[$g['id']] = $g['title'];
@@ -35,7 +35,7 @@ function LoadGroups() {
 	global $guestPerms, $guestGroup, $guestPermset;
 
 	$guestGroup = $usergroups[Settings::get('defaultGroup')];
-	$res = Query("SELECT *, 1 ord FROM {permissions} WHERE applyto=0 AND id={0} AND perm IN ({1c})", $guestGroup['id'], $guestPerms);
+	$res = Query('SELECT *, 1 ord FROM {permissions} WHERE applyto=0 AND id={0} AND perm IN ({1c})', $guestGroup['id'], $guestPerms);
 	$guestPermset = LoadPermset($res);
 
 	if (!isset($loguserid)) {
@@ -50,13 +50,13 @@ function LoadGroups() {
 	$secgroups = [];
 	$loguserGroup = $usergroups[$loguser['primarygroup']];
 
-	$res = Query("SELECT groupid FROM {secondarygroups} WHERE userid={0}", $loguserid);
+	$res = Query('SELECT groupid FROM {secondarygroups} WHERE userid={0}', $loguserid);
 	while ($sg = Fetch($res)) $secgroups[] = $sg['groupid'];
 
-	$res = Query("	SELECT *, 1 ord FROM {permissions} WHERE applyto=0 AND id={0}
+	$res = Query('	SELECT *, 1 ord FROM {permissions} WHERE applyto=0 AND id={0}
 					UNION SELECT *, 2 ord FROM {permissions} WHERE applyto=0 AND id IN ({1c})
 					UNION SELECT *, 3 ord FROM {permissions} WHERE applyto=1 AND id={2}
-					ORDER BY ord",
+					ORDER BY ord',
 		$loguserGroup['id'], $secgroups, $loguserid);
 	$loguserPermset = LoadPermset($res);
 
@@ -77,8 +77,8 @@ function LoadGroups() {
 		$Iamowner = ($loguserGroup['id'] == Settings::get('rootGroup'));		//I am Root/Owner
 		$Iambanned = ($loguserGroup['id'] == Settings::get('bannedGroup'));		//I am banned
 		$myGroup = $usergroups[$loguser['primarygroup']];						//My Group
-		$Iamloggedin = $loguser["id"];											//I am logged in
-		$Iamnotloggedin = !$loguser["id"];										//I am not logged in
+		$Iamloggedin = $loguser['id'];											//I am logged in
+		$Iamnotloggedin = !$loguser['id'];										//I am not logged in
 	}
 }
 
@@ -147,7 +147,7 @@ function ForumsWithPermission($perm, $guest=false) {
 		return $ret;
 	}
 
-	$forumlist = Query("SELECT id FROM {forums}");
+	$forumlist = Query('SELECT id FROM {forums}');
 	$check = (bool)($permset[$perm] == 1);
 
 	// if the general permission is set to grant, we need to check for forums for which it'd be revoked

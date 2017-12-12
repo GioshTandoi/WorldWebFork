@@ -233,7 +233,7 @@ function parseBBCode($text) {
 							else if ($isspace==false) $inattrib = 0;
 						} else if ($inattrib == 2) {
 							if ($isspace == true) continue;
-							if ($ch == '"' || $ch == '\'') $inquote = $ch;
+							if ($ch == '"' || $ch == "\'") $inquote = $ch;
 							else $inquote = ' ';
 						}
 					} else if ($ch == $inquote || ($inquote == ' ' && $isspace)) {

@@ -8,10 +8,10 @@ $siteURL = 'http' . $ishttps ? 's' : '' . '://' . SITE_URL . '/';
 function urlNamify($urlname) {
 	$urlname = strtolower($urlname);
 	$urlname = str_replace('&', 'and', $urlname);
-	$urlname = preg_replace("/[^a-zA-Z0-9]/", '-', $urlname);
-	$urlname = preg_replace("/-+/", '-', $urlname);
-	$urlname = preg_replace("/^-/", '', $urlname);
-	$urlname = preg_replace("/-$/", '', $urlname);
+	$urlname = preg_replace('/[^a-zA-Z0-9]/', '-', $urlname);
+	$urlname = preg_replace('/-+/', '-', $urlname);
+	$urlname = preg_replace('/^-/', '', $urlname);
+	$urlname = preg_replace('/-$/', '', $urlname);
 	return $urlname;
 }
 
@@ -46,11 +46,11 @@ function pageLink($page, $params=[], $extra='') {
 	return $router->generate($page, $params) . ($extra != '' ? '?' . $extra : '');
 }
 
-function pageLinkTag($text, $page, $params=[], $extra='', $title="") {
+function pageLinkTag($text, $page, $params=[], $extra='', $title='') {
 	return '<a href="'.htmlentities(pageLink($page, $params, $extra)).'" title="'. $title . '">'.$text.'</a>';
 }
 
-function actionLinkTag($text, $action, $id='', $args="", $urlname='', $title='') {
+function actionLinkTag($text, $action, $id='', $args='', $urlname='', $title='') {
 	return '<a href="'.htmlentities(actionLink($action, $id, $args, $urlname)).'" title="'. $title . '">'.$text.'</a>';
 }
 
@@ -63,11 +63,11 @@ function actionLinkTagItem($text, $action, $id='', $args='', $urlname='', $title
 }
 
 function actionLinkTagConfirm($text, $prompt, $action, $id='', $args='') {
-	return '<a onclick="return confirm(\''.$prompt.'\'); " href="'.htmlentities(actionLink($action, $id, $args)).'">'.$text.'</a>';
+	return '<a onclick="return confirm(\" '.$prompt.' \");" href=" '.htmlentities(actionLink($action, $id, $args)).' ">'.$text.'</a>';
 }
 
 function actionLinkTagItemConfirm($text, $prompt, $action, $id='', $args='') {
-	return '<li><a onclick="return confirm(\''.$prompt.'\'); " href="'.htmlentities(actionLink($action, $id, $args)).'">'.$text.'</a></li>';
+	return '<li><a onclick="return confirm(\" '.$prompt.' \");" href=" '.htmlentities(actionLink($action, $id, $args)).' ">'.$text.'</a></li>';
 }
 
 function getForm($action, $id='') {
@@ -271,7 +271,7 @@ function pageLinks($url, $epp, $from, $total) {
 			$pageLinks[] = '<a class=\"pagelink\"  href=\"".makeFromUrl($url, (($p-1) * $epp))."\">'.$p.'</a>';
 	}
 
-	return $first.$prev.join($pageLinks, "").$next.$last;
+	return $first.$prev.join($pageLinks, '').$next.$last;
 }
 
 function pageLinksInverted($url, $epp, $from, $total) {
@@ -330,7 +330,7 @@ function getServerURL($https = false) {
 
 function getServerURLNoSlash($https = false) {
 	global $serverport;
-	return ($https?"https":"http") . "://" . $_SERVER['SERVER_NAME'].$serverport . substr(URL_ROOT, 0, strlen(URL_ROOT)-1);
+	return ($https?'https':'http') . '://' . $_SERVER['SERVER_NAME'].$serverport . substr(URL_ROOT, 0, strlen(URL_ROOT)-1);
 }
 
 function getFullRequestedURL($https = false) {

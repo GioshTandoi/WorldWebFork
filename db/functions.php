@@ -46,8 +46,8 @@ function Upgrade() {
 		$rPlugins = Query('select * from {enabledplugins}');
 		while($plugin = Fetch($rPlugins)) {
 
-		    if(strpos($plugin['plugin'],['.','/','\\'] )!==FALSE)
-			    $plugin = str_replace(['.','/','\\'], '', $plugin['plugin']);
+		    if(strpos($plugin['plugin'],[".','/','\\"] )!==FALSE)
+			    $plugin = str_replace([".','/','\\"], '', $plugin['plugin']);
 
 			$path = __DIR__."/../plugins/$plugin/installSchema.php";
 
@@ -88,7 +88,7 @@ function Upgrade() {
 						print " \"".$fieldName."\" not correct type: was $type, wanted $wantedType &hellip;<br />";
 						if($fieldName == 'id') {
 							print_r($field);
-							print "{ ".$type.' }';
+							print '{ '.$type.' }';
 						}
 						Query('ALTER TABLE {'.$table.'} CHANGE `$fieldName` `$fieldName` $wantedType');
 						$changes++;

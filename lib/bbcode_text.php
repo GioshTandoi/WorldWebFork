@@ -6,7 +6,7 @@ if (!defined('BLARG')) die();
 function loadSmilies() {
 	global $smilies, $smiliesReplaceOrig, $smiliesReplaceNew;
 
-	$rSmilies = Query("select * from {smilies} order by length(code) desc");
+	$rSmilies = Query('select * from {smilies} order by length(code) desc');
 	$smilies = [];
 
 	while($smiley = Fetch($rSmilies))
@@ -17,15 +17,15 @@ function loadSmilies() {
 	$counterSmilies=count($smilies);
 
 	for ($i = 0; $i < $counterSmilies ; $i++) {
-		$smiliesReplaceOrig[] = "/(?<!\w)".preg_quote($smilies[$i]['code'], "/")."(?!\w)/";
-		$smiliesReplaceNew[] = "<img class=\"smiley\" alt=\"\" src=\"".resourceLink("img/smilies/".$smilies[$i]['image'])."\" />";
+		$smiliesReplaceOrig[] = '/(?<!\w)'.preg_quote($smilies[$i]['code'], '/').'(?!\w)/';
+		$smiliesReplaceNew[] = "<img class=\"smiley\" alt=\"\" src=\"".resourceLink('img/smilies/'.$smilies[$i]['image'])."\" />";
 	}
 }
 
 function loadSmiliesOrdered()
 {
 	global $smiliesOrdered;
-	$rSmilies = Query("select * from {smilies}");
+	$rSmilies = Query('select * from {smilies}');
 	$smilies = array();
 	while($smiley = Fetch($rSmilies))
 		$smiliesOrdered[] = $smiley;
@@ -62,7 +62,7 @@ function postDoReplaceText($s, $parentTag, $parentMask) {
 	global $postNoSmilies, $postPoster, $smiliesReplaceOrig, $smiliesReplaceNew;
 
 	if(isset($postPoster))
-		$s = preg_replace("'/me '","<b>* ".htmlspecialchars($postPoster)."</b> ", $s);
+		$s = preg_replace("'/me '",'<b>* '.htmlspecialchars($postPoster).'</b> ', $s);
 
 	// silly filters
 	//$s = preg_replace_callback('@\._+\.@', 'funhax', $s);
@@ -80,11 +80,11 @@ function postDoReplaceText($s, $parentTag, $parentMask) {
 	//$s = preg_replace_callback('((?:(?:view-source:)?(?:[Hh]t|[Ff])tps?://(?:(?:[^:&@/]*:[^:@/]*)@)?|\bwww\.)[a-zA-Z0-9\-]+(?:\.[a-zA-Z0-9\-]+)*(?::[0-9]+)?(?:/(?:->(?=\S)|&amp;|[\w\-/%?=+#~:\'@*^$!]|[.,;\'|](?=\S)|(?:(\()|(\[)|\{)(?:->(?=\S)|[\w\-/%&?=+;#~:\'@*^$!.,;]|(?:(\()|(\[)|\{)(?:->(?=\S)|l[\w\-/%&?=+;#~:\'@*^$!.,;])*(?(3)\)|(?(4)\]|\})))*(?(1)\)|(?(2)\]|\})))*)?)', 'bbcodeURLAuto', $s);
 	if (!($parentMask & TAG_NOAUTOLINK))
 	{
-		$s = preg_replace_callback('@(?:(?:http|ftp)s?://|\bwww\.)[\w\-/%&?=+#~\'\@*^$\.,;!:]+[\w\-/%&?=+#~\'\@*^$]@i', 'bbcodeURLAuto', $s);
+		$s = preg_replace_callback("@(?:(?:http|ftp)s?://|\bwww\.)[\w\-/%&?=+#~\'\@*^$\.,;!:]+[\w\-/%&?=+#~\'\@*^$]@i", 'bbcodeURLAuto', $s);
 	}
 
 	//Plugin bucket for allowing plugins to add replacements.
-	$bucket = "postMangler"; include(__DIR__."/pluginloader.php");
+	$bucket = 'postMangler'; include(__DIR__.'/pluginloader.php');
 
 	return $s;
 }

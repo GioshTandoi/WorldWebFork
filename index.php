@@ -16,7 +16,7 @@ $layout_crumbs = '';
 $layout_actionlinks = '';
 
 if (isset($_GET['forcelayout'])) {
-	setcookie('forcelayout', (int)$_GET['forcelayout'], time()+365*24*3600, URL_ROOT, "", false, true);
+	setcookie('forcelayout', (int)$_GET['forcelayout'], time()+365*24*3600, URL_ROOT, '', false, true);
 	die(header('Location: '.$_SERVER['HTTP_REFERER']));
 }
 
@@ -40,7 +40,7 @@ if(isset($argv)) {
 	$_GET = [];
 
 	$_SERVER = [];
-	$_SERVER["REMOTE_ADDR"] = "0.0.0.0";
+	$_SERVER['REMOTE_ADDR'] = '0.0.0.0';
 
 	$ajaxPage = true;
 	$useBuffering = false;
@@ -53,7 +53,7 @@ if(isset($argv)) {
 $match = $router->match();
 
 ob_start();
-$layout_crumbs = "";
+$layout_crumbs = '';
 
 if($useBuffering == true)
 	ob_start();
@@ -61,7 +61,7 @@ if($useBuffering == true)
 $fakeerror = false;
 if ($loguser['flags'] & 0x2) {
 	if (rand(0,100) <= 75) {
-		Alert("Could not load requested page: failed to connect to the database. Try again later.", 'Error');
+		Alert('Could not load requested page: failed to connect to the database. Try again later.', 'Error');
 		$fakeerror = true;
 	}
 }
@@ -108,7 +108,7 @@ if ($fakeerror == false) {
 
 if($ajaxPage == true) {
 	if($useBuffering == true) {
-		header("Content-Type: text/plain");
+		header('Content-Type: text/plain');
 		ob_end_flush();
 	}
 	die();
@@ -118,7 +118,7 @@ $layout_contents = ob_get_contents();
 ob_end_clean();
 
 //Do these things only if it's not an ajax page.
-include(__DIR__ . "/lib/views.php");
+include(__DIR__ . '/lib/views.php');
 setLastActivity();
 
 //=======================
@@ -129,7 +129,7 @@ require(__DIR__ . '/layouts/menus.php');
 
 $mobileswitch = '';
 
-if (Settings::get('defaultLayout') !== "mobile") {
+if (Settings::get('defaultLayout') !== 'mobile') {
 	if (isset($mobileLayout)) $mobileswitch .= 'Mobile view <noscript>(Requires JS enabled for it to work.)</noscript> - ';
 	if (isset($_COOKIE['forcelayout']) && $_COOKIE['forcelayout']) $mobileswitch .= '<a href="?forcelayout=0" rel="nofollow">Auto view</a>';
 	else if (isset($mobileLayout)) $mobileswitch .= '<a href="?forcelayout=-1" rel="nofollow">Force normal view</a>';
@@ -142,7 +142,7 @@ if (Settings::get('defaultLayout') !== "mobile") {
 $notifications = getNotifications();
 
 ob_start();
-$bucket = "userBar"; include("./lib/pluginloader.php");
+$bucket = 'userBar'; include('./lib/pluginloader.php');
 /*
 if($rssBar)
 {
@@ -153,7 +153,7 @@ if($rssBar)
 	</div>
 ", $rssBar, $rssWidth + 4);
 }*/
-$bucket = "topBar"; include("./lib/pluginloader.php");
+$bucket = 'topBar'; include('./lib/pluginloader.php');
 $layout_bars = ob_get_contents();
 ob_end_clean();
 
@@ -209,9 +209,9 @@ function checkForImage(&$image, $external, $file) {
 	}
 }
 
-checkForImage($favicon, true, "logos/favicon.gif");
-checkForImage($favicon, true, "logos/favicon.ico");
-checkForImage($favicon, false, "img/favicon.ico");
+checkForImage($favicon, true, 'logos/favicon.gif');
+checkForImage($favicon, true, 'logos/favicon.ico');
+checkForImage($favicon, false, 'img/favicon.ico');
 
 $themefile = "themes/$theme/style.css";
 if(!file_exists(__DIR__ . 'index.php/' .$themefile))
@@ -272,7 +272,7 @@ $perfdata = 'Page rendered in '.sprintf('%.03f',microtime(true)-$starttime).' se
 	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 	<script src="//twemoji.maxcdn.com/twemoji.min.js"></script>
 
-	<?php $bucket = "pageHeader"; include(__DIR__ . "/lib/pluginloader.php"); ?>
+	<?php $bucket = 'pageHeader'; include(__DIR__ . '/lib/pluginloader.php'); ?>
 </head>
 <body style="width:100%; font-size: <?php echo $loguser['fontsize']; ?>%;">
 <form action="<?php echo htmlentities(pageLink('logout')); ?>" method="post" id="logout" style="display:none;"><input type="hidden" name="action" value="logout"></form>
@@ -307,6 +307,6 @@ $perfdata = 'Page rendered in '.sprintf('%.03f',microtime(true)-$starttime).' se
 </html>
 <?php
 
-$bucket = "finish"; include(__DIR__ . '/lib/pluginloader.php');
+$bucket = 'finish'; include(__DIR__ . '/lib/pluginloader.php');
 
 ?>

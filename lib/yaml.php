@@ -351,7 +351,7 @@ class Spyc {
 	} else {
 	  // if ($first_key===0)  throw new Exception('Keys are all screwy.  The first one was zero, now it\'s "'. $key .'"');
 	  // It's mapped
-	  if (strpos($key, ":") !== false || strpos($key, "#") !== false) { $key = '"' . $key . '"'; }
+	  if (strpos($key, ':') !== false || strpos($key, '#') !== false) { $key = '"' . $key . '"'; }
 	  $string = rtrim ($spaces.$key.': '.$value)."\n";
 	}
 	return $string;
@@ -374,7 +374,7 @@ class Spyc {
 	}
 	$exploded = explode("\n",$value);
 	$newValue = '|';
-	if (isset($exploded[0]) && ($exploded[0] == "|" || $exploded[0] == "|-" || $exploded[0] == ">")) {
+	if (isset($exploded[0]) && ($exploded[0] == '|' || $exploded[0] == '|-' || $exploded[0] == '>')) {
 		$newValue = $exploded[0];
 		unset($exploded[0]);
 	}
@@ -516,7 +516,7 @@ class Spyc {
 
 	  // Strip out comments
 	  if (strpos ($line, '#')) {
-		  $line = preg_replace('/\s*#([^"\']+)$/','',$line);
+		  $line = preg_replace("/\s*#([^\"\']+)$/",'',$line);
 	  }
 
 	  while (++$i < $cnt && self::greedilyNeedNextLine($line)) {
@@ -701,7 +701,7 @@ class Spyc {
 	$saved_empties = [];
 
 	// Check for empty strings
-	$regex = '/("")|(\'\')/';
+	$regex = "/(\"\")|(\'\')/";
 	if (preg_match_all($regex,$inline,$strings)) {
 	  $saved_empties = $strings[0];
 	  $inline  = preg_replace($regex,'YAMLEmpty',$inline);
@@ -709,7 +709,7 @@ class Spyc {
 	unset($regex);
 
 	// Check for strings
-	$regex = '/(?:(")|(?:\'))((?(1)[^"]+|[^\']+))(?(1)"|\')/';
+	$regex = "/(?:(\")|(?:\'))((?(1)[^\"]+|[^\']+))(?(1)\"|\')/";
 	if (preg_match_all($regex,$inline,$strings)) {
 	  $saved_strings = $strings[0];
 	  $inline  = preg_replace($regex,'YAMLString',$inline);
@@ -1055,7 +1055,7 @@ class Spyc {
   }
 
   private function checkKeysInValue($value) {
-	if (strchr('[{"\'', $value[0]) === false) {
+	if (strchr("[{\"\'", $value[0]) === false) {
 	  if (strchr($value, ': ') !== false) {
 		  throw new Exception('Too many keys: '.$value);
 	  }
@@ -1088,7 +1088,7 @@ class Spyc {
 	if (strpos ($line, ': ')) {
 	  // It's a key/value pair most likely
 	  // If the key is in double quotes pull it out
-	  if (($line[0] == '"' || $line[0] == "'") && preg_match('/^(["\'](.*)["\'](\s)*:)/',$line,$matches)) {
+	  if (($line[0] == '"' || $line[0] == "'") && preg_match("/^([\"\'](.*)[\"\'](\s)*:)/",$line,$matches)) {
 		$value = trim(str_replace($matches[1],'',$line));
 		$key   = $matches[2];
 	  } else {

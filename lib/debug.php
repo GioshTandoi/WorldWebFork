@@ -11,7 +11,7 @@ function backTrace() {
 			}
 			if (in_array(strtolower($bt['function']), ['rawquery', 'query', 'fetchresult']) && !$args)
 				if (is_array($a))
-					$args .= var_export(array_merge(["..."], array_slice($a, 1)), true);
+					$args .= var_export(array_merge(['...'], array_slice($a, 1)), true);
 				else if (is_string($a))
 					$args .= "'...'";
 				else
@@ -19,19 +19,19 @@ function backTrace() {
 			else
 				$args .= var_export($a, true);
 		}
-		$bt["file"] = substr($bt["file"], strlen($_SERVER["DOCUMENT_ROOT"]));
+		$bt['file'] = substr($bt['file'], strlen($_SERVER['DOCUMENT_ROOT']));
 		
 		if(strlen($args) > 50)
-			$args = substr($args, 0, 50)."...";
-		$output .= htmlspecialchars($bt['file']).":".htmlspecialchars($bt['line'])." &nbsp; ";
+			$args = substr($args, 0, 50).'...';
+		$output .= htmlspecialchars($bt['file']).':'.htmlspecialchars($bt['line']).' &nbsp; ';
 		$output .= htmlspecialchars("{$bt['class']}{$bt['type']}{$bt['function']}($args)");
-		$output .= "<br />";
+		$output .= '<br />';
 	}
 	return $output;
 }
 function var_format($v) // pretty-print var_export
 {
-	return (str_replace(["\n"," ","array"],
-["<br/>","&nbsp;","&nbsp;<i>array</i>"],
-var_export($v,true))."<br/>");
+	return (str_replace(['\n',' ','array'],
+    ['<br/>','&nbsp;','&nbsp;<i>array</i>'],
+    var_export($v,true)).'<br/>');
 }

@@ -110,7 +110,7 @@ switch ($action){
 
 	case 'srl':  //------------------------------------------------------------------------------------------------------------------------------------Show Revision List
 
-        $qPost = "select currentrevision, thread from {posts} where id={0}";
+        $qPost = 'select currentrevision, thread from {posts} where id={0}';
         $rPost = Query($qPost, $id);
         if(NumRows($rPost))
             $post = Fetch($rPost);

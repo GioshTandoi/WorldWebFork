@@ -17,11 +17,11 @@ $fid = Settings::get('newsForum');
 if(!HasPermission('forum.viewforum', $fid))
 	die("You aren't allowed to access this forum.");
 
-$rFora = Query("select * from {forums} where id = {0}",$fid);
+$rFora = Query('select * from {forums} where id = {0}',$fid);
 if(NumRows($rFora))
 	$forum = Fetch($rFora);
 else
-	die("Unknown forum ID.");
+	die('Unknown forum ID.');
 
 
 header('Content-type: application/rss+xml');
@@ -29,8 +29,18 @@ header('Content-type: application/rss+xml');
 $title = Settings::get('rssTitle');
 $desc = Settings::get('rssDesc');
 
-if(isset($ishttps) && isset($_SERVER['SERVER_NAME']) && isset($serverport))
-    $url = "http".($ishttps?'s':'')."://{$_SERVER['SERVER_NAME']}{$serverport}";
+if(isset($_SERVER['SERVER_PORT'])){
+    $ishttps = ($_SERVER['SERVER_PORT'] == 443);
+    $serverport = ($_SERVER['SERVER_PORT'] == ($ishttps?443:80)) ? '' : ':'.$_SERVER['SERVER_PORT'];
+    if(isset($_SERVER['SERVER_NAME']))
+      $url = 'http'.($ishttps?'s':'')."://{$_SERVER['SERVER_NAME']}{$serverport}";
+}
+
+
+/*if(isset($ishttps) && isset($_SERVER['SERVER_NAME']) && isset($serverport))
+    $url = 'http'.($ishttps?'s':'').'://{$_SERVER['SERVER_NAME']}{$serverport}';
+    in questo modo non riconosce la stringa SERVER_NAME, vanno mantenute le doppie quote
+*/
 
 if(isset($ishttps))
     $fullurl = getServerURLNoSlash($ishttps);
@@ -51,7 +61,7 @@ print '<?xml version="1.0" encoding="UTF-8"?>';
 
     $fid = Settings::get('newsForum');
 
-	$entries = Query("	SELECT 
+	$entries = Query('	SELECT 
 							t.id, t.title, 
 							p.date,
 							pt.text,
@@ -62,7 +72,7 @@ print '<?xml version="1.0" encoding="UTF-8"?>';
 							LEFT JOIN {posts_text} pt ON pt.pid=p.id AND pt.revision=p.currentrevision
 							LEFT JOIN {users} su ON su.id=t.user
 						WHERE t.forum={0} AND p.deleted=0
-						ORDER BY p.date DESC LIMIT 5", $fid);
+						ORDER BY p.date DESC LIMIT 5', $fid);
 	
 	while($entry = Fetch($entries))
 	{
@@ -78,10 +88,10 @@ print '<?xml version="1.0" encoding="UTF-8"?>';
 		$text = preg_replace('@\[spoiler.*?\].*?\[/spoiler\]@si', '(spoiler)', $text);
 		$text = CleanUpPost($text, $username, true);
 		
-		$text = preg_replace('@<img[^>]+?src\s*=\s*(["\'])(.*?)\\1[^>]*?>@si', '<a href="$2">(image)</a>', $text);
+		$text = preg_replace("@<img[^>]+?src\s*=\s*([\"\'])(.*?)\\1[^>]*?>@si", '<a href="$2">(image)</a>', $text);
 		$text = preg_replace('@<img[^>]+?src\s*=\s*([^\s>]+?)(\s+[^>]*?)?>@si', '<a href="$1">(image)</a>', $text);
 		
-		$text = preg_replace('@([="\'])\?page=@si', '$1'.$fullurl.'/?page=', $text);
+		$text = preg_replace("@([=\"\'])\?page=@si", '$1'.$fullurl.'/?page=', $text);
 
 		if(strpos($text,']]>')!==FALSE)
 		    $text = str_replace(']]>', ']]&gt;', $text);

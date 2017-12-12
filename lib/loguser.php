@@ -193,7 +193,7 @@ $ipban = isIPBanned($_SERVER['REMOTE_ADDR']);
 if(isset($ipban)) {
 	$adminemail = Settings::get('ownerEmail');
 	
-	print 'You have been IP-banned from this board'.($ipban['date'] ? " until ".gmdate("M jS Y, G:i:s",$ipban['date'])." (GMT). That's ".TimeUnits($ipban['date']-time())." left" : "").". Attempting to get around this in any way will result in worse things.";
+	print 'You have been IP-banned from this board'.($ipban['date'] ? ' until '.gmdate('M jS Y, G:i:s',$ipban['date'])." (GMT). That's ".TimeUnits($ipban['date']-time()).' left' : '').'. Attempting to get around this in any way will result in worse things.';
 	print '<br>Reason: '.$ipban['reason'];
 	if (isset($adminemail)) print '<br><br>If you were erroneously banned, contact the board owner at: '.$adminemail;
 	exit();
@@ -271,7 +271,7 @@ function setLastActivity() {
 		$ua = '';
 		if(isset($_SERVER['HTTP_USER_AGENT']))
 			$ua = $_SERVER['HTTP_USER_AGENT'];
-		Query("insert into {guests} (date, ip, lasturl, useragent, bot) values ({0}, {1}, {2}, {3}, {4})",
+		Query('insert into {guests} (date, ip, lasturl, useragent, bot) values ({0}, {1}, {2}, {3}, {4})',
 			time(), $_SERVER['REMOTE_ADDR'], $url, $ua, $isBot);
 	} else {
 		Query('update {users} set lastactivity={0}, lastip={1}, lasturl={2}, lastknownbrowser={3}, loggedin=1 where id={4}',

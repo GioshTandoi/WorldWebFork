@@ -188,7 +188,7 @@ function bbcodeForum($contents, $arg, $parenttag)
 		if(NumRows($rForum))
 		{
 			$forum = Fetch($rForum);
-			$forumLinkCache[$id] = actionLinkTag($forum['title'], "forum", $forum['id'], '', HasPermission('forum.viewforum',$forum['id'],true)?$forum['title']:'');
+			$forumLinkCache[$id] = actionLinkTag($forum['title'], 'forum', $forum['id'], '', HasPermission('forum.viewforum',$forum['id'],true)?$forum['title']:'');
 		}
 		else
 			$forumLinkCache[$id] = '&lt;invalid forum ID&gt;';
@@ -348,7 +348,7 @@ function bbcodeGist($contents, $arg) {
 		return "<a href=\"https://gist.github.com/$contents\">View $contents on GitHub</a>";
 	}
 	else if (!preg_match('/([0-9_a-zA-Z]+)\/([0-9a-f]+)/', $contents)) {
-		return "<pre><code>Invalid Gist</code></pre>";
+		return '<pre><code>Invalid Gist</code></pre>';
 	}
 	else {
 		$ch = curl_init();

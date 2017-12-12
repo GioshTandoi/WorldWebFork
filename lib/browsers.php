@@ -36,7 +36,7 @@ $knownBrowsers = [
 	'Nokia' => 'Nokia mobile'];
 
 $knownOSes = [
-	"Nintendo 3DS" => "Nintendo 3DS",
+	'Nintendo 3DS' => 'Nintendo 3DS',
 	'iPod' => 'iPod',
 	'iPad' => 'iPad',
 	'iPhone' => 'iPhone',
@@ -87,7 +87,7 @@ foreach($knownBrowsers as $code => $name) {
 
 		if (in_array($code, $mobileBrowsers)) $mobileLayout = true;
 
-		$lastKnownBrowser = $name." ".$version;
+		$lastKnownBrowser = $name.' '.$version;
 		break;
 	}
 }
@@ -97,7 +97,7 @@ $browserName = $name;
 if(isset($version))
     $browserVers = (float)$version;
 
-$os = "";
+$os = '';
 
 foreach($knownOSes as $code => $name) {
 	if (strpos($ua, 'X11'))
@@ -133,7 +133,7 @@ function GetVersion($ua, $versionStart) {
 	$version = '';
 	if (strpos($ua, 'Linux')) {
 		for ($i = ++$versionStart; $i < strlen($ua); $i++) {
-			if ($ua[$i] === " " || $ua[$i] == ')')
+			if ($ua[$i] === ' ' || $ua[$i] == ')')
 				break;
 			else if ($ua[$i] != ';') $version .= $ua[$i];
 		}
@@ -169,7 +169,7 @@ if (isset($_COOKIE['forcelayout'])) {
 		$mobileLayout = true;
 	else if ($_COOKIE['forcelayout'] == -1)
 		$mobileLayout = false;
-} else if (Settings::get('defaultLayout') == "mobile")
+} else if (Settings::get('defaultLayout') == 'mobile')
 	$mobileLayout = true;
 else
 	$mobileLayout = false;

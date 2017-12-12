@@ -131,10 +131,10 @@ Well, what more could you [url=http://en.wikipedia.org]want to know[/url]? Perha
 			'name' => 'Custom title threshold (posts)',
 			'category' => 'Functionality'
 		],
-		"oldThreadThreshold" => [
-			"type" => "integer",
-			"default" => "3",
-			"name" => "Old thread threshold (months)",
+		'oldThreadThreshold' => [
+			'type' => 'integer',
+			'default' => '3',
+			'name' => 'Old thread threshold (months)',
 			'category' => 'Functionality'
 		],
 		'minwords' => [
@@ -244,7 +244,7 @@ Well, what more could you [url=http://en.wikipedia.org]want to know[/url]? Perha
 		],
 		'RegWordKey' => [
 			'type' => 'text',
-			'default' => "",
+			'default' => '',
 			'name' =>'Registration Key',
 			'help' => 'This is the actual registration key used. Leave blank in order to not use this function.',
 			'category' => 'RegistrationSec'

@@ -85,16 +85,16 @@ function SendNotification($type, $id, $user, $args=null) {
 	$argstr = $args ? serialize($args) : '';
 	$now = time();
 
-	Query("
+	Query('
 		INSERT INTO {notifications} (type,id,user,date,args) VALUES ({0},{1},{2},{3},{4})
-		ON DUPLICATE KEY UPDATE date={3}, args={4}",
+		ON DUPLICATE KEY UPDATE date={3}, args={4}',
 		$type, $id, $user, $now, $argstr);
 
 	$bucket = 'sendNotification'; include(__DIR__.'/pluginloader.php');
 }
 
 function DismissNotification($type, $id, $user) {
-	Query("DELETE FROM {notifications} WHERE type={0} AND id={1} AND user={2}", $type, $id, $user);
+	Query('DELETE FROM {notifications} WHERE type={0} AND id={1} AND user={2}', $type, $id, $user);
 
 	$bucket = 'dismissNotification'; include(__DIR__.'/pluginloader.php');
 }

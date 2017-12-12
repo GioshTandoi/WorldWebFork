@@ -122,7 +122,7 @@ function OptimizeLayouts($text) {
 	    $text = str_replace('</head>', $newStyles.'</head>', $text);
 
 	if(strpos($text,'<recaptcha')!==FALSE)
-	    $text = str_replace('<recaptcha', "<script", $text);
+	    $text = str_replace('<recaptcha', '<script', $text);
 
 	return $text;
 }

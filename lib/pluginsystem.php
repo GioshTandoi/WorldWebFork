@@ -20,7 +20,7 @@ function getSetting($settingname, $useUser = false) {
 	} else if($user['pluginsettings'] != ''); {
 		$settings = unserialize($user['pluginsettings']);
 		if(!is_array($settings))
-			return "";
+			return '';
 		if(array_key_exists($settingname, $settings))
 			return stripslashes(urldecode($settings[$settingname]));
 	}
