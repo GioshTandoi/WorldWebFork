@@ -15,6 +15,8 @@ if(isset($dbserv)){
                  unset($dbpass);
 
                  $dblink->set_charset('utf8');
+
+            mysqli_query($dblink, 'SET SESSION sql_mode = "MYSQL40"');
             }
         }
     }
@@ -23,7 +25,7 @@ if(isset($dbserv)){
 
 
 
-mysqli_query($dblink, 'SET SESSION sql_mode = "MYSQL40"');
+
 
 function SqlEscape($text) {
 	global $dblink;
