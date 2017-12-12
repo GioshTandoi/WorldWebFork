@@ -11,6 +11,10 @@ if(isset($dbserv)){
         if(isset($dbpass)){
             if(isset($dbname))
                 $dblink = new mysqli($dbserv, $dbuser, $dbpass, $dbname);
+
+                 unset($dbpass);
+
+                 $dblink->set_charset('utf8');
             }
         }
     }
@@ -18,9 +22,6 @@ if(isset($dbserv)){
 
 
 
-unset($dbpass);
-
-$dblink->set_charset('utf8');
 
 mysqli_query($dblink, 'SET SESSION sql_mode = "MYSQL40"');
 
