@@ -6,15 +6,22 @@ include(__DIR__.'/../config/database.php');
 
 $queries = 0;
 
-            if(isset($dbname) && isset($dbpass) && isset($dbuser) && isset($dbserv)){
-                $dblink = new mysqli($dbserv, $dbuser, $dbpass, $dbname);
 
-                 unset($dbpass);
+                if(isset($dbserv)){
+                    if(isset($dbuser)){
+                        if(isset($dbpass)){
+                            if(isset($dbname))
+                                $dblink = new mysqli($dbserv, $dbuser, $dbpass, $dbname);
 
-                 $dblink->set_charset('utf8');
+                            unset($dbpass);
 
-            mysqli_query($dblink, 'SET SESSION sql_mode = "MYSQL40"');
-            }
+                            $dblink->set_charset('utf8');
+
+                            mysqli_query($dblink, 'SET SESSION sql_mode = "MYSQL40"');
+                        }
+                    }
+                }
+
 
 function SqlEscape($text) {
 	global $dblink;
