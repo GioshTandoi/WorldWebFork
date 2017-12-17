@@ -5,8 +5,13 @@ if (!defined('BLARG')) trigger_error();
 // --- General layout functions
 // ----------------------------------------------------------------------------
 
-function RenderTemplate($template, $options=null) {
-	global $tpl, $mobileLayout, $plugintemplates, $plugins;
+function RenderTemplate($template,$tpl, $mobileLayout=true, $options=null) {
+
+    $plugintemplates=[];
+    $plugins=[];
+    //$mobilelayout e tpl come parametro
+
+	//global $tpl, $mobileLayout, $plugintemplates, $plugins;
 
 	if (array_key_exists($template, $plugintemplates)) {
 		$plugin = $plugintemplates[$template];
@@ -36,7 +41,8 @@ function RenderTemplate($template, $options=null) {
 }
 
 function makeCrumbs($path, $links='') {
-	global $layout_crumbs, $layout_actionlinks;
+    $layout_crumbs = '';
+    $layout_actionlinks = '';
 
 	if(count($path) != 0) {
 		$pathPrefix = [actionLink(0) => Settings::get('breadcrumbsMainName')];
