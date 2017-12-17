@@ -1,5 +1,5 @@
 <?php
-if (!defined('BLARG')) die();
+if (!defined('BLARG')) trigger_error();
 
 //Main post parsing function.
 function applyNetiquetteToLinks($match) {

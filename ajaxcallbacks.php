@@ -36,7 +36,7 @@ switch ($action){
         $rQuote = Query($qQuote, $id, ForumsWithPermission('forum.viewforum'));
 
         if(!NumRows($rQuote))
-            die(__('Unknown post ID.'));
+           trigger_error(__('Unknown post ID.'));
 
         $quote = Fetch($rQuote);
 
@@ -45,7 +45,7 @@ switch ($action){
 
         $reply = "[quote=\"".$quote['poster']."\" id=\"".$quote['id']."\"]".$quote['text'].'[/quote]';
         $reply = str_replace('/me ', '[b]* '.htmlspecialchars($quote['poster']).'[/b]', $reply);
-        die($reply);
+        trigger_error($reply);
 
 	    break;
 
@@ -70,17 +70,17 @@ switch ($action){
 
 
         if (!NumRows($rPost))
-            die(__('Unknown post ID.'));
+            trigger_error(__('Unknown post ID.'));
         $post = Fetch($rPost);
 
         if (!HasPermission('mod.deleteposts', $post['fid']) || $poster['id'] == $loguserid)
-            die(__('No.'));
+            trigger_error(__('No.'));
 
-        die(MakePost($post, isset($_GET['o']) ? POST_DELETED_SNOOP : POST_NORMAL, ['tid'=>$post['thread'], 'fid'=>$post['fid']]));
+        trigger_error(MakePost($post, isset($_GET['o']) ? POST_DELETED_SNOOP : POST_NORMAL, ['tid'=>$post['thread'], 'fid'=>$post['fid']]));
 		break;
 
 	case 'ou': //--------------------------------------------------------------------------------------------------------------------------------------Online Users
-        die(OnlineUsers((int)$_GET['f'], false));
+        trigger_error(OnlineUsers((int)$_GET['f'], false));
         break;
 
 	case 'tf': //---------------------------------------------------------------------------------------------------------------------------------------Theme File
@@ -104,7 +104,7 @@ switch ($action){
 
         $layout_logopic = 'img/logo.png';
 
-        die(resourceLink($themeFile).'|'.$layout_logopic);
+        trigger_error(resourceLink($themeFile).'|'.$layout_logopic);
 
         break;
 
@@ -115,16 +115,16 @@ switch ($action){
         if(NumRows($rPost))
             $post = Fetch($rPost);
         else
-            die(format(__('Unknown post ID #{0}.'), $id).' '.$hideTricks);
+            trigger_error(format(__('Unknown post ID #{0}.'), $id).' '.$hideTricks);
 
         $qThread = 'select forum from {threads} where id={0}';
         $rThread = Query($qThread, $post['thread']);
         $thread = Fetch($rThread);
 
         if (!HasPermission('forum.viewforum', $thread['forum']))
-            die('You may not view this forum.');
+            trigger_error('You may not view this forum.');
         if (!HasPermission('mod.editposts', $thread['forum']))
-            die('No.');
+            trigger_error('No.');
 
 
         $qRevs = 'SELECT
@@ -153,7 +153,7 @@ switch ($action){
 
         $hideTricks = ' <a href=\"javascript:void(0)\" onclick=\"showRevision('.$id.','.$post['currentrevision'].'); hideTricks('.$id.')\">'.__('Back').'</a>';
         $reply .= $hideTricks;
-        die($reply);
+        trigger_error($reply);
         break;
 
 	case 'sr':  //-------------------------------------------------------------------------------------------------------------------------------------Show Revision
@@ -179,10 +179,10 @@ switch ($action){
         if(NumRows($rPost))
             $post = Fetch($rPost);
         else
-            die(format(__('Unknown post ID #{0} or revision missing.'), $id));
+            trigger_error(format(__('Unknown post ID #{0} or revision missing.'), $id));
 
         if (!HasPermission('mod.editposts', $post['fid']))
-            die('No.');
+            trigger_error('No.');
 
         $poster = getDataPrefix($post, 'u_');
 
@@ -207,25 +207,25 @@ switch ($action){
             $poster['signature'] = '';
         }
 
-        die(makePostText($post, $poster));
+        trigger_error(makePostText($post, $poster));
         break;
 
 	case 'em':  	//------------------------------------------------------------------------------------------------------------------------------------Email
         $privacy = HasPermission('admin.editusers') ? '' : ' and showemail=1';
         $blah = FetchResult("select email from {users} where id={0}{$privacy}", $id);
-        die(htmlspecialchars($blah));
+        trigger_error(htmlspecialchars($blah));
         break;
 
 	case 'vc': //------------------------------------------------------------------------------------------------------------------------------------------View Counter
         $blah = FetchResult('select views from {misc}');
-        die(number_format($blah));
+        trigger_error(number_format($blah));
         break;
 
 	case 'no': //------------------------------------------------------------------------------------------------------------------------------------------ notification list
         $notif = getNotifications();
-        die(json_encode($notif));
+        trigger_error(json_encode($notif));
         break;
 }
 
-die(__('Unknown action.'));
+trigger_error(__('Unknown action.'));
 ?>

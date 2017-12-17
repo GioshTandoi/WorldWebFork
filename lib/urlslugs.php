@@ -9,8 +9,8 @@
  *
  * Usage:
  *
- *	 echo URLify::filter (' J\'étudie le français ');
- *	 // "jetudie-le-francais"
+ *	 echo URLify::filter (' J\'étutrigger_error le français ');
+ *	 // "jetutrigger_error-le-francais"
  *
  *	 echo URLify::filter ('Lo siento, no hablo español.');
  *	 // "lo-siento-no-hablo-espanol"

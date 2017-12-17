@@ -1,5 +1,5 @@
 <?php
-if (!defined('BLARG')) die();
+if (!defined('BLARG')) trigger_error();
 
 // ----------------------------------------------------------------------------
 // --- General layout functions
@@ -178,7 +178,7 @@ function doThreadPreview($tid, $maxdate=0) {
 
 	RenderTemplate('threadreview', ['review' => $review]);
 }
-function rForaQuery($parent, $boardlol='', $viewableforums, $viewhidden ) {
+function rForaQuery($parent, $viewableforums, $viewhidden, $boardlol='' ) {
     global $loguserid, $loguser, $usergroups;
     $rFora = Query('	SELECT f.*,
 							c.name cname,
@@ -196,7 +196,7 @@ function rForaQuery($parent, $boardlol='', $viewableforums, $viewhidden ) {
     return $rFora;
 }
 
-function rSubfora($parent, $boardlol='', $viewableforums, $viewhidden) {
+function rSubfora($parent, $viewableforums, $viewhidden, $boardlol='') {
     global $loguserid, $loguser, $usergroups;
     $f = Fetch(Query('SELECT MIN(l) minl, MAX(r) maxr FROM {forums} WHERE '.($parent==0 ? 'board={0}' : 'catid={1}'), $boardlol, -$parent));
     $rSubfora = Query('	SELECT f.*,
@@ -253,9 +253,9 @@ function makeForumListing($parent, $boardlol='') {
 	global $loguserid, $loguser, $usergroups;
     $viewableforums = ForumsWithPermission('forum.viewforum');
     $viewhidden = HasPermission('user.viewhiddenforums');
-    $rFora = rForaQuery($parent,$boardlol, $viewableforums, $viewhidden);
+    $rFora = rForaQuery($parent, $viewableforums, $viewhidden,$boardlol);
 	if (!NumRows($rFora)) return;
-	$rSubfora = rSubfora($parent,$parent, $boardlol, $viewableforums, $viewhidden);
+	$rSubfora = rSubfora($parent,$parent, $viewableforums, $viewhidden, $boardlol);
     $subfora = [];
     $mods = [];
 	while ($sf = Fetch($rSubfora)) $subfora[-$sf['catid']][] = $sf;

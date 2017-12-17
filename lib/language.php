@@ -1,5 +1,5 @@
 <?php
-if (!defined('BLARG')) die();
+if (!defined('BLARG')) trigger_error();
 
 // TODO make this work in templates at all
 // we'll consider it whenever there's enough demand.

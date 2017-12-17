@@ -1,6 +1,6 @@
 <?php
 //  AcmlmBoard XD support - View counter support
-if (!defined('BLARG')) die();
+if (!defined('BLARG')) trigger_error();
 
 //Update view counter
 if(isset($isBot) && $isBot == false)

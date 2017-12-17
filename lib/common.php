@@ -1,5 +1,5 @@
 <?php
-if (!defined('BLARG')) die();
+if (!defined('BLARG')) trigger_error();
 
 header('Cache-control: no-cache, private');
 header('X-Frame-Options: DENY');
@@ -21,7 +21,7 @@ define('DATA_URL', URL_ROOT.'data/');
 setlocale(LC_ALL, 'en_US.UTF8');
 
 if(!is_file(__DIR__.'/../config/database.php'))
-	die(header('Location: install.php'));
+	trigger_error(header('Location: install.php'));
 
 if (!function_exists('password_hash'))
 	require_once('passhash.php');
@@ -65,7 +65,7 @@ require_once(__DIR__.'/debug.php');
 require_once(__DIR__.'/mysql.php');
 require_once(__DIR__.'/../config/database.php');
 if(!fetch(query("SHOW TABLES LIKE '{misc}'")))
-	die('The boards tables are empty. Please copy the db folder and install.php to your board root and delete the config folder from the root. Overwrite any files if nessesary.');
+	trigger_error('The boards tables are empty. Please copy the db folder and install.php to your board root and delete the config folder from the root. Overwrite any files if nessesary.');
 require_once(__DIR__.'/settingssystem.php');
 Settings::load();
 Settings::checkPlugin('main');
@@ -120,7 +120,7 @@ require_once(__DIR__.'/permissions.php');
 $loguser=FALSE;
 
 if (Settings::get('maintenance') && !$loguser['root'] && $http->get('page') != 'login')
-	die('The board is currently in maintenance mode, please try again later. Our apologies for the inconvenience.');
+	trigger_error('The board is currently in maintenance mode, please try again later. Our apologies for the inconvenience.');
 
 require_once(__DIR__.'/notifications.php');
 require_once(__DIR__.'/firewall.php');

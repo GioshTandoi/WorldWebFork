@@ -1,10 +1,10 @@
 <?php
-if (!defined('BLARG')) die();
+if (!defined('BLARG')) trigger_error();
 
 function do403() {
 	header('HTTP/1.1 403 Forbidden');
 	header('Status: 403 Forbidden');
-	die('403 Forbidden');
+	trigger_error('403 Forbidden');
 }
 
 function do404() {
@@ -12,7 +12,7 @@ function do404() {
 	header('HTTP/1.1 404 Not Found');
 	header('HTTP/2.0 404 Not Found');
 	header('Status: 404 Not Found');
-	die('404 Not Found');
+	trigger_error('404 Not Found');
 }
 
 // weird bots. Rumors say it's hacking bots, or the bots China uses to crawl the internet and censor it
@@ -414,7 +414,7 @@ $emaildomainsblock = [
 '@gqecobartending.com',
 '@grande-victoire.fr',
 '@grassgoodtoday.com',
-'@grasssoldiers.com',
+'@grasssoltrigger_errorrs.com',
 '@gratbrainn.us',
 '@gravitysoup.pro',
 '@greatdeal.pro',

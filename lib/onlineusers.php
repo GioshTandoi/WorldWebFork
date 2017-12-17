@@ -1,5 +1,5 @@
 <?php
-if (!defined('BLARG')) die();
+if (!defined('BLARG')) trigger_error();
 
 function OnlineUsers($forum = 0, $update = true) {
 	global $loguserid;

@@ -15,13 +15,13 @@ require(__DIR__ . '/lib/common.php');
 
 $fid = Settings::get('newsForum');
 if(!HasPermission('forum.viewforum', $fid))
-	die("You aren't allowed to access this forum.");
+	trigger_error("You aren't allowed to access this forum.");
 
 $rFora = Query('select * from {forums} where id = {0}',$fid);
 if(NumRows($rFora))
 	$forum = Fetch($rFora);
 else
-	die('Unknown forum ID.');
+	trigger_error('Unknown forum ID.');
 
 
 header('Content-type: application/rss+xml');

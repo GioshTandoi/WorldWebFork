@@ -17,7 +17,7 @@ $layout_actionlinks = '';
 
 if (isset($_GET['forcelayout'])) {
 	setcookie('forcelayout', (int)$_GET['forcelayout'], time()+365*24*3600, URL_ROOT, '', false, true);
-	die(header('Location: '.$_SERVER['HTTP_REFERER']));
+	trigger_error(header('Location: '.$_SERVER['HTTP_REFERER']));
 }
 
 $layout_birthdays = getBirthdaysText();
@@ -111,7 +111,7 @@ if($ajaxPage == true) {
 		header('Content-Type: text/plain');
 		ob_end_flush();
 	}
-	die();
+	trigger_error();
 }
 
 $layout_contents = ob_get_contents();

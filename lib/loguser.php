@@ -1,6 +1,6 @@
 <?php
 //  AcmlmBoard XD support - Login support
-if (!defined('BLARG')) die();
+if (!defined('BLARG')) trigger_error();
 
 $bots = [
 	'Microsoft URL Control', 'Bingbot', 'Microsoft URL Control - 5.01.4511', 'Microsoft URL Control - 6.00.8169',
@@ -151,7 +151,7 @@ if(isset($_qRecords))
 	$rRecords = Query($_qRecords, $onlineUserCt, time(), $onlineUsers, $newToday, $newLastHour);
 }
 
-//Delete oldies visitor from the guest list. We may re-add him/her later.
+//Delete oltrigger_errors visitor from the guest list. We may re-add him/her later.
 Query('delete from {guests} where date < {0}', (time()-300));
 
 //Lift dated Tempbans
@@ -196,7 +196,7 @@ if(isset($ipban)) {
 	print 'You have been IP-banned from this board'.($ipban['date'] ? ' until '.gmdate('M jS Y, G:i:s',$ipban['date'])." (GMT). That's ".TimeUnits($ipban['date']-time()).' left' : '').'. Attempting to get around this in any way will result in worse things.';
 	print '<br>Reason: '.$ipban['reason'];
 	if (isset($adminemail)) print '<br><br>If you were erroneously banned, contact the board owner at: '.$adminemail;
-	exit();
+	trigger_error();
 }
 
 function doHash($data)
@@ -246,7 +246,7 @@ if(isset($loguser)) {
 if ($loguser['flags'] & 0x1) {
 	Query('INSERT INTO {ipbans} (ip,reason,date) VALUES ({0},{1},0)',
 		$_SERVER['REMOTE_ADDR'], '['.htmlspecialchars($loguser['name']).'] Account IP-banned');
-	die(header('Location: '.$_SERVER['REQUEST_URI']));
+	trigger_error(header('Location: '.$_SERVER['REQUEST_URI']));
 }
 
 if (isset($mobileLayout) && $mobileLayout) {

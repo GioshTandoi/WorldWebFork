@@ -5,15 +5,15 @@ include(__DIR__ . '/lib/common.php');
 
 $entry = Fetch(Query('select * from {uploadedfiles} where id = {0}', $_GET['id']));
 if (!isset($entry))
-	die(__('Unknown file ID.'));
+	trigger_error(__('Unknown file ID.'));
 
 if ($entry['deldate'] != 0)
-	die(__('No such file.'));
+	trigger_error(__('No such file.'));
 
 $path = DATA_DIR.'uploads/'.$entry['physicalname'];
 
 if(!file_exists($path))
-	die(__('No such file.'));
+	trigger_error(__('No such file.'));
 	
 //Count downloads!
 if(isset($isBot)){

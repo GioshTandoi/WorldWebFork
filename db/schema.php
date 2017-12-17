@@ -1,5 +1,5 @@
 <?php
-if (!defined('BLARG')) die();
+if (!defined('BLARG')) trigger_error();
 
 // TODO
 // * standardize the database format so it doesn't depend on MySQL types

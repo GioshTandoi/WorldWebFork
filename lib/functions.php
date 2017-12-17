@@ -1,7 +1,7 @@
 <?php
 //  AcmlmBoard XD support - Handy snippets
 // TODO organize better
-if (!defined('BLARG')) die();
+if (!defined('BLARG')) trigger_error();
 
 function endsWith($a, $b){
 	return substr($a, strlen($a) - strlen($b)) == $b;
@@ -37,7 +37,7 @@ function Kill($s, $t='') {
 	throw new KillException();
 }
 
-function dieAjax($what) {
+function trigger_errorAjax($what) {
 	global $ajaxPage;
 
 	echo $what;

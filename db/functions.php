@@ -1,5 +1,5 @@
 <?php
-if (!defined('BLARG')) die();
+if (!defined('BLARG')) trigger_error();
 
 function Import($sqlFile) {
 	global $dblink, $dbpref;
@@ -15,7 +15,7 @@ function Import($sqlFile) {
 	if ($dblink->errno)  { 
 		echo "MySQL Error when importing file $sqlFile at statement $i: \n";
 		echo $dblink->error, "\n";
-		die();
+		trigger_error();
 	}
 }
 

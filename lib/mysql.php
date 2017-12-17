@@ -1,6 +1,6 @@
 <?php
 // AcmlmBoard XD support - MySQL database wrapper functions
-if (!defined('BLARG')) die();
+if (!defined('BLARG')) trigger_error();
 
 include(__DIR__.'/../config/database.php');
 
@@ -143,12 +143,12 @@ function rawQuery($query) {
 			$bt = '';
 			if(function_exists('backTrace'))
 				$bt = backTrace();
-			die(nl2br($bt).
+			trigger_error(nl2br($bt).
 				'<br /><br />'.htmlspecialchars($theError).
 				'<br /><br />Query was: <code>'.htmlspecialchars($query).'</code>');
 		} else
 				trigger_error('MySQL Error.', E_USER_ERROR);
-		die('MySQL Error.');
+		trigger_error('MySQL Error.');
 	}
 
 	$queries++;

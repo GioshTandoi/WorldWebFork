@@ -1,6 +1,6 @@
 <?php
 //  AcmlmBoard XD support - Post functions
-if (!defined('BLARG')) die();
+if (!defined('BLARG')) trigger_error();
 
 function ParseThreadTags($title) {
 	preg_match_all('/\[(.*?)\]/', $title, $matches);
