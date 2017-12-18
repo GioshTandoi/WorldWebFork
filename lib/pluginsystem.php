@@ -14,8 +14,8 @@ function registerSetting($settingname, $label, $check = false)
 
 
 
-function getSetting($settingname, $useUser = false) {
-	global $pluginSettings, $user;
+function getSetting($settingname, $pluginSettings, $user, $useUser = false) {
+
 	if(!$useUser) { //loguser {
 		if(array_key_exists($settingname, $pluginSettings))
 			return $pluginSettings[$settingname]['value'];
