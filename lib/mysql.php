@@ -23,8 +23,8 @@ $queries = 0;
                 }
 
 
-function SqlEscape($text) {
-	global $dblink;
+function SqlEscape($text, $dblink) {
+
 	return $dblink->real_escape_string($text);
 }
 
@@ -39,8 +39,8 @@ function Query_ExpandFieldLists($match) {
 	return implode(',', $ret);
 }
 
-function Query_AddUserInput($match) {
-	global $args;
+function Query_AddUserInput($match, $args) {
+
 	$match = $match[1];
 	$format = 's';
 	if(preg_match("/^\d+\D$/", $match)) {
@@ -81,8 +81,8 @@ function Query_AddUserInput($match) {
  *
  */
  
-function Query_MangleTables($match) {
-	global $dbpref, $tableLists;
+function Query_MangleTables($match, $dbpref, $tableLists) {
+
 	$tablename = $match[1];
 	if(isset($tableLists[$tablename]))
 		return $tableLists[$tablename];
@@ -91,8 +91,8 @@ function Query_MangleTables($match) {
 }
 
 
-function query() {
-	global $dbpref, $args, $fieldLists;
+function query($args, $fieldLists) {
+
 	$args = func_get_args();
 	if (is_array($args[0])) $args = $args[0];
 
@@ -115,8 +115,8 @@ function query() {
 $tableLists = [
 ];
 
-function rawQuery($query) {
-	global $queries, $querytext, $loguser, $dblink, $debugMode, $logSqlErrors, $dbpref, $loguserid, $mysqlCellClass;
+function rawQuery($query, $queries, $querytext,$dblink, $debugMode, $logSqlErrors, $dbpref, $loguserid, $mysqlCellClass) {
+
 
 //	if($debugMode)
 //		$queryStart = usectime();
@@ -189,13 +189,13 @@ function numRows($result) {
 	return $result->num_rows;
 }
 
-function insertId() {
-	global $dblink;
+function insertId($dblink) {
+
 	return $dblink->insert_id;
 }
 
-function affectedRows() {
-	global $dblink;
+function affectedRows($dblink) {
+
 	return $dblink->affected_rows;
 }
 
@@ -215,8 +215,6 @@ $fieldLists = [
 ];
 
 function loadFieldLists() {
-	global $fieldLists, $tableLists;
-
 	//Allow plugins to add their own!
 	$bucket = 'fieldLists';
 	include(__DIR__.'/pluginloader.php');

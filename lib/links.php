@@ -41,8 +41,8 @@ function actionLink($action, $id='', $args='', $urlname='') {
 
 }
 
-function pageLink($page, $params=[], $extra='') {
-	global $router;
+function pageLink($page, $router, $params=[], $extra='') {
+
 	return $router->generate($page, $params) . ($extra != '' ? '?' . $extra : '');
 }
 
@@ -83,8 +83,8 @@ function resourceLink($what) {
 	return URL_ROOT.$what;
 }
 
-function themeResourceLink($what) {
-	global $theme;
+function themeResourceLink($what, $theme) {
+
 	return URL_ROOT."themes/$theme/$what";
 }
 
@@ -141,10 +141,7 @@ function prettyRainbow($s) {
 $poptart = mt_rand(0,359);
 $dorainbow = -1;
 
-function userLink($user, $showMinipic = false, $customID = false, $returnOnlyHref = false) {
-	global $usergroups;
-	global $poptart, $dorainbow, $newToday;
-	global $luckybastards;
+function userLink($user,$usergroups, $poptart, $dorainbow, $newToday, $luckybastards, $showMinipic = false, $customID = false, $returnOnlyHref = false) {
 
 	if ($dorainbow == -1) {
 		$dorainbow = false;
@@ -205,8 +202,7 @@ function userLink($user, $showMinipic = false, $customID = false, $returnOnlyHre
 	;
 }
 
-function userLinkById($id) {
-	global $userlinkCache;
+function userLinkById($id, $userlinkCache) {
 
 	if(!isset($userlinkCache[$id])) {
 		$rUser = Query('SELECT u.(_userfields) FROM {users} u WHERE u.id={0}',$id);
@@ -310,8 +306,8 @@ function pageLinksInverted($url, $epp, $from, $total) {
 }
 
 
-function absoluteActionLink($action, $id=0, $args='') {
-	global $serverport;
+function absoluteActionLink($action, $https, $serverport, $id=0, $args='') {
+
 	return ($https?'https':'https') . '://' . $_SERVER['SERVER_NAME'].$serverport.dirname($_SERVER['PHP_SELF']).substr(actionLink($action, $id, $args), 1);
 }
 
@@ -319,8 +315,8 @@ function getRequestedURL() {
 	return $_SERVER['REQUEST_URI'];
 }
 
-function getServerDomainNoSlash($https = false) {
-	global $serverport;
+function getServerDomainNoSlash($serverport, $https = false) {
+
 	return ($https?'https':'https') . '://' . $_SERVER['SERVER_NAME'].$serverport;
 }
 
@@ -328,8 +324,8 @@ function getServerURL($https = false) {
 	return getServerURLNoSlash($https).'/';
 }
 
-function getServerURLNoSlash($https = false) {
-	global $serverport;
+function getServerURLNoSlash($serverport, $https = false) {
+
 	return ($https?'https':'http') . '://' . $_SERVER['SERVER_NAME'].$serverport . substr(URL_ROOT, 0, strlen(URL_ROOT)-1);
 }
 
