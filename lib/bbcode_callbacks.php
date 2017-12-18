@@ -161,9 +161,12 @@ function bbcodeUser($contents, $arg, $parenttag)
 {
 	return UserLinkById((int)$arg);
 }
+/*per risolvere la 9337 nella funzione  bbcodeThread ho inserito la variabile $threadLinkCache come paramentro
+opzionale con opportuno valore di default, ho invece eliminato la variabile $loguser che non veniva utilizzata
+da nessuna parte nella funzione. Ho inoltre calcellato i parametri $parenttag e $contents anche essi inutilizzati
+from Giosh96 */
+function bbcodeThread($arg, $threadLinkCache=[]) {
 
-function bbcodeThread($contents, $arg, $parenttag) {
-	global $threadLinkCache, $loguser;
 	$id = (int)$arg;
 	if(!isset($threadLinkCache[$id])) {
 		$rThread = Query('select t.id, t.title, t.forum from {threads} t where t.id={0} AND t.forum IN ({1c})', $id, ForumsWithPermission('forum.viewforum'));
@@ -177,10 +180,13 @@ function bbcodeThread($contents, $arg, $parenttag) {
 	}
 	return $threadLinkCache[$id];
 }
-
-function bbcodeForum($contents, $arg, $parenttag)
+/*per risolvere la 9337 nella funzione  bbcodeForum ho inserito la variabile $forumLinkCache come paramentro
+opzionale con opportuno valore di default, ho invece eliminato la variabile $loguser che non veniva utilizzata
+da nessuna parte nella funzione. Ho inoltre calcellato i parametri $parenttag e $contents anche essi inutilizzati
+from Giosh96 */
+function bbcodeForum($arg, $forumLinkCache=[])
 {
-	global $forumLinkCache, $loguser;
+	global ;
 	$id = (int)$arg;
 	if(!isset($forumLinkCache[$id]))
 	{
@@ -255,21 +261,25 @@ function bbcodeTableCell($contents, $arg, $parenttag) {
 	else
 		return "<td>$contents</td>";
 }
+/*per risolvere la 9337 nella funzione  bbcodeTableRow e  bbcodeTableRowHeader ho inserito la variabile
+$bbcodeCellClass come paramentro opzionale con opportuno valore di default, e inserito la variabile in un array che ritorna sia la stringa
+che il valore della variabile che ha modificato.
+Ho inoltre calcellato i parametri $arg, $parenttag perchè inutilizzati
+from Giosh96 */
+function bbcodeTableRow($contents, $bbcodeCellClass=0) {
 
-function bbcodeTableRow($contents, $arg, $parenttag) {
-	global $bbcodeCellClass;
 	$bbcodeCellClass++;
 	$bbcodeCellClass %= 2;
 
-	return "<tr class=\"cell$bbcodeCellClass\">$contents</tr>";
+	return array("<tr class=\"cell$bbcodeCellClass\">$contents</tr>",$bbcodeCellClass );
 }
 
-function bbcodeTableRowHeader($contents, $arg, $parenttag) {
-	global $bbcodeCellClass;
+function bbcodeTableRowHeader($contents, $bbcodeCellClass=0) {
+
 	$bbcodeCellClass++;
 	$bbcodeCellClass %= 2;
 
-	return "<tr class=\"header0\">$contents</tr>";
+	return array("<tr class=\"header0\">$contents</tr>",$bbcodeCellClass) ;
 }
 
 function getYoutubeIdFromUrl($url)
