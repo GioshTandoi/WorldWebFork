@@ -30,16 +30,22 @@ function LoadPermset($res) {
 	return $perms;
 }
 
-function LoadGroups() {
-	global $usergroups, $loguserid, $loguser, $loguserGroup, $loguserPermset;
-	global $guestPerms, $guestGroup, $guestPermset;
+/* per risolvere la 9337 nella funzione LoadGroups dipendentemente da come ciascun variabile globale (global $usergroups, $loguserid, $loguser, $loguserGroup, $loguserPermset;
+	global $guestPerms, $guestGroup, $guestPermset; )venisse usata nella funzione
+ho modificato il codice in maniera diversa: se di una variabile globale veniva usato solo il valore e non ne veniva modificato il
+contenuto l'ho aggiunta come parametro; se una variabile globale veniva settata a un determinato valore ho rimosso la dichiarazione
+come global e ho inserito la variabile nell'array $resultsArray come valore da restituire al termine della funzione. In caso una
+variabile venisse usata sia per il suo valore all'interno che per modificarne il valore stesso l'ho sia inserita tra i parametri
+che come elemento dell array da restituire $resultsArray */
+
+function LoadGroups($usergroups=[], $loguserid=0, $loguser=[], $guestPerms=[]) {
 
 	$guestGroup = $usergroups[Settings::get('defaultGroup')];
 	$res = Query('SELECT *, 1 ord FROM {permissions} WHERE applyto=0 AND id={0} AND perm IN ({1c})', $guestGroup['id'], $guestPerms);
 	$guestPermset = LoadPermset($res);
 
 	if (!isset($loguserid)) {
-		$loguserGroup = $guestGroup;
+        $loguserGroup = $guestGroup;
 		$loguserPermset = $guestPermset;
 
 		$loguser['banned'] = false;
@@ -59,6 +65,7 @@ function LoadGroups() {
 					ORDER BY ord',
 		$loguserGroup['id'], $secgroups, $loguserid);
 	$loguserPermset = LoadPermset($res);
+
 
 	//Coding Language
 
@@ -80,10 +87,17 @@ function LoadGroups() {
 		$Iamloggedin = $loguser['id'];											//I am logged in
 		$Iamnotloggedin = !$loguser['id'];										//I am not logged in
 	}
+
+	$resultsArray=[$loguser, $loguserGroup, $loguserPermset, $guestGroup, $guestPermset];
+
+	return $resultsArray;
 }
 
-function HasPermission($perm, $arg=0, $guest=false) {
-	global $guestPermset, $loguserPermset;
+/* in questo caso per risolvere la 9337 ho aggiunto le variabili globali $guestPermset, $loguserPermset come parametri dato che nella funzione HasPermission
+venivano solo usate per il valore che portavano con sè; ho inoltre dichiarato tali parametri come opzionali impostando un
+valido valore di default. */
+
+function HasPermission($perm, $guestPermset=[], $loguserPermset=[],  $arg=0, $guest=false) {
 
 	$permset = $guest ? $guestPermset : $loguserPermset;
 
@@ -111,8 +125,11 @@ function HasPermission($perm, $arg=0, $guest=false) {
 	return true;
 }
 
-function CheckPermission($perm, $arg=0, $guest=false) {
-	global $loguserid, $loguser;
+/*in questo caso per risolvere la 9337 ho aggiunto le variabili globali come parametri dato che nella funzione CheckPermission
+venivano solo usate per il valore che portavano con sè, ho inoltre dichiarato tali parametri come opzionali impostando un
+valido valore di default. */
+
+function CheckPermission($perm, $loguserid=0, $loguser=[], $arg=0, $guest=false) {
 
 	if (!HasPermission($perm, $arg, $guest)) {
 		if (!isset($loguserid))
@@ -124,8 +141,12 @@ function CheckPermission($perm, $arg=0, $guest=false) {
 	}
 }
 
-function ForumsWithPermission($perm, $guest=false) {
-	global $guestPermset, $loguserPermset;
+/*in questo caso per risolvere la 9337 ho aggiunto le variabili globali come parametri dato che nella funzione ForumsWithPermission
+venivano solo usate per il valore che portavano con sè, ho inoltre dichiarato tali parametri come opzionali impostando un
+valido valore di default. */
+
+function ForumsWithPermission($perm, $guestPermset=[], $loguserPermset=[], $guest=false) {
+
 	static $fpermcache = [];
 
 	if ($guest) {

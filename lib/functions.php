@@ -37,12 +37,15 @@ function Kill($s, $t='') {
 	throw new KillException();
 }
 
+/*in questa funzione trigger_errorAjax invece di passare la variabile globale $ajaxPage come parametro ho aggiunto il return di true
+        perchè $ajaxPage veniva settata a true e basta
+from Giosh96 */
+
 function trigger_errorAjax($what) {
-	global $ajaxPage;
 
 	echo $what;
-	$ajaxPage = true;
 	throw new KillException();
+	return true;
 }
 
 // returns FALSE if it fails.
@@ -138,14 +141,15 @@ function TimeUnits($sec) {
 	if($sec < 86400) return floor($sec/3600).' hour'.($sec >= 7200 ? 's' : '');
 	return floor($sec/86400).' day'.($sec >= 172800 ? 's' : '');
 }
+/*per risolvere la issue 9337  qui, ho aggiunto loguser come parametro opzionale con valore di default opportuno
+from Giosh96*/
+function cdate($format, $loguser=[], $date = 0) {
 
-function cdate($format, $date = 0) {
-	global $loguser;
 	if($date == 0) $date = time();
 	return gmdate($format, $date+$loguser['timezone']);
 }
 
-function Report($stuff, $hidden = 0, $severity = 0) {
+function Report($stuff, $loguserid, $hidden = 0, $severity = 0) {
 	$full = GetFullURL();
 	$here = substr($full, 0, strrpos($full, '/')).'/';
 
@@ -193,8 +197,11 @@ function BytesToSize($size, $retstring = '%01.2f&nbsp;%s') {
 	return sprintf($retstring, $size, $sizestring);
 }
 
+/*per risolvere la issue 9337 ho tolto la dichiarazione global da questa funzione perchè le variabili themes e themesfiles vengono
+comunque ridichiarate
+from Giosh96*/
+
 function makeThemeArrays() {
-	global $themes, $themefiles;
 	$themes = [];
 	$themefiles = [];
 	$dir = @opendir('themes');
@@ -207,9 +214,9 @@ function makeThemeArrays() {
 	}
 	closedir($dir);
 }
-
-function getdateformat() {
-	global $loguserid, $loguser;
+/* per risolvere la issue 9337 ho aggiunto loguser e $loguserid come parametro opzionale con valore di default opportuno
+from Giosh96*/
+function getdateformat($loguserid=false , $loguser=[]) {
 
 	if(isset($loguserid))
 		return $loguser['dateformat'].', '.$loguser['timeformat'];
@@ -260,8 +267,11 @@ function getSexName($sex) {
 	return $sexes[$sex];
 }
 
+/* per risolvere la issue 9337  ho rimosso la variabile globale  $loguser perchè non veniva usata da nessuna parte
+from Giosh96*/
+
 function formatIP($ip) {
-	global $loguser;
+
 
 	$res = $ip;
 	$res .=  ' ' . IP2C($ip);
@@ -283,8 +293,12 @@ function long2ip_better($ip) {
 }
 
 //TODO: Optimize it so that it can be made with a join in online.php and other places.
+
+/* per risolvere la issue 9337  ho rimosso la variabile globale  $dblink perchè non veniva usata da nessuna parte
+from Giosh96*/
+
 function IP2C($ip) {
-	global $dblink;
+
 	//This nonsense is because ips can be greater than 2^31, which will be interpreted as negative numbers by PHP.
 	$ipl = ip2long($ip);
 	$r = Fetch(Query('SELECT * 
@@ -299,12 +313,15 @@ function IP2C($ip) {
 	else
 		return '';
 }
-
-function getBirthdaysText($ret = true) {
-	global $luckybastards, $loguser;
+/* per risolvere la issue 9337  ho rimosso la dichiarazione di variabile globale $luckybastards perchè viene ridichiarata subito dopo
+e ho aggiunto $loguser come parametro opzionale con valore di default opportuno, e dato che il valore della variabile viene utilizzato
+nell'assegnazione alla variabile $today ho aggiunto un controllo if(isset)
+from Giosh96*/
+function getBirthdaysText($loguser=[], $ret = true) {
 
 	$luckybastards = [];
-	$today = gmdate('m-d', time()+$loguser['timezone']);
+    if(isset($loguser))
+	    $today = gmdate('m-d', time()+$loguser['timezone']);
 
 	$rBirthdays = Query('select u.birthday, u.(_userfields) from {users} u where u.birthday > 0 and u.primarygroup!={0} order by u.name', Settings::get('bannedGroup'));
 	$birthdays = [];

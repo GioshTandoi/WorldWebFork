@@ -37,7 +37,7 @@ function UploadFile($file, $parenttype, $parentid, $cap, $description='', $tempo
 	}
 }
 
-function DeleteUpload($path, $userid) {
+function DeleteUpload($path, $userid, $loguser, $filename) {
 	if (!file_exists($path.'.hash')) return;
 	$hash = file_get_contents($path.'.hash');
 	if ($hash === hash_hmac_file('sha256', $path, $userid.SALT)) {
@@ -63,16 +63,16 @@ function CleanupUploads() {
 }
 
 
-function HandlePostAttachments($postid, $final) {
+function HandlePostAttachments($postid, $final, $entry, $http=null) {
 	$targetdir = DATA_DIR.'uploads';
 
 	if (!Settings::get('postAttach')) return [];
 
 	$attachs = [];
 
-	if (isset($http->post('files')) && !empty($http->post('files'))) {
+	if ($http&& !empty($http->post('files'))) {
 		foreach ($http->post('files') as $fileid=>$blarg) {
-			if (isset($http->post('deletefile')) && $http->post('deletefile')[$fileid]) {
+			if ($http->post('deletefile') && $http->post('deletefile')[$fileid]) {
 				$todelete = Query('SELECT physicalname, user FROM {uploadedfiles} WHERE id={0}', $fileid);
 				DeleteUpload($targetdir.'/'.$entry['physicalname'], $entry['user']);
 				Query('DELETE FROM {uploadedfiles} WHERE id={0}' , $fileid);
