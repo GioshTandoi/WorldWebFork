@@ -67,7 +67,7 @@ function __($english, $languagePack=null, $language=null, $flags = 0)
 
 function importLanguagePack()
 {
-	global $languagePack;
+	$languagePack=[];
 	$f = get_data();
 	$f = explode("\n", $f);
 
@@ -84,6 +84,7 @@ function importLanguagePack()
 			continue;
 		$languagePack[$k] = $v;
 	}
+	return $languagePack;
 }
 
 function importPluginLanguagePacks($file)
