@@ -80,7 +80,8 @@ function getPluginData($plugin, $load = true) {
 	$plugindata['templates'] = [];
 
 	$dir = __DIR__.'/../plugins/'.$plugindata['dir'];
-	$pdir = @opendir($dir);
+	error_reporting(0);
+	$pdir = opendir($dir);
 	while($f = readdir($pdir)) {
 		if(substr($f, -4) == '.php') {
 			if(substr($f, 0, 5) == 'page_') {
@@ -97,9 +98,10 @@ function getPluginData($plugin, $load = true) {
 		}
 	}
 	closedir($pdir);
-
+    error_reporting(0);
 	if (is_dir($dir.'/pages')) {
-		$pdir = @opendir($dir.'/pages');
+
+		$pdir = opendir($dir.'/pages');
 		while($f = readdir($pdir)) {
 			if(substr($f, -4) == '.php') {
 				$pagename = substr($f, 0, -4);
@@ -111,7 +113,8 @@ function getPluginData($plugin, $load = true) {
 	}
 
 	if (is_dir($dir.'/layouts')) {
-		$pdir = @opendir($dir.'/layouts');
+        error_reporting(0);
+		$pdir = opendir($dir.'/layouts');
 		while($f = readdir($pdir)) {
 			if(substr($f, -4) == '.tpl') {
 				$tplname = substr($f, 0, -4);

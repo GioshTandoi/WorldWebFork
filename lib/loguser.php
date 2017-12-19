@@ -194,8 +194,8 @@ if(isset($ipban)) {
 	$adminemail = Settings::get('ownerEmail');
 	
 	print 'You have been IP-banned from this board'.($ipban['date'] ? ' until '.gmdate('M jS Y, G:i:s',$ipban['date'])." (GMT). That's ".TimeUnits($ipban['date']-time()).' left' : '').'. Attempting to get around this in any way will result in worse things.';
-	print '<br>Reason: '.$ipban['reason'];
-	if (isset($adminemail)) print '<br><br>If you were erroneously banned, contact the board owner at: '.$adminemail;
+	print '/n Reason: '.$ipban['reason'];
+	if (isset($adminemail)) print '/n/nIf you were erroneously banned, contact the board owner at: '.$adminemail;
 	trigger_error();
 }
 

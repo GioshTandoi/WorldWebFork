@@ -21,7 +21,8 @@ function actionLink($action, $id='', $args='', $urlname='') {
 		$boardroot = './';
 
 	// Making this easir to handle later
-	$hasid = (@is_numeric($id) || is_string($id));
+    error_reporting(0);
+	$hasid = (is_numeric($id) || is_string($id));
 
 	// rewritten links
 	if ($action == MAIN_PAGE)

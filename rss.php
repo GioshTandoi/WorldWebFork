@@ -98,15 +98,15 @@ print '<?xml version="1.0" encoding="UTF-8"?>';
 		
 		$username = htmlspecialchars($username);
 		
-		echo "
-		<item>
-			<title>{$title} -- posted by {$username}</title>
-			<link>{$entryurl}</link>
-			<pubDate>{$rfcdate}</pubDate>
-			<description><![CDATA[{$text}]]></description>
-			<guid>{$entryurl}</guid>
-		</item>
-";
+		   // echo "
+		 //   <item>
+		//	<title>{$title} -- posted by {$username}</title>
+		//	<link>{$entryurl}</link>
+			// <pubDate>{$rfcdate}</pubDate>
+		    // <description><![CDATA[{$text}]]></description>
+		   // <guid>{$entryurl}</guid>
+		   // </item>
+           // ";
 	}
 ?>
 	</channel>

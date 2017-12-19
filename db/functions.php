@@ -56,7 +56,9 @@ function Upgrade() {
 		}
 	}
 	foreach($tables as $table => $tableSchema) {
-		print '<li>'.$dbpref.$table.'&hellip;';
+	 //  $str = <<< HTML <li>$dbpref.$table.'&hellip;';HTML;
+		print $dbpref.$table.'&hellip;';
+
 		$tableStatus = Query("show table status from $dbname like '{".$table."}'");
 		$numRows = NumRows($tableStatus);
 		if($numRows == 0) {
@@ -85,8 +87,8 @@ function Upgrade() {
 				if(array_key_exists($fieldName, $tableSchema['fields'])) {
 					$wantedType = $tableSchema['fields'][$fieldName];
 					if(strcasecmp($wantedType, $type)) {
-						print " \"".$fieldName."\" not correct type: was $type, wanted $wantedType &hellip;<br />";
-						if($fieldName == 'id') {
+
+						print " \"".$fieldName."\" not correct type: was $type, wanted $wantedType &hellip;";						if($fieldName == 'id') {
 							print_r($field);
 							print '{ '.$type.' }';
 						}
@@ -120,13 +122,14 @@ function Upgrade() {
 			}
 			if (!compareIndexes($curindexes, $newindexes)) {
 				$changes++;
-				print '<br>Recreating indexes...<br>';
+				print '/nRecreating indexes.../n';
                 recreateIndex($curindexes, $newindexes, $table);
 			}
 			if($changes == 0)
 				print ' OK.';
 		}
-		print '</li>';
+
+
 	}
 }
 
@@ -137,14 +140,14 @@ function recreateIndex($curindexes, $newindexes, $table) {
             continue;
         }
 
-        print " - removing index {$name} ({$idx['type']}, {$idx['fields']})<br>";
+        print " - removing index {$name} ({$idx['type']}, {$idx['fields']})/n";
         if ($idx['type'] == 'primary')
             Query('ALTER TABLE `{'.$table.'}` DROP PRIMARY KEY');
         else
             Query('ALTER TABLE `{'.$table.'}` DROP INDEX `'.$name.'`');
     }
     foreach ($newindexes as $name=>$idx) {
-        print " - adding index {$name} ({$idx['type']}, {$idx['fields']})<br>";
+        print " - adding index {$name} ({$idx['type']}, {$idx['fields']})/n";
         if ($idx['type'] == 'primary')
             $add = 'PRIMARY KEY';
         else if ($idx['type'] == 'unique')

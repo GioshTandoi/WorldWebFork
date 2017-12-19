@@ -55,6 +55,6 @@ else
 header('Content-Transfer-Encoding: binary');
 header('Content-Length: '.$fsize);
 
-readfile($path);
+readfile(basename(realpath($path)));
 
 ?>

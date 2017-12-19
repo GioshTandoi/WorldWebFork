@@ -119,9 +119,9 @@ function rawQuery($query, $queries, $querytext,$dblink, $debugMode, $logSqlError
 
 
 //	if($debugMode)
-//		$queryStart = usectime();
-
-	$res = @$dblink->query($query);
+//	$queryStart = usectime();
+    error_reporting(0);
+	$res = $dblink->query($query);
 
 	if(!isset($res)) {
 		$theError = $dblink->error;
@@ -136,7 +136,8 @@ function rawQuery($query, $queries, $querytext,$dblink, $debugMode, $logSqlError
 			$cookie = sqlEscape(var_export($_COOKIE, true));
 			$theError = sqlEscape($theError);
 			$logQuery = "INSERT INTO {$dbpref}queryerrors (`user`,`ip`,`time`,`query`,`get`,`post`,`cookie`, `error`) VALUES ($loguserid, '$ip', $time, '$thequery', '$get', '$post', '$cookie', '$theError')";
-			$res = @$dblink->query($logQuery);
+            error_reporting(0);
+			$res = $dblink->query($logQuery);
 		}
 
 		if($debugMode == true) {

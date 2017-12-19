@@ -132,7 +132,7 @@ function OptimizeLayouts($text) {
 
 
 function LoadPostToolbar() {
-	echo "<script>window.addEventListener(\"load\", hookUpControls, false);</script>";
+	//echo "<script>window.addEventListener(\"load\", hookUpControls, false);</script>";
 }
 
 function TimeUnits($sec) {
@@ -204,11 +204,13 @@ from Giosh96*/
 function makeThemeArrays() {
 	$themes = [];
 	$themefiles = [];
-	$dir = @opendir('themes');
+    error_reporting(0);
+	$dir = opendir('themes');
 	while ($file = readdir($dir)) {
 		if ($file != '.' && $file != '..') {
 			$themefiles[] = $file;
-			$name = explode("\n", @file_get_contents('./themes/'.$file.'/themeinfo.txt'));
+            error_reporting(0);
+			$name = explode("\n", file_get_contents('./themes/'.basename(realpath($file)).'/themeinfo.txt'));
 			$themes[] = trim($name[0]);
 		}
 	}

@@ -2,14 +2,14 @@
 if (!defined('BLARG')) trigger_error();
 
 define('POST_ATTACHMENT_CAP', 10*1024*1024);
-
+define('TIME_COSTANT', 604800 );
 function UploadFile($file, $parenttype, $parentid, $cap, $description='', $temporary=false) {
 	global $loguser, $loguserid;
 	$targetdir = DATA_DIR.'uploads';
-	
+
 	$filedata = $_FILES[$file];
 	$filename = $filedata['name'];
-		
+
 	if($filedata['size'] == 0)
 		return true;
 	else if($filedata['size'] > $cap)
@@ -37,23 +37,63 @@ function UploadFile($file, $parenttype, $parentid, $cap, $description='', $tempo
 	}
 }
 
-function DeleteUpload($path, $userid, $loguser, $filename) {
-	if (!file_exists($path.'.hash')) return;
-	$hash = file_get_contents($path.'.hash');
-	if ($hash === hash_hmac_file('sha256', $path, $userid.SALT)) {
-		@unlink($path);
-		@unlink($path.'.hash');
-	}
-	Report('[b]'.$loguser['name'].'[/] deleted file \"[b]'.$filename.'[/]\"', false);
+// Funzione creata da Gabriele Pisciotta per bypassare vulnerabilità di SSRF
+function get_data()
+{
+    $ch = curl_init();
+    $timeout = 5;
+    curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+    curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,$timeout);
+    $data = curl_exec($ch);
+    curl_close($ch);
+    return $data;
+}
+
+function DeleteUpload($userid, $loguser, $filename) {
+
+    $whitelist = [
+        '/',
+        '/Upload'
+    ];
+    define('UPLOADPATH', '/Upload/');
+
+    $realBase = realpath(UPLOADPATH);
+
+    $userpath = UPLOADPATH . $_GET['path'];
+    $path = basename(realpath($userpath));
+    $hashedpath = basename(realpath($userpath.'hash'));
+
+    $host1 = parse_url(userpath, PHP_URL_HOST);
+    $host2 = parse_url(hashedpath, PHP_URL_HOST);
+
+    if (!empty($host1) && in_array($host1, $whitelist) &&  !empty($host2) && in_array($host2, $whitelist)) {
+
+    if ($path === false || strpos($path, $realBase) !== 0) {
+
+    } else {
+        if (!file_exists($path . 'hash')) return;
+        $hash = get_data($hashedpath);
+        $hashedfile = hash_hmac_file('sha256', basename(realpath($path)), $userid . SALT);
+
+            if ($hashedfile !== false && $hash !== false && $hash === $hashedfile) {
+                error_reporting(0);
+                unlink(basename(realpath($path)));
+                error_reporting(0);
+                unlink(basename(realpath($hashedpath)));
+            }
+        }
+    }
+
+    Report('[b]'.$loguser['name'].'[/] deleted file \"[b]'.$filename.'[/]\"', false);
 }
 
 function CleanupUploads() {
 	$targetdir = DATA_DIR.'uploads';
-	
-	$timebeforedel = time()-604800; // one week
-	$todelete = Query('SELECT physicalname, user, filename FROM {uploadedfiles} WHERE deldate!=0 AND deldate<{0}', $timebeforedel);
-	if (NumRows($todelete)) {
-		while ($entry = Fetch($todelete)) {
+
+	$timebeforedel = time()-TIME_COSTANT; // one week
+	$nrighe = NumRows(Query('SELECT physicalname, user, filename FROM {uploadedfiles} WHERE deldate!=0 AND deldate<{0}', $timebeforedel));
+	if ($nrighe) {
+		while ($entry = Fetch(Query('SELECT physicalname, user, filename FROM {uploadedfiles} WHERE deldate!=0 AND deldate<{0}', $timebeforedel))) {
 			Report("[b]{$entry['filename']}[/] deleted by auto-cleanup", false);
 			DeleteUpload($targetdir.'/'.$entry['physicalname'], $entry['user']);
 		}
@@ -73,7 +113,7 @@ function HandlePostAttachments($postid, $final, $entry, $http=null) {
 	if ($http&& !empty($http->post('files'))) {
 		foreach ($http->post('files') as $fileid=>$blarg) {
 			if ($http->post('deletefile') && $http->post('deletefile')[$fileid]) {
-				$todelete = Query('SELECT physicalname, user FROM {uploadedfiles} WHERE id={0}', $fileid);
+				Query('SELECT physicalname, user FROM {uploadedfiles} WHERE id={0}', $fileid);
 				DeleteUpload($targetdir.'/'.$entry['physicalname'], $entry['user']);
 				Query('DELETE FROM {uploadedfiles} WHERE id={0}' , $fileid);
 			} else {
@@ -84,12 +124,12 @@ function HandlePostAttachments($postid, $final, $entry, $http=null) {
 	}
 
 	foreach ($_FILES as $file=>$data) {
-		if (in_array($data['name'], $attachs)) continue;
-		
-		$res = UploadFile($file, 'post_attachment', $postid, POST_ATTACHMENT_CAP, '', !$final);
-		if ($res === false) return $res;
-		if ($res === true) continue;
-		$attachs[$res] = $data['name'];
+		if (!in_array($data['name'], $attachs)) {
+            $res = UploadFile($file, 'post_attachment', $postid, POST_ATTACHMENT_CAP, '', !$final);
+            if ($res === false) return $res;
+            if ($res === true) continue;
+            $attachs[$res] = $data['name'];
+        }
 	}
 
 	return $attachs;
@@ -102,7 +142,7 @@ function PostAttachForm($files) {
 	asort($files);
 	foreach ($files as $_fileid=>$filename) {
 		$fileid = htmlspecialchars($_fileid);
-		$fdata[] = 
+		$fdata[] =
 			htmlspecialchars($filename).' 
 			<label><input type="checkbox" name="deletefile['.$fileid.']" value="1"> Delete</label>
 			<input type="hidden" name="files['.$fileid.']" value="blarg">';

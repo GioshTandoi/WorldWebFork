@@ -5,6 +5,8 @@ if (!defined('BLARG')) trigger_error();
 // --- General layout functions
 // ----------------------------------------------------------------------------
 
+
+
 function RenderTemplate($template,$tpl, $mobileLayout=true, $options=null) {
 
     $plugintemplates=[];
@@ -495,29 +497,30 @@ function DoSmileyBar($smiliesOrdered, $taname = 'text') {
 
 	$expandAt = 100;
 	LoadSmiliesOrdered();
-	print '<table class="message margin">
-		<tr class="header0"><th>'.__('Smilies').'</th></tr>
-		<tr class="cell0"><td id="smiliesContainer">';
+
+	//'<table class="message margin">
+    //<tr class="header0"> <th>'.__('Smilies').'</th></tr>
+    //<tr class="cell0"><td id="smiliesContainer">';
 
 	if(count($smiliesOrdered) > $expandAt)
 		write("<button class=\"expander\" id=\"smiliesExpand\" onclick=\"expandSmilies();\">&#x25BC;</button>");
-	print "<div class=\"smilies\" id=\"commonSet\">";
+	    print "<div class=\"smilies\" id=\"commonSet\">";
 
-	$i = 0;
-	foreach($smiliesOrdered as $s) {
-		if($i == $expandAt)
+	    $i = 0;
+	        foreach($smiliesOrdered as $s) {
+		    if($i == $expandAt)
 			print "</div><div class=\"smilies\" id=\"expandedSet\">";
 
 
-		$code=$s['code'];
-		if(strpos($code, "'")!== FALSE)
+	    	$code=$s['code'];
+	    	if(strpos($code, "'")!== FALSE)
 		    $code= str_replace("'", "\'", $code);
 
-		print '<img src=\"'.resourceLink('img/smilies/'.$s['image']).'\" alt=\"'.htmlentities($s['code']).'\" title=\"'.htmlentities($s['code'])."\" onclick=\"insertSmiley(' ".$code." ');\" />";
+	    	print '<img src=\"'.resourceLink('img/smilies/'.$s['image']).'\" alt=\"'.htmlentities($s['code']).'\" title=\"'.htmlentities($s['code'])."\" onclick=\"insertSmiley(' ".$code." ');\" />";
 		$i++;
 	}
 
-	print '</div></td></tr></table>';
+	//print '</div></td></tr></table>';
 }
 
 function DoPostHelp() {
