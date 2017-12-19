@@ -270,17 +270,17 @@ class Spyc {
 	if(is_object($value)) $value = (array)$value;
 	if (is_array($value)) {
 	  if (empty ($value))
-		return $this->_dumpNode($key, [], $indent, $previous_key, $first_key, $source_array);
+		return $this->_dumpNode($key, [], $indent, $source_array);
 	  // It has children.  What to do?
 	  // Make it the right kind of item
-	  $string = $this->_dumpNode($key, self::REMPTY, $indent, $previous_key, $first_key, $source_array);
+	  $string = $this->_dumpNode($key, self::REMPTY, $indent, $source_array);
 	  // Add the indent
 	  $indent += $this->_dumpIndent;
 	  // Yamlize the array
 	  $string .= $this->_yamlizeArray($value,$indent);
 	} elseif (!is_array($value)) {
 	  // It doesn't have children.  Yip.
-	  $string = $this->_dumpNode($key, $value, $indent, $previous_key, $first_key, $source_array);
+	  $string = $this->_dumpNode($key, $value, $indent, $source_array);
 	}
 	return $string;
   }
@@ -569,7 +569,7 @@ class Spyc {
 
 	$group = $this->nodeContainsGroup($line);
 	if (isset($group)) {
-	  $this->addGroup($line, $group);
+	  $this->addGroup($group);
 	  $line = $this->stripGroup ($line, $group);
 	}
 

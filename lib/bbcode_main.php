@@ -16,13 +16,7 @@ function applyNetiquetteToLinks($match) {
 	return $res;
 }
 
-function cleanUpPost($postText, $poster = '', $noSmilies = false, $noBr = false) {
-	global $postNoSmilies, $postNoBr, $smilies, $postPoster;
-	static $orig, $repl;
-
-	$postNoSmilies = $noSmilies;
-	$postNoBr = $noBr;
-	$postPoster = $poster;
+function cleanUpPost($postText) {
 
 	$s = $postText;
 

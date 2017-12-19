@@ -2,7 +2,7 @@
 if (!defined('BLARG')) trigger_error();
 
 //Plugin loader -- By Nikolaj
-global $pluginbuckets, $plugins, $plugin;
+
 
 if(isset($plugin))
     $oldplugin = $plugin;

@@ -1,8 +1,13 @@
 <?php
 if (!defined('BLARG')) trigger_error();
 
-function OnlineUsers($forum = 0, $update = true) {
+/*risoluzione 9337:
+da   function OnlineUsers($forum = 0, $update = true) {
 	global $loguserid;
+a  function OnlineUsers($loguserid=null, $forum = 0, $update = true) {
+From Giosh96  */
+function OnlineUsers($loguserid=null, $forum = 0, $update = true) {
+
 	$forumClause = '';
 	$browseLocation = __('online');
 
@@ -46,12 +51,14 @@ function OnlineUsers($forum = 0, $update = true) {
 //	$onlineUsers = "<div style=\"display: inline-block; height: 16px; overflow: hidden; padding: 0px; line-height: 16px;\">".$onlineUsers."</div>";
 	return $onlineUsers;
 }
-
-
-
-function getOnlineUsersText() {
+/*risoluzione 9337:
+da   function getOnlineUsersText() {
 	global $OnlineUsersFid, $loguserid;
+a   function getOnlineUsersText($OnlineUsersFid=null,$loguserid=null )
+From Giosh96  */
 
+
+function getOnlineUsersText($OnlineUsersFid=null,$loguserid=null ) {
 	$refreshCode = '';
 
 	if(!isset($OnlineUsersFid))

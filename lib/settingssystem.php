@@ -56,15 +56,15 @@ class Settings {
 		}
 	}
 
-	public static function getSettingsFile($pluginname) {
-		global $plugins;
-
+	public static function getSettingsFile($pluginname, $plugins=null) {
 		$settings = [];
 
 		//Get the setting list.
 		if($pluginname == 'main')
 			include(__DIR__.'/settingsfile.php');
 		else {
+		    if(!isset($plugins))
+		        return false;
             error_reporting(0);
 			include(__DIR__.'/../plugins/'.$plugins[$pluginname]['dir'].'/settingsfile.php');
 		}
@@ -140,8 +140,9 @@ class Settings {
 	public static function get($name) {
 		return self::$settingsArray['main'][$name];
 	}
-	public static function pluginGet($name) {
-		global $plugin;
+	public static function pluginGet($name, $plugin) {
+	    if(!isset($plugin))
+	        return;
 		return self::$settingsArray[$plugin][$name];
 	}
 }

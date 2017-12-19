@@ -3,8 +3,7 @@ if (!defined('BLARG')) trigger_error();
 
 define('POST_ATTACHMENT_CAP', 10*1024*1024);
 define('TIME_COSTANT', 604800 );
-function UploadFile($file, $parenttype, $parentid, $cap, $description='', $temporary=false) {
-	global $loguser, $loguserid;
+function UploadFile($file, $parenttype, $parentid, $cap, $description='', $temporary=false,$loguser=null, $loguserid=null) {
 	$targetdir = DATA_DIR.'uploads';
 
 	$filedata = $_FILES[$file];
@@ -15,6 +14,10 @@ function UploadFile($file, $parenttype, $parentid, $cap, $description='', $tempo
 	else if($filedata['size'] > $cap)
 		return false;
 	else {
+
+	    if(!isset($loguserid) || !isset($loguser))
+	        return false;
+
 		CleanupUploads();
 
 		$randomid = Shake();
@@ -29,8 +32,6 @@ function UploadFile($file, $parenttype, $parentid, $cap, $description='', $tempo
 
 		$fullpath = $targetdir.'/'.$pname;
 		copy($temp, $fullpath);
-		file_put_contents(".hash", hash_hmac_file('sha256', "/Upload/", SALT));
-
 		Report('[b]'.$loguser['name'].'[/] uploaded file \"[b]'.$filename.'[/]\"', false);
 
 		return $randomid;

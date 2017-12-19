@@ -67,7 +67,7 @@ function getPluginData($plugin, $load = true) {
 		$setting[1] = trim($setting[1]);
 		if($setting[0][0] == '#') continue;
 		if($setting[0][0] == "$")
-			registerSetting(substr($setting[0],1), $setting[1]);
+			registerSetting();
 		else
 			$plugindata[$setting[0]] = $setting[1];
 

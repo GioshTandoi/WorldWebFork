@@ -24,16 +24,22 @@ function get_data()
     return $data;
 }
 
-function __($english, $flags = 0)
+/*risoluzione 9337:
+da    function __($english, $flags = 0)
 {
 	global $languagePack, $language;
+a  function __($english, $languagePack=null, $language=null, $flags = 0)
+From Giosh96  */
+
+function __($english, $languagePack=null, $language=null, $flags = 0)
+{
 	if($language != 'en_US')
 	{
 		if(!isset($languagePack))
 		{
 			if(is_file(__DIR__.'/lang/'.$language.'.txt'))
 			{
-				importLanguagePack(__DIR__.'/lang/'.$language.'.txt');
+				importLanguagePack();
 				importPluginLanguagePacks($language.'.txt');
 			}
 			else
@@ -91,7 +97,7 @@ function importPluginLanguagePacks($file)
 		{
 			$foo = './plugins/'.$plugin.'/'.$file;
 			if(file_exists($foo))
-				importLanguagePack($foo);
+				importLanguagePack();
 		}
 	}
 }

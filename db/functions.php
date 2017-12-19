@@ -1,8 +1,19 @@
 <?php
 if (!defined('BLARG')) trigger_error();
 
-function Import($sqlFile) {
-	global $dblink, $dbpref;
+/*risoluzione 9337:
+da     function Import($sqlFile) {
+	    global $dblink, $dbpref;
+a      function Import($sqlFile, $dblink=null, $dbpref=null) {
+		if(!isset($dblink) || !isset($dbpref))
+	    return false;
+
+From Giosh96  */
+
+function Import($sqlFile, $dblink=null, $dbpref=null) {
+		if(!isset($dblink) || !isset($dbpref))
+	    return false;
+
 	$res = $dblink->multi_query(str_replace('{$dbpref}', $dbpref, file_get_contents($sqlFile)));
 
 	$i = 0; 
@@ -35,10 +46,25 @@ function creaQuery($table, $tableSchema)  {
         $create .= "\n) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;";
     return $create;
 }
-
-
-function Upgrade() {
+/*risoluzione 9337:
+da    function Upgrade() {
 	global $dbname, $dbpref;
+
+a
+function Upgrade($dbname=null, $dbpref=null) {
+
+    if(!isset($dbname) || !isset($dbpref))
+        return false;
+
+From Giosh96  */
+
+function Upgrade($dbname=null, $dbpref=null) {
+
+    if(!isset($dbname) || !isset($dbpref))
+        return false;
+
+    $tables=[];
+
 	//Load the board tables.
 	include(__DIR__ . '/schema.php');
 	//Allow plugins to add their own tables!

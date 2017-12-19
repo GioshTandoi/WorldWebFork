@@ -197,11 +197,10 @@ if (file_exists(URL_ROOT.'/themes/$theme/logo.png')) {
 	$logo = '<h1>'.$layout_boardtitle.'</h1><h3>'.$layout_description.'</h3>';
 }
 
-function checkForImage(&$image, $external, $file) {
-	global $dataDir, $dataUrl;
-	if(isset($image)) return;
+function checkForImage(&$image, $external, $file, $dataDir=null, $dataUrl=null) {
+		if(isset($image)) return;
 	if(isset($external)) {
-		if(file_exists($dataDir.$file))
+		if(file_exists($dataDir.$file) && isset($dataUrl))
 			$image = $dataUrl.$file;
 	} else {
 		if(file_exists($file))
