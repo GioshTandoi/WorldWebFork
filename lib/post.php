@@ -3,6 +3,7 @@
 if (!defined('BLARG')) trigger_error();
 
 function ParseThreadTags($title) {
+    $tags='';
 	preg_match_all('/\[(.*?)\]/', $title, $matches);
 	foreach($matches[1] as $tag) {
 
@@ -21,7 +22,7 @@ function ParseThreadTags($title) {
 
 		$tags .= '<span class=\"threadTag\" style=\"background-color: '.$color.';\">'.$tag.'</span>';
 	}
-	if(isset($tags))
+
 		$tags = ' '.$tags;
 
 	$title = str_replace('<', '&lt;', $title);
@@ -32,11 +33,13 @@ function ParseThreadTags($title) {
 function filterPollColors($input) {
 	return preg_replace('@[^#0123456789abcdef]@si', '', $input);
 }
+/*risoluzione 9337:
+ loadBlockLayouts( $blocklayouts, $loguserid)
+con aggiunta nel controllo isset($blocklayouts) di "|| !isset($loguserid)" e del riturn di $blocklayouts
+From Giosh96  */
+function loadBlockLayouts( $blocklayouts, $loguserid) {
 
-function loadBlockLayouts() {
-	global $blocklayouts, $loguserid;
-
-	if(isset($blocklayouts))
+	if(isset($blocklayouts) || !isset($loguserid))
 		return;
 
 	$rBlocks = Query('select * from {blockedlayouts} where blockee = {0}', $loguserid);
@@ -44,9 +47,11 @@ function loadBlockLayouts() {
 
 	while($block = Fetch($rBlocks))
 		$blocklayouts[$block['user']] = 1;
+
+	return $blocklayouts;
 }
 
-function getSyndrome($activity) {
+function getSyndrome($activity, $syndromes) {
 	include(__DIR__.'/syndromes.php');
 	$soFar = '';
 	foreach($syndromes as $minAct => $syndrome)
@@ -82,9 +87,10 @@ class MaxPosts {
 	}
 }
 
-$activityCache = [];
-function getActivity($id) {
-	global $activityCache;
+/*risoluzione 9337:
+  getActivity($id, $activityCache)
+From Giosh96  */
+function getActivity($id, $activityCache) {
 
 	if(!isset($activityCache[$id]))
 		$activityCache[$id] = FetchResult('select count(*) from {posts} where user = {0} and date > {1}', $id, (time() - 86400));
@@ -176,8 +182,22 @@ define('POST_PROFILE', 4);		  // profile about box. This is going to replace the
 //		* fid: the ID of the forum the thread containing the post is in (POST_NORMAL and POST_DELETED_SNOOP only)
 // 		* threadlink: if set, a link to the thread is added next to 'Posted on blahblah' (POST_NORMAL and POST_DELETED_SNOOP only)
 //		* noreplylinks: if set, no links to newreply.php (Quote/ID) are placed in the metabar (POST_NORMAL only)
+
+
+/*risoluzione 9337:
+da
 function makePost($post, $type, $params=[]) {
 	global $loguser, $loguserid, $usergroups, $isBot, $blocklayouts;
+a
+makePost($post, $type, $isBot,  $blocklayouts, $loguser, $loguserid,$usergroups, $params=[])
+con controllo
+if(!isset($loguser) || !isset($loguserid) || !isset($usergroups))
+	    return false;
+From Giosh96  */
+
+function makePost($post, $type, $isBot,  $blocklayouts, $loguser, $loguserid,$usergroups, $params=[]) {
+	if(!isset($loguser) || !isset($loguserid) || !isset($usergroups))
+	    return false;
 	$poster = getDataPrefix($post, 'u_');
 	$post['userlink'] = UserLink($poster);
 	LoadBlockLayouts();

@@ -43,13 +43,11 @@ function RenderTemplate($template,$tpl, $mobileLayout=true, $options=null) {
 }
 
 function makeCrumbs($path, $links='') {
-    $layout_crumbs = '';
-    $layout_actionlinks = '';
+
 
 	if(count($path) != 0) {
 		$pathPrefix = [actionLink(0) => Settings::get('breadcrumbsMainName')];
 
-		$bucket = 'breadcrumbs'; include(__DIR__.'/pluginloader.php');
 
 		$path = $pathPrefix + $path;
 	}
@@ -157,7 +155,6 @@ function makeForumCrumbs($crumbs, $forum) {
 
 function doThreadPreview($tid, $maxdate=0) {
     $loguser = Fetch(Query('SELECT * FROM {users} WHERE id={0}', $session['user']));
-    $try = ".($maxdate?\' AND {posts}.date<={1}':'').";
 	$review = [];
 	$ppp = $loguser['postsperpage'] ?: 20;
 
@@ -222,7 +219,7 @@ function rSubfora($parent, $viewableforums, $viewhidden,$loguserid, $boardlol=''
 }
 
 function rMods($parent, $boardlol) {
-    $f = Fetch(Query('SELECT MIN(l) minl, MAX(r) maxr FROM {forums} WHERE '.($parent==0 ? 'board={0}' : 'catid={1}'), $boardlol, -$parent));
+   Fetch(Query('SELECT MIN(l) minl, MAX(r) maxr FROM {forums} WHERE '.($parent==0 ? 'board={0}' : 'catid={1}'), $boardlol, -$parent));
     $rMods = Query('	SELECT
 							p.(arg, applyto, id),
 							u.(_userfields)
@@ -274,7 +271,6 @@ function makeForumListing($parent, $usergroups, $boardlol='') {
 	$categories = [];
 	while($forum = Fetch($rFora)) {
 		$skipThisOne = false;
-		$bucket = 'forumListMangler'; include(__DIR__.'/pluginloader.php');
 		if($skipThisOne == true) continue;
 		if (!isset($categories[$forum['catid']]))
 			$categories[$forum['catid']] = ['id' => $forum['catid'], 'name' => ($parent==0)?$forum['cname']:'Subforums', 'forums' => []];
@@ -292,7 +288,7 @@ function makeForumListing($parent, $usergroups, $boardlol='') {
 				$forum['numposts'] = '-';
 				if ($redir[1] == 'board') {
 					$tboard = $redir[2];
-					$f = Fetch(Query('SELECT MIN(l) minl, MAX(r) maxr FROM {forums} WHERE board={0}', $tboard));
+					Fetch(Query('SELECT MIN(l) minl, MAX(r) maxr FROM {forums} WHERE board={0}', $tboard));
 					$forum['numthreads'] = 0;
 					$forum['numposts'] = 0;
 					$sforums = sForums($parent, $boardlol);
@@ -341,7 +337,7 @@ function makeForumListing($parent, $usergroups, $boardlol='') {
 		$fdata['threads'] = $forum['numthreads'];
 		$fdata['posts'] = $forum['numposts'];
 		if(isset($forum['lastpostdate'])) {
-			$avatar = false;
+
 			$user = getDataPrefix($forum, 'lu_');
 			$fdata['lastpostdate'] = formatdate($forum['lastpostdate']);
             $pictureUrl= $user['picture'];
@@ -493,7 +489,7 @@ function makeAnncBar($loguserid) {
 	}
 }
 
-function DoSmileyBar($smiliesOrdered, $taname = 'text') {
+function DoSmileyBar($smiliesOrdered) {
 
 	$expandAt = 100;
 	LoadSmiliesOrdered();
@@ -509,7 +505,7 @@ function DoSmileyBar($smiliesOrdered, $taname = 'text') {
 	    $i = 0;
 	        foreach($smiliesOrdered as $s) {
 		    if($i == $expandAt)
-			print "</div><div class=\"smilies\" id=\"expandedSet\">";
+			//print "</div><div class=\"smilies\" id=\"expandedSet\">";
 
 
 	    	$code=$s['code'];
@@ -543,7 +539,6 @@ function DoPostHelp() {
 				[source]&hellip;[/source] &mdash; '.__('colorcoded block, assuming C#').' <br />
 				[source=&hellip;]&hellip;[/source] &mdash; '.__('colorcoded block, specific language').'<sup title=\"bnf, c, cpp, csharp, html4strict, irc, javascript, lolcode, lua, mysql, php, qbasic, vbnet, xml\">['.__('which?').']</sup> <br />
 	");
-	$bucket = 'postHelpPresentation'; include('./lib/pluginloader.php');
 	write('
 				<br />
 				<h4>'.__('Links').'</h4>

@@ -76,7 +76,7 @@ class Settings {
 		if(!isset(self::$settingsArray[$pluginname]))
 			self::$settingsArray[$pluginname] = [];
 
-		$changed = false;
+
 
 		$settings = self::getSettingsFile($pluginname);
 		foreach($settings as $name => $data) {

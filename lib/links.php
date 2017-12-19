@@ -173,8 +173,8 @@ function userLink($user,$usergroups, $poptart, $dorainbow, $newToday, $luckybast
 	else $scolor = 'color_unspec';
 
 	$classing = ' style="color: '.htmlspecialchars($fgroup[$scolor]).';"';
-
-	$bucket = 'userLink'; include(__DIR__.'/pluginloader.php');
+    //non è utilizzata
+	//$bucket = 'userLink'; include(__DIR__.'/pluginloader.php');
 
 	if (!$isbanned && $luckybastards && in_array($user['id'], $luckybastards)) {
 		$classing = ' style="text-shadow:0px 0px 4px;"';
@@ -190,8 +190,8 @@ function userLink($user,$usergroups, $poptart, $dorainbow, $newToday, $luckybast
 
 	if ($customID)
 		$classing .= " id=\"$customID\"";
-
-	$title = htmlspecialchars($user['displayname'] ? $user['displayname'] : $user['name']) . ' ('.$user['id'].') ['.htmlspecialchars($fgroup['title']).']';
+    //Non è utilizzata
+	//$title = htmlspecialchars($user['displayname'] ? $user['displayname'] : $user['name']) . ' ('.$user['id'].') ['.htmlspecialchars($fgroup['title']).']';
 	if ($returnOnlyHref) {
 		return pageLink('profile', $user['id'], false, $fname);
 	} else {
@@ -342,18 +342,18 @@ function getFullURL() {
 // --- Smarty interface
 // ----------------------------------------------------------------------------
 
-function smarty_function_pageLink($params, $template) {
+function smarty_function_pageLink($params) {
 	$passParams = isset($params['params']) ? $params['params'] : [];
 	return pageLink($params['name'], $passParams);
 }
 
-function smarty_function_actionLink($params, $template) {
+function smarty_function_actionLink($params) {
 	$id = isset($params['id']) ? $params['id'] : false;
 	$args = isset($params['args']) ? $params['args'] : '';
 	$url = isset($params['urlname']) ? $params['urlname'] : '';
 	return htmlspecialchars(actionLink($params['page'], ($id?:''), $args, $url));
 }
 
-function smarty_function_resourceLink($params, $template) {
+function smarty_function_resourceLink($params) {
 	return htmlspecialchars(resourceLink($params['url']));
 }

@@ -55,7 +55,7 @@ class Text_Diff_Renderer_inline extends Text_Diff_Renderer {
      */
     var $_split_level = 'lines';
 
-    function _blockHeader($xbeg, $xlen, $ybeg, $ylen)
+    function _blockHeader()
     {
         return $this->_block_header;
     }
@@ -65,7 +65,7 @@ class Text_Diff_Renderer_inline extends Text_Diff_Renderer {
         return $header;
     }
 
-    function _lines($lines, $prefix = ' ', $encode = true)
+    function _lines($lines, $encode = true)
     {
         if ($encode) {
             array_walk($lines, [&$this, '_encode']);
@@ -86,7 +86,7 @@ class Text_Diff_Renderer_inline extends Text_Diff_Renderer {
         return $this->_lines($lines, ' ', false);
     }
 
-    function _deleted($lines, $words = false)
+    function _deleted($lines)
     {
         array_walk($lines, [&$this, '_encode']);
         $lines[0] = $this->_del_prefix . $lines[0];

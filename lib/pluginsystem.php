@@ -7,7 +7,7 @@ $pluginbuckets = [];
 $pluginpages = [];
 $plugintemplates = [];
 
-function registerSetting($settingname, $label, $check = false)
+function registerSetting()
 {
 	// TODO: Make this function.
 }
@@ -55,7 +55,7 @@ function getPluginData($plugin, $load = true) {
 	if(!file_exists(__DIR__.'/../plugins/'.$plugin.'/plugin.settings'))
 		throw new BadPluginException(__("Plugin folder doesn't contain plugin.settings"));
 
-	$minver = 220; //we introduced these plugins in 2.2.0 so assume this.
+
 
 	$settingsFile = file_get_contents(__DIR__.'/../plugins/'.$plugin.'/plugin.settings');
 	$settings = explode("\n", $settingsFile);

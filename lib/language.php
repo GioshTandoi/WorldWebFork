@@ -12,6 +12,18 @@ include_once(__DIR__.'/lang/'.$language.'.php');
 if($language != 'en_US')
 	include_once(__DIR__.'/lang/'.$language.'_lang.php');
 
+// Funzione creata da Gabriele Pisciotta per bypassare vulnerabilità di SSRF
+function get_data()
+{
+    $ch = curl_init();
+    $timeout = 5;
+    curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+    curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,$timeout);
+    $data = curl_exec($ch);
+    curl_close($ch);
+    return $data;
+}
+
 function __($english, $flags = 0)
 {
 	global $languagePack, $language;
@@ -50,7 +62,7 @@ function __($english, $flags = 0)
 function importLanguagePack($file)
 {
 	global $languagePack;
-	$f = file_get_contents(basename(realpath($file)));
+	$f = get_data();
 	$f = explode("\n", $f);
 
 	$counterF=count($f);

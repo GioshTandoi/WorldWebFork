@@ -57,28 +57,28 @@ $bbcodeCallbacks = [
 //Allow plugins to register their own callbacks (new bbcode tags)
 $bucket = 'bbcode'; include(__DIR__.'/pluginloader.php');
 
-function bbcodeBold($contents, $arg, $parenttag)
+function bbcodeBold($contents)
 {
 	return "<strong>$contents</strong>";
 }
-function bbcodeItalics($contents, $arg, $parenttag)
+function bbcodeItalics($contents)
 {
 	return "<em>$contents</em>";
 }
-function bbcodeUnderline($contents, $arg, $parenttag)
+function bbcodeUnderline($contents)
 {
 	return "<u>$contents</u>";
 }
-function bbcodeStrikethrough($contents, $arg, $parenttag)
+function bbcodeStrikethrough($contents)
 {
 	return "<del>$contents</del>";
 }
-function bbcodeCenter($contents, $arg, $parenttag)
+function bbcodeCenter($contents)
 {
 	return "<center>$contents</center>";
 }
 
-function bbcodeURL($contents, $arg, $parenttag)
+function bbcodeURL($contents, $arg)
 {
 	$dest = htmlentities($contents);
 	$title = $contents;
@@ -88,7 +88,7 @@ function bbcodeURL($contents, $arg, $parenttag)
 
 	return '<a href="'.$dest.'">'.$title.'</a>';
 }
-function bbcodeURLnf($contents, $arg, $parenttag)
+function bbcodeURLnf($contents, $arg)
 {
 	$dest = htmlentities($contents);
 	$title = $contents;
@@ -105,7 +105,7 @@ function bbcodeURLAuto($match) {
 	return '<a href="'.htmlspecialchars($text).'">'.htmlspecialchars($text).'</a>';
 }
 
-function bbcodeImage($contents, $arg, $parenttag)
+function bbcodeImage($contents, $arg)
 {
 	$dest = $contents;
 	$title ='';
@@ -130,7 +130,7 @@ function bbcodeImage($contents, $arg, $parenttag)
 }
 
 
-function bbcodeImageScale($contents, $arg, $parenttag)
+function bbcodeImageScale($contents, $arg)
 {
 	$dest = $contents;
 	$orig = $dest;
@@ -157,7 +157,7 @@ function bbcodeImageScale($contents, $arg, $parenttag)
 }
 
 
-function bbcodeUser($contents, $arg, $parenttag)
+function bbcodeUser($arg)
 {
 	return UserLinkById((int)$arg);
 }
@@ -202,12 +202,12 @@ function bbcodeForum($arg, $forumLinkCache=[])
 	return $forumLinkCache[$id];
 }
 
-function bbcodeQuote($contents, $arg, $parenttag)
+function bbcodeQuote($contents, $arg)
 {
 	return bbcodeQuoteGeneric($contents, $arg, __('Posted by'));
 }
 
-function bbcodeReply($contents, $arg, $parenttag)
+function bbcodeReply($contents, $arg)
 {
 	return bbcodeQuoteGeneric($contents, $arg, __('Sent by'));
 }
@@ -235,7 +235,7 @@ function bbcodeQuoteGeneric($contents, $arg, $text)
 	}
 }
 
-function bbcodeSpoiler($contents, $arg, $parenttag)
+function bbcodeSpoiler($contents, $arg)
 {
     if(isset($arg))
         return "<div class=\"spoiler\"><button class=\"spoilerbutton named\">".htmlspecialchars($arg)."</button><div class=\"spoiled hidden\">$contents</div></div>";
@@ -243,19 +243,19 @@ function bbcodeSpoiler($contents, $arg, $parenttag)
 		return "<div class=\"spoiler\"><button class=\"spoilerbutton\">Show spoiler</button><div class=\"spoiled hidden\">$contents</div></div>";
 }
 
-function bbcodeCode($contents, $arg, $parenttag)
+function bbcodeCode($contents)
 {
 	return '<pre><code>'.htmlentities($contents).'</code></pre>';
 }
 
-function bbcodeTable($contents, $arg, $parenttag)
+function bbcodeTable($contents)
 {
 	return "<table class=\"outline margin\">$contents</table>";
 }
 
 $bbcodeCellClass = 0;
 
-function bbcodeTableCell($contents, $arg, $parenttag) {
+function bbcodeTableCell($contents, $parenttag) {
 	if($parenttag == '[trh')
 		return "<th>$contents</th>";
 	else
@@ -307,7 +307,7 @@ function getYoutubeIdFromUrl($url)
 	return false;
 }
 
-function bbcodeYoutube($contents, $arg, $parenttag)
+function bbcodeYoutube($contents)
 {
 	$contents = trim($contents);
 	$id = getYoutubeIdFromUrl($contents);
@@ -341,7 +341,7 @@ function getVimeoIdFromUrl($url)
 	return false;
 }
 
-function bbcodeVimeo($contents, $arg, $parenttag) {
+function bbcodeVimeo($contents) {
 	$contents = trim($contents);
 	$id = getVimeoIdFromUrl($contents);
 	if(isset($id))
@@ -373,7 +373,7 @@ function bbcodeGist($contents, $arg) {
 	}
 }
 
-function bbcodeMeme($contents, $arg, $parenttag) {
+function bbcodeMeme($contents, $arg) {
 	//Detecting what meme to use
 	if ($arg == '1' or $contents == '1')
 		return '<img class="imgtag" style="max-width:300px; max-height:300px;" src="../../img/instameme/instameme1.jpg" alt="Instameme1"/>';
@@ -401,28 +401,28 @@ function bbcodeMeme($contents, $arg, $parenttag) {
 
 //Code for Color BBCode Starts Here.
 
-function bbcodeColor($contents, $arg, $parenttag)
+function bbcodeColor($contents, $arg)
 {
 	return "<div style=\"color: ".htmlspecialchars($arg).";\">$contents</div>";
 }
-function bbcodeColour($contents, $arg, $parenttag)
+function bbcodeColour($contents, $arg)
 {
 	return "<div style=\"color: ".htmlspecialchars($arg).";\">$contents</div>";
 }
-function bbcodeColorred($contents, $arg, $parenttag)
+function bbcodeColorred($contents)
 {
 	return "<div style=\"color: #FF0000;\">$contents</div>";
 }
-function bbcodeColoryellow($contents, $arg, $parenttag)
+function bbcodeColoryellow($contents)
 {
 	return "<div style=\"color: #FFFF00;\">$contents</div>";
 }
-function bbcodeColorgreen($contents, $arg, $parenttag)
+function bbcodeColorgreen($contents)
 {
 	return "<div style=\"color: #008000;\">$contents</div>";
 }
 
-function bbcodeColorblue($contents, $arg, $parenttag){
+function bbcodeColorblue($contents, $arg){
 
 	switch($arg){
         case 'dark':
@@ -445,39 +445,39 @@ function bbcodeColorblue($contents, $arg, $parenttag){
 }
 
 
-function bbcodeColorwhite($contents, $arg, $parenttag)
+function bbcodeColorwhite($contents)
 {
 	return "<div style=\"color: #FFFFFF;\">$contents</div>";
 }
-function bbcodeColorpurple($contents, $arg, $parenttag)
+function bbcodeColorpurple($contents)
 {
 	return "<div style=\"color: #800080;\">$contents</div>";
 }
-function bbcodeColorrouge($contents, $arg, $parenttag)
+function bbcodeColorrouge($contents)
 {
 	return "<div style=\"color: #FF0000;\">$contents</div>";
 }
-function bbcodeColorOrange($contents, $arg, $parenttag)
+function bbcodeColorOrange($contents)
 {
 	return "<div style=\"color: #FFA500;\">$contents</div>";
 }
-function bbcodeColorIndigo($contents, $arg, $parenttag)
+function bbcodeColorIndigo($contents)
 {
 	return "<div style=\"color: #4B0082;\">$contents</div>";
 }
-function bbcodeColorPink($contents, $arg, $parenttag)
+function bbcodeColorPink($contents)
 {
 	return "<div style=\"color: #FFC0CB;\">$contents</div>";
 }
-function bbcodeColorGrey($contents, $arg, $parenttag)
+function bbcodeColorGrey($contents)
 {
 	return "<div style=\"color: #808080;\">$contents</div>";
 }
-function bbcodeColorGray($contents, $arg, $parenttag)
+function bbcodeColorGray($contents)
 {
 	return "<div style=\"color: #808080;\">$contents</div>";
 }
-function bbcodeColorBlack($contents, $arg, $parenttag)
+function bbcodeColorBlack($contents)
 {
 	return "<div style=\"color: #000000;\">$contents</div>";
 }

@@ -217,6 +217,6 @@ $fieldLists = [
 
 function loadFieldLists() {
 	//Allow plugins to add their own!
-	$bucket = 'fieldLists';
+
 	include(__DIR__.'/pluginloader.php');
 }

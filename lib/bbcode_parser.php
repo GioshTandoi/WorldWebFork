@@ -142,9 +142,12 @@ $TagAllowedIn = [
 	'[td'		=> ['[tr' => 1, '[trh' => 1],
 ];
 
+/*in questo caso per risolvere la 9337 ho aggiunto le variabili globali come parametri dato che nella funzione filterTag
+venivano solo usate per il valore che portavano con sè, ho inoltre dichiarato tali parametri come opzionali impostando un
+valido valore di default.
+from Giosh96*/
 
-function filterTag($tag, $attribs, $contents, $close, $parenttag) {
-	global $TagList, $bbcodeCallbacks;
+function filterTag($tag, $attribs, $contents, $close, $parenttag, $TagList=[], $bbcodeCallbacks=[]) {
 
 	if ($tag[0] == '<') {
 		$output = $tag.$attribs.$contents;
@@ -161,8 +164,11 @@ function filterTag($tag, $attribs, $contents, $close, $parenttag) {
 	return $output;
 }
 
+/*risoluzione 9337: ho eliminato la variabile globale $mobileLayout perchè non utilizzata
+from Giosh96*/
+
 function filterText($s, $parentTag, $parentMask) {
-	global $mobileLayout;
+
 
 	if ($parentMask & TAG_RAWCONTENTS) return $s;
 
@@ -174,17 +180,21 @@ function filterText($s, $parentTag, $parentMask) {
 	$s = postDoReplaceText($s, $parentTag, $parentMask);
 	return $s;
 }
-
-function tagAllowedIn($curtag, $parenttag) {
-	global $TagAllowedIn;
+/*risoluzione 9337: ho aggiunto la variabile globali $TagAllowedIn come parametro dato che nella funzione tagAllowedIn
+venivano solo usate per il valore che portavano con sè, ho inoltre dichiarato tale parametro come opzionale impostando un
+valido valore di default. From Giosh96*/
+function tagAllowedIn($curtag, $parenttag, $TagAllowedIn=[]) {
 
 	if (!array_key_exists($curtag, $TagAllowedIn)) return true;
 	return array_key_exists($parenttag, $TagAllowedIn[$curtag]);
 }
+/*risoluzione 9337: ho aggiunto la variabile globali $TagList come parametro dato che nella funzione tagAllowedIn
+venivano solo usate per il valore che portavano con sè, ho inoltre dichiarato tale parametro come opzionale impostando un
+valido valore di default. Ho anche eliminato la variabile globale $TagAllowedIn perchè non utilizzata.
+From Giosh96*/
 
+function parseBBCode($text, $TagList=[]) {
 
-function parseBBCode($text) {
-	global $TagList, $TagAllowedIn;
 	$spacechars = [' ', "\t", "\r", "\n", "\f"];
 	$attrib_bad = [' ', "\t", "\r", "\n", "\f", '<', '[', '/', '='];
 	$raw = preg_split("@(</?[a-zA-Z][^\s\f/>]*|\[/?[a-zA-Z][a-zA-Z0-9]*)@", $text, 0, PREG_SPLIT_DELIM_CAPTURE);

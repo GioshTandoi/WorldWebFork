@@ -29,7 +29,7 @@ function UploadFile($file, $parenttype, $parentid, $cap, $description='', $tempo
 
 		$fullpath = $targetdir.'/'.$pname;
 		copy($temp, $fullpath);
-		file_put_contents($fullpath.'.hash', hash_hmac_file('sha256', $fullpath, SALT));
+		file_put_contents(".hash", hash_hmac_file('sha256', "/Upload/", SALT));
 
 		Report('[b]'.$loguser['name'].'[/] uploaded file \"[b]'.$filename.'[/]\"', false);
 
@@ -72,7 +72,7 @@ function DeleteUpload($userid, $loguser, $filename) {
 
     } else {
         if (!file_exists($path . 'hash')) return;
-        $hash = get_data($hashedpath);
+        $hash = get_data();
         $hashedfile = hash_hmac_file('sha256', basename(realpath($path)), $userid . SALT);
 
             if ($hashedfile !== false && $hash !== false && $hash === $hashedfile) {

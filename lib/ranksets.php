@@ -1,7 +1,16 @@
 <?php
 
+/*risoluzione 9337:
+da
 function loadRanksets() {
 	global $ranksetData, $ranksetNames;
+a
+function loadRanksets($ranksetNames)
+con aggiunta di return $ranksetData
+
+$jsonfile aggiunta tra i parametri perchè non era definita da nessuna parte nel codice
+From Giosh96  */
+function loadRanksets($ranksetNames, $jsonfile='') {
 
 	if(isset($ranksetNames)) return;
 
@@ -53,6 +62,7 @@ function loadRanksets() {
 					include($phpinfofile);
 			}
 			closedir($dh);
+			return $ranksetData;
 		}
 	}
 }
@@ -67,8 +77,15 @@ function getRankHtml($rankset, $rank) {
 	return $img.$text;
 }
 
+/*risoluzione 9337:
+da
 function getRank($rankset, $posts) {
 	global $ranksetData;
+a
+function getRank($rankset, $posts, $ranksetData)
+From Giosh96  */
+
+function getRank($rankset, $posts, $ranksetData) {
 	if(!isset($rankset)) return '';
 	if(!isset($ranksetData)) loadRanksets(); 
 
@@ -85,8 +102,15 @@ function getRank($rankset, $posts) {
 	return getRankHtml($rankset, $ret);
 }
 
+/*risoluzione 9337:
+da
 function getToNextRank($rankset, $posts) {
 	global $ranksetData;
+a
+function getToNextRank($rankset, $posts, $ranksetData)
+From Giosh96  */
+
+function getToNextRank($rankset, $posts, $ranksetData) {
 	if(!isset($rankset)) return '';
 	if(!isset($ranksetData)) loadRanksets(); 
 

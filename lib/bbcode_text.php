@@ -1,12 +1,14 @@
 <?php
 if (!defined('BLARG')) trigger_error();
 
+
+/*risoluzione 9337: le variabili globali $smilies, $smiliesReplaceOrig, $smiliesReplaceNew venivano risettate copletamente ma
+ il loro valore non veniva utilizzato, quindi le ho aggiunte tutte in un array che ritorna ogni suo valore
+From Giosh96  */
+
 // Misc things that get replaced in text.
-
 function loadSmilies() {
-	global $smilies, $smiliesReplaceOrig, $smiliesReplaceNew;
-
-	$rSmilies = Query('select * from {smilies} order by length(code) desc');
+		$rSmilies = Query('select * from {smilies} order by length(code) desc');
 	$smilies = [];
 
 	while($smiley = Fetch($rSmilies))
@@ -20,15 +22,19 @@ function loadSmilies() {
 		$smiliesReplaceOrig[] = '/(?<!\w)'.preg_quote($smilies[$i]['code'], '/').'(?!\w)/';
 		$smiliesReplaceNew[] = "<img class=\"smiley\" alt=\"\" src=\"".resourceLink('img/smilies/'.$smilies[$i]['image'])."\" />";
 	}
-}
 
-function loadSmiliesOrdered()
-{
-	global $smiliesOrdered;
-	$rSmilies = Query('select * from {smilies}');
-	$smilies = array();
+	return array($smilies, $smiliesReplaceOrig, $smiliesReplaceNew);
+}
+/*risoluzione 9337: variabile globale $smiliesOrdered veniva risettata copletamente e il suo valore
+non veniva utilizzato, quindi l'ho posta come valore di ritorno
+From Giosh96  */
+function loadSmiliesOrdered(){
+		$rSmilies = Query('select * from {smilies}');
+	// ho eliminato la variabile dichiarata $smilies = array(); perchè inutilizzata. From Giosh96
 	while($smiley = Fetch($rSmilies))
 		$smiliesOrdered[] = $smiley;
+
+	return $smiliesOrdered;
 }
 
 // lol
@@ -57,9 +63,11 @@ function rainbowify($s)
 	return $out;
 }
 
+/*risoluzione 9337:  in postDoReplaceText-->$postNoSmilies=false, $postPoster='',$smiliesReplaceOrig=[], $smiliesReplaceNew =[].
+Inoltre $parentTag è stata eliminata dai parametri perchè non utilizzata
+From Giosh96  */
 //Main post text replacing.
-function postDoReplaceText($s, $parentTag, $parentMask) {
-	global $postNoSmilies, $postPoster, $smiliesReplaceOrig, $smiliesReplaceNew;
+function postDoReplaceText($s, $parentMask, $postNoSmilies=false, $postPoster='',$smiliesReplaceOrig=[], $smiliesReplaceNew =[]) {
 
 	if(isset($postPoster))
 		$s = preg_replace("'/me '",'<b>* '.htmlspecialchars($postPoster).'</b> ', $s);
@@ -72,7 +80,8 @@ function postDoReplaceText($s, $parentTag, $parentMask) {
 	if(!isset($postNoSmilies)) {
 		if(!isset($smiliesReplaceOrig))
 			LoadSmilies();
-		$s = preg_replace($smiliesReplaceOrig, $smiliesReplaceNew, $s);
+		if(isset($smiliesReplaceNew))
+		    $s = preg_replace($smiliesReplaceOrig, $smiliesReplaceNew, $s);
 	}
 	
 	//Automatic links

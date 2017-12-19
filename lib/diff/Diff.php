@@ -161,7 +161,7 @@ class Text_Diff {
      * @param string $line  The line to trim.
      * @param integer $key  The index of the line in the array. Not used.
      */
-    static function trimNewlines(&$line, $key)
+    static function trimNewlines(&$line)
     {
         $line = str_replace(["\n", "\r"], '', $line);
     }

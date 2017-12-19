@@ -422,7 +422,7 @@ class Text_Diff_Engine_native {
             assert('$j < $other_len && ! $other_changed[$j]');
             $j++;
             if ($j < $other_len && $other_changed[$j]) {
-                $corresponding = $i;
+
                 while ($j < $other_len && $other_changed[$j]) $j++;
             }
         }

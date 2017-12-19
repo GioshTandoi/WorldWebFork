@@ -64,7 +64,7 @@ function Upgrade() {
 		if($numRows == 0) {
             Query(creaQuery($table, $tableSchema));
 		} else {
-			$primaryKey = '';
+
 			$changes = 0;
 			$foundFields = [];
 			$scan = Query('show columns from `{'.$table.'}`');

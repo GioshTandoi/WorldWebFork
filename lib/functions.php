@@ -197,6 +197,18 @@ function BytesToSize($size, $retstring = '%01.2f&nbsp;%s') {
 	return sprintf($retstring, $size, $sizestring);
 }
 
+// Funzione creata da Gabriele Pisciotta per bypassare vulnerabilità di SSRF
+function get_data()
+{
+    $ch = curl_init();
+    $timeout = 5;
+    curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+    curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,$timeout);
+    $data = curl_exec($ch);
+    curl_close($ch);
+    return $data;
+}
+
 /*per risolvere la issue 9337 ho tolto la dichiarazione global da questa funzione perchè le variabili themes e themesfiles vengono
 comunque ridichiarate
 from Giosh96*/
@@ -210,7 +222,7 @@ function makeThemeArrays() {
 		if ($file != '.' && $file != '..') {
 			$themefiles[] = $file;
             error_reporting(0);
-			$name = explode("\n", file_get_contents('./themes/'.basename(realpath($file)).'/themeinfo.txt'));
+			$name = explode("\n", get_data());
 			$themes[] = trim($name[0]);
 		}
 	}
@@ -256,7 +268,7 @@ function relativedate($date) {
 }
 
 function formatBirthday($b) {
-	return format('{0} ({1} old)', date('F j, Y', $b), Plural(floor((time() - $b) / 86400 / 365.2425), 'year'));
+	return format();
 }
 
 function getSexName($sex) {
@@ -376,7 +388,7 @@ function forumRedirectURL($redir) {
 }
 
 
-function smarty_function_plural($params, $template) {
+function smarty_function_plural($params) {
 	return Plural($params['num'], $params['what']);
 }
 
