@@ -93,7 +93,8 @@ function postDoReplaceText($s, $parentMask, $postNoSmilies=false, $postPoster=''
 	}
 
 	//Plugin bucket for allowing plugins to add replacements.
-	$bucket = 'postMangler'; include(__DIR__.'/pluginloader.php');
+	//$bucket = 'postMangler';
+	include(__DIR__.'/pluginloader.php');
 
 	return $s;
 }

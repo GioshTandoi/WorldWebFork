@@ -702,7 +702,7 @@ class Spyc {
 	// Check for empty strings
 	$regex = "/(\"\")|(\'\')/";
 	if (preg_match_all($regex,$inline,$strings)) {
-	  $saved_empties = $strings[0];
+	  //$saved_empties = $strings[0];
 	  $inline  = preg_replace($regex,'YAMLEmpty',$inline);
 	}
 	unset($regex);
@@ -710,7 +710,7 @@ class Spyc {
 	// Check for strings
 	$regex = "/(?:(\")|(?:\'))((?(1)[^\"]+|[^\']+))(?(1)\"|\')/";
 	if (preg_match_all($regex,$inline,$strings)) {
-	  $saved_strings = $strings[0];
+	 // $saved_strings = $strings[0];
 	  $inline  = preg_replace($regex,'YAMLString',$inline);
 	}
 	unset($regex);

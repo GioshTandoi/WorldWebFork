@@ -352,8 +352,8 @@ function bbcodeVimeo($contents) {
 
 	return '[vimeo]'.$contents.'[/vimeo]';
 }
-
-function bbcodeGist($contents, $arg) {
+//elimnata args perchè non più utile
+function bbcodeGist($contents) {
 	if (!function_exists('curl_init')) {
 		return "<a href=\"https://gist.github.com/$contents\">View $contents on GitHub</a>";
 	}

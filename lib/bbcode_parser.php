@@ -300,7 +300,7 @@ function closing($si, $outputstack, $tagname, $TagList, $followingtext, $current
             $ccontents = $closer['contents'];
             $cattribs = $closer['attribs'];
             $ctag = $closer['tag'];
-            $ctagname = substr($ctag,1);
+            //$ctagname = substr($ctag,1);
             if ($ctag != $tagname) $outputstack[$si]['contents'] .= filterTag($ctag, $cattribs, $ccontents, false, $outputstack[$si]['tag']);
             else break;
         }
@@ -330,7 +330,7 @@ function tagOpening($currentmask, $outputstack, $tagname, $si, $cur, $tagattribs
                 $ccontents = $closer['contents'];
                 $cattribs = $closer['attribs'];
                 $ctag = $closer['tag'];
-                $ctagname = substr($ctag,1);
+                //$ctagname = substr($ctag,1);
                 $outputstack[$si]['contents'] .= filterTag($ctag, $cattribs, $ccontents, false, $outputstack[$si]['tag']);
             }
             $outputstack[++$si] = ['tag' => $cur, 'attribs' => $tagattribs, 'contents' => filterText($followingtext, $cur, $tagmask)];

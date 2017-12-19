@@ -168,16 +168,16 @@ function userLink($user,$usergroups, $poptart, $dorainbow, $newToday, $luckybast
 	//else if ($fsex != 2)
 	//	$fsex = $fsex ? 0:1; // switch male/female for the lulz
 
-	if ($fsex == 0) $scolor = 'color_male';
-	else if ($fsex == 1) $scolor = 'color_female';
-	else $scolor = 'color_unspec';
+	//if ($fsex == 0) $scolor = 'color_male';
+	//else if ($fsex == 1) $scolor = 'color_female';
+	//else $scolor = 'color_unspec';
 
-	$classing = ' style="color: '.htmlspecialchars($fgroup[$scolor]).';"';
+	//$classing = ' style="color: '.htmlspecialchars($fgroup[$scolor]).';"';
     //non è utilizzata
 	//$bucket = 'userLink'; include(__DIR__.'/pluginloader.php');
 
 	if (!$isbanned && $luckybastards && in_array($user['id'], $luckybastards)) {
-		$classing = ' style="text-shadow:0px 0px 4px;"';
+
 		$fname = prettyRainbow($fname);
 	} else if ($dorainbow == true) {
 		if (!$isbanned)

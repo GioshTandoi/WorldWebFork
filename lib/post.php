@@ -109,7 +109,7 @@ function makePostText($post, $poster) {
 		'date' => formatdate($post['date']),
 		'rank' => GetRank($poster['rankset'], $poster['posts']),
 	];
-	$bucket = 'amperTags'; include(__DIR__.'/pluginloader.php');
+	//$bucket = 'amperTags'; include(__DIR__.'/pluginloader.php');
 
 	if(isset($poster['signature']))
 		if(!$poster['signsep'])
@@ -243,21 +243,21 @@ function makePost($post, $type, $isBot,  $blocklayouts, $loguser, $loguserid,$us
 
 					if (($poster['id'] == $loguserid && HasPermission('user.deleteownposts')) || HasPermission('mod.deleteposts', $forum)) {
 						if ($post['id'] != $post['firstpostid']) {
-							$link = htmlspecialchars(actionLink('editpost', $post['id'], 'delete=1&key='.$loguser['token']));
-							$onclick = " onclick=\"deletePost(this);return false;\"";
+							//$link = htmlspecialchars(actionLink('editpost', $post['id'], 'delete=1&key='.$loguser['token']));
+							//$onclick = " onclick=\"deletePost(this);return false;\"";
 							$links['delete'] = '<a href=\"{$link}\"{$onclick}>'.__('Delete').'</a>';
 						}
 					}
 					if (HasPermission('mod.deleteposts', $forum) && $post['id'] != $post['firstpostid']) {
-							$link = htmlspecialchars(actionLink('editpost', $post['id'], 'delete=3&key='.$loguser['token']));
-							$onclick = 
-								" onclick= if(!confirm(\'Really wipe this post? This action can\'t be undone\'))return false;";
+							//$link = htmlspecialchars(actionLink('editpost', $post['id'], 'delete=3&key='.$loguser['token']));
+							//$onclick =
+							//	" onclick= if(!confirm(\'Really wipe this post? This action can\'t be undone\'))return false;";
 							$links['delete'] = '<a href=\"{$link}\"{$onclick}>'.__('Wipe').'</a>';
 					}
 					if (HasPermission('user.reportposts'))
 						$links['report'] = actionLinkTag(__('Report'), 'reportpost', $post['id']);
 				}
-                $bucket = 'topbar'; include(__DIR__.'/pluginloader.php');
+               // $bucket = 'topbar'; include(__DIR__.'/pluginloader.php');
 			}
 			$links['extra'] = $extraLinks;
 		}
@@ -283,9 +283,12 @@ function makePost($post, $type, $isBot,  $blocklayouts, $loguser, $loguserid,$us
 		$sidebar['title'] = htmlspecialchars($usergroups[$poster['primarygroup']]['title']);
 	$sidebar['syndrome'] = GetSyndrome(getActivity($poster['id']));
 	$array = managePostMood($post, $sidebar, $poster);
-    $post = $array[0]; $sidebar = $array[1]; $pic = $array[2];
+    $post = $array[0];
+    //$sidebar = $array[1]; $pic = $array[2];
     $array = modificaVars($poster, $post, $loguser);
-    $sidebar= $array[0]; $post = $array[0]; $bucket = $array[1];
+    //$sidebar= $array[0];
+    $post = $array[0];
+    //$bucket = $array[1];
 	if(!isset($isBlocked)) {
         funIsBlocked($poster, $pltype);
 	} else {

@@ -115,7 +115,7 @@ function query($args, $fieldLists) {
 $tableLists = [
 ];
 
-function rawQuery($query, $queries, $querytext,$dblink, $debugMode, $logSqlErrors, $dbpref, $loguserid, $mysqlCellClass) {
+function rawQuery($query,$dblink, $debugMode, $logSqlErrors, $dbpref, $loguserid) {
 
 
 //	if($debugMode)
@@ -152,13 +152,13 @@ function rawQuery($query, $queries, $querytext,$dblink, $debugMode, $logSqlError
 		trigger_error('MySQL Error.');
 	}
 
-	$queries++;
+	//$queries++;
 
 	if($debugMode == true) {
-		$mysqlCellClass = ($mysqlCellClass+1)%2;
-		$querytext .= '<tr class=\"cell$mysqlCellClass\"><td><pre style=\"white-space:pre-wrap;\">'.htmlspecialchars(preg_replace('/^\s*/m', '', $query)).'</pre></td><td>';
-		if(function_exists('backTrace'))
-			$querytext .= backTrace();
+		//$mysqlCellClass = ($mysqlCellClass+1)%2;
+		//$querytext .= '<tr class=\"cell$mysqlCellClass\"><td><pre style=\"white-space:pre-wrap;\">'.htmlspecialchars(preg_replace('/^\s*/m', '', $query)).'</pre></td><td>';
+		//if(function_exists('backTrace'))
+		//	$querytext .= backTrace();
 	}
 
 	return $res;

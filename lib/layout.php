@@ -42,7 +42,7 @@ function RenderTemplate($template,$tpl, $mobileLayout=true, $options=null) {
 	$tpl->display($tplname);
 }
 
-function makeCrumbs($path, $links='') {
+function makeCrumbs($path) {
 
 
 	if(count($path) != 0) {
@@ -52,8 +52,8 @@ function makeCrumbs($path, $links='') {
 		$path = $pathPrefix + $path;
 	}
 
-	$layout_crumbs = $path;
-	$layout_actionlinks = $links;
+	//$layout_crumbs = $path;
+	//$layout_actionlinks = $links;
 }
 
 function makeBreadcrumbs($path) {
@@ -107,19 +107,19 @@ function makeForumList($fieldname, $selectedID,$forumBoards, $allowNone=false) {
 	while($forum = Fetch($rFora))
 		$fora[$forum['catid']][] = $forum;
 
-	$theList = '';
+	//$theList = '';
 	foreach ($cats as $cid=>$cat) {
 		if (empty($fora[$cid]))
 			continue;
 
 		$cname = $cat['name'];
 		if (isset($cat['board'])) $cname = $forumBoards[$cat['board']].' - '.$cname;
+    /*	$theList =
+     '			<optgroup label="'.htmlspecialchars($cname).'">
+     '.mfl_forumBlock($fora, $cid, $selectedID, 0).
+     '			</optgroup>
+     ';*/
 
-		$theList .=
-'			<optgroup label="'.htmlspecialchars($cname).'">
-'.mfl_forumBlock($fora, $cid, $selectedID, 0).
-'			</optgroup>
-';
 	}
 
 	return "<select id=\"$fieldname\" name=\"$fieldname\">$noneOption$theList</select>";
@@ -548,7 +548,8 @@ function DoPostHelp() {
 				>>&hellip; &mdash; '.__('link to post by ID').' <br />
 				[user=##] &mdash; '.__('link to users profile by ID').' <br />
 	');
-	$bucket = 'postHelpLinks'; include('./lib/pluginloader.php');
+	//$bucket = 'postHelpLinks';
+	include('./lib/pluginloader.php');
 
 	write('
 				<br />
@@ -557,12 +558,14 @@ function DoPostHelp() {
 				[quote=&hellip;]&hellip;[/quote] &mdash; ".__("\"Posted by &hellip;\"")." <br />
 				[quote=\"&hellip;\" id=\"&hellip;\"]&hellip;[/quote] &mdash; \"".__("\"Post by &hellip;\" with link by post ID")." <br />
 	');
-	$bucket = 'postHelpQuotations'; include('./lib/pluginloader.php');
+	//$bucket = 'postHelpQuotations';
+	include('./lib/pluginloader.php');
 	write('
 				<br />
 				<h4>'.__('Embeds').'</h4>
 	');
-	$bucket = 'postHelpEmbeds'; include('./lib/pluginloader.php');
+	//$bucket = 'postHelpEmbeds';
+    include('./lib/pluginloader.php');
 	write('
 			</div>
 			<br />

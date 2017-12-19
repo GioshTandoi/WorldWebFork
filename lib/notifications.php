@@ -108,12 +108,14 @@ function SendNotification($type, $id, $user, $args=null) {
 		ON DUPLICATE KEY UPDATE date={3}, args={4}',
 		$type, $id, $user, $now, $argstr);
 
-	$bucket = 'sendNotification'; include(__DIR__.'/pluginloader.php');
+	//$bucket = 'sendNotification';
+	include(__DIR__.'/pluginloader.php');
 }
 
 function DismissNotification($type, $id, $user) {
 	Query('DELETE FROM {notifications} WHERE type={0} AND id={1} AND user={2}', $type, $id, $user);
 
-	$bucket = 'dismissNotification'; include(__DIR__.'/pluginloader.php');
+	//$bucket = 'dismissNotification';
+	include(__DIR__.'/pluginloader.php');
 }
 

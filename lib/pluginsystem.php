@@ -71,8 +71,8 @@ function getPluginData($plugin, $load = true) {
 		else
 			$plugindata[$setting[0]] = $setting[1];
 
-		if($setting[0] == 'minversion')
-			$minver = (int)$setting[1];
+		    //if($setting[0] == 'minversion')
+		    //	$minver = (int)$setting[1];
 	}
 
 	$plugindata['buckets'] = [];

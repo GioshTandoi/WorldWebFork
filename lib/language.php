@@ -59,7 +59,7 @@ function __($english, $flags = 0)
 	return $final	;
 }
 
-function importLanguagePack($file)
+function importLanguagePack()
 {
 	global $languagePack;
 	$f = get_data();

@@ -83,7 +83,7 @@ function Upgrade() {
 				else
 					$type .= " DEFAULT '".$field['Default']."'";
 				if($field['Key'] == 'PRI')
-					$primaryKey = $fieldName;
+					//$primaryKey = $fieldName;
 				if(array_key_exists($fieldName, $tableSchema['fields'])) {
 					$wantedType = $tableSchema['fields'][$fieldName];
 					if(strcasecmp($wantedType, $type)) {

@@ -267,7 +267,7 @@ function relativedate($date) {
 	return $num.' '.$unit.($num>1?'s':'').' ago';
 }
 
-function formatBirthday($b) {
+function formatBirthday() {
 	return format();
 }
 

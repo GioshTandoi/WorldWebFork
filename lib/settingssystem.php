@@ -90,7 +90,7 @@ class Settings {
 					self::$settingsArray[$pluginname][$name] = $default;
 
 				self::saveSetting($pluginname, $name);
-				$changed = true;
+				//$changed = true;
 			}
 		}
 
