@@ -1,7 +1,7 @@
 
 var imageGalleries = new Array();
 
-function popupImageGallery(id)
+function popupImageGallery()
 {
 	$('body').add(document.createElement('div'));//.css('position:fixed;top:0px;left:0px;bottom:0px;right:0px;background:rgba(0,0,0,0.5);');
 }

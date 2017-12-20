@@ -12,10 +12,9 @@ function registerSetting()
 	// TODO: Make this function.
 }
 
-
-
-function getSetting($settingname, $pluginSettings, $user, $useUser = false) {
-
+function getSetting($settingname, $pluginSettings=null, $user=null, $useUser = false) {
+    if(!isset($user) || !isset($pluginSettings))
+        return;
 	if(!$useUser) { //loguser {
 		if(array_key_exists($settingname, $pluginSettings))
 			return $pluginSettings[$settingname]['value'];
@@ -38,10 +37,9 @@ class BadPluginException extends Exception { }
 
 
 // TODO cache all those data so we don't have to scan directories at each run
-function getPluginData($plugin, $load = true) {
-
-    $router = new AltoRouter();
-
+function getPluginData($plugin, $load = true, $router) {
+    if(!isset($router))
+        return;
     $pluginbuckets = [];
     $pluginpages = [];
     $plugintemplates = [];
@@ -143,7 +141,7 @@ function getPluginData($plugin, $load = true) {
 		}
 	}
 
-	return $plugindata;
+	return array($plugindata, $pluginpages, $pluginbuckets, $plugintemplates);
 }
 
 $rPlugins = Query('select * from {enabledplugins}');

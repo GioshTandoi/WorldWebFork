@@ -42,8 +42,9 @@ function actionLink($action, $id='', $args='', $urlname='') {
 
 }
 
-function pageLink($page, $router, $params=[], $extra='') {
-
+function pageLink($page, $router=null, $params=[], $extra='') {
+    if(!isset($router))
+        return;
 	return $router->generate($page, $params) . ($extra != '' ? '?' . $extra : '');
 }
 
@@ -84,8 +85,9 @@ function resourceLink($what) {
 	return URL_ROOT.$what;
 }
 
-function themeResourceLink($what, $theme) {
-
+function themeResourceLink($what, $theme=null) {
+    if(!isset($theme))
+        return;
 	return URL_ROOT."themes/$theme/$what";
 }
 
@@ -142,8 +144,11 @@ function prettyRainbow($s) {
 $poptart = mt_rand(0,359);
 $dorainbow = -1;
 
-function userLink($user,$usergroups, $poptart, $dorainbow, $newToday, $luckybastards, $showMinipic = false, $customID = false, $returnOnlyHref = false) {
-
+function userLink($user,$usergroups=null, $poptart=null, $dorainbow=null, $newToday=null, $luckybastards=null,
+                  $showMinipic = false, $customID = false, $returnOnlyHref = false) {
+   if(!isset($usergroups) || !isset($poptart) || !isset($dorainbow) || !isset($newToday)
+       || !isset($luckybastards))
+       return;
 	if ($dorainbow == -1) {
 		$dorainbow = false;
 
@@ -152,7 +157,7 @@ function userLink($user,$usergroups, $poptart, $dorainbow, $newToday, $luckybast
 	}
 
 	$fgroup = $usergroups[$user['primarygroup']];
-	$fsex = $user['sex'];
+	//$fsex = $user['sex'];
 	$fname = ($user['displayname'] ? $user['displayname'] : $user['name']);
 	$fname = htmlspecialchars($fname);
 	$fname = str_replace(' ', '&nbsp;', $fname);
@@ -163,8 +168,8 @@ function userLink($user,$usergroups, $poptart, $dorainbow, $newToday, $luckybast
 	if($showMinipic || Settings::get('alwaysMinipic'))
 		$minipic = getMinipicTag($user);
 
-	if(!Settings::get('showGender'))
-		$fsex = 2;
+	//if(!Settings::get('showGender'))
+	//	$fsex = 2;
 	//else if ($fsex != 2)
 	//	$fsex = $fsex ? 0:1; // switch male/female for the lulz
 
@@ -175,13 +180,13 @@ function userLink($user,$usergroups, $poptart, $dorainbow, $newToday, $luckybast
 	//$classing = ' style="color: '.htmlspecialchars($fgroup[$scolor]).';"';
     //non è utilizzata
 	//$bucket = 'userLink'; include(__DIR__.'/pluginloader.php');
-
+    var_dump($poptart);
 	if (!$isbanned && $luckybastards && in_array($user['id'], $luckybastards)) {
 
 		$fname = prettyRainbow($fname);
 	} else if ($dorainbow == true) {
 		if (!$isbanned)
-			$classing = ' style="color:hsl('.$poptart.',100%,80.4%);"';
+			//$classing = ' style="color:hsl('.$poptart.',100%,80.4%);"';
 		$poptart += 31;
 		$poptart %= 360;
 	}
@@ -203,7 +208,7 @@ function userLink($user,$usergroups, $poptart, $dorainbow, $newToday, $luckybast
 	;
 }
 
-function userLinkById($id, $userlinkCache) {
+function userLinkById($id, $userlinkCache=null) {
 
 	if(!isset($userlinkCache[$id])) {
 		$rUser = Query('SELECT u.(_userfields) FROM {users} u WHERE u.id={0}',$id);
@@ -307,8 +312,9 @@ function pageLinksInverted($url, $epp, $from, $total) {
 }
 
 
-function absoluteActionLink($action, $https, $serverport, $id=0, $args='') {
-
+function absoluteActionLink($action, $https, $serverport=null, $id=0, $args='') {
+    if(!isset($serverport))
+        return;
 	return ($https?'https':'https') . '://' . $_SERVER['SERVER_NAME'].$serverport.dirname($_SERVER['PHP_SELF']).substr(actionLink($action, $id, $args), 1);
 }
 
@@ -316,8 +322,9 @@ function getRequestedURL() {
 	return $_SERVER['REQUEST_URI'];
 }
 
-function getServerDomainNoSlash($serverport, $https = false) {
-
+function getServerDomainNoSlash($serverport=null, $https = false) {
+    if(!isset($serverport))
+        return;
 	return ($https?'https':'https') . '://' . $_SERVER['SERVER_NAME'].$serverport;
 }
 
@@ -325,8 +332,9 @@ function getServerURL($https = false) {
 	return getServerURLNoSlash($https).'/';
 }
 
-function getServerURLNoSlash($serverport, $https = false) {
-
+function getServerURLNoSlash($serverport=null, $https = false) {
+    if(!isset($serverport))
+        return;
 	return ($https?'https':'http') . '://' . $_SERVER['SERVER_NAME'].$serverport . substr(URL_ROOT, 0, strlen(URL_ROOT)-1);
 }
 

@@ -131,22 +131,22 @@ class URLify {
 	/**
 	 * The character map.
 	 */
-	private static $map = [];
+	//private static $map = [];
 
 	/**
 	 * The character list as a string.
 	 */
-	private static $chars = '';
+	//private static $chars = '';
 
 	/**
 	 * The character list as a regular expression.
 	 */
-	private static $regex = '';
+	//private static $regex = '';
 
 	/**
 	 * The current language
 	 */
-	private static $language = '';
+	//private static $language = '';
 
 	/**
 	 * Initializes the character map.

@@ -101,7 +101,6 @@ class Spyc {
   private $path;
   private $result;
   private $LiteralPlaceHolder = '___YAML_Literal_Block___';
-  private $SavedGroups = [];
   private $indent;
   /**
    * Path modifier that should be applied after adding current element.
@@ -251,7 +250,7 @@ class Spyc {
 	  $previous_key = -1;
 	  foreach ($array as $key => $value) {
 		if (!isset($first_key)) $first_key = $key;
-		$string .= $this->_yamlize($key,$value,0,$previous_key, $first_key, $array);
+		$string .= $this->_yamlize($key,$value,0, $array);
 		$previous_key = $key;
 	  }
 	}
@@ -266,7 +265,7 @@ class Spyc {
 	 * @param $value The value of the item
 	 * @param $indent The indent of the current node
 	 */
-  private function _yamlize($key,$value,$indent, $previous_key = -1, $first_key = 0, $source_array = null) {
+  private function _yamlize($key,$value,$indent, $source_array = null) {
 	if(is_object($value)) $value = (array)$value;
 	if (is_array($value)) {
 	  if (empty ($value))
@@ -298,7 +297,7 @@ class Spyc {
 	  $previous_key = -1;
 	  foreach ($array as $key => $value) {
 		if (!isset($first_key)) $first_key = $key;
-		$string .= $this->_yamlize($key, $value, $indent, $previous_key, $first_key, $array);
+		$string .= $this->_yamlize($key, $value, $indent, $array);
 		$previous_key = $key;
 	  }
 	  return $string;
