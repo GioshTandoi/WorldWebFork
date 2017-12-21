@@ -49,11 +49,11 @@ header('Cache-Control: private, post-check={$cachetime}, pre-check=999999999, mi
 if(isset($ctype))
     header('Content-Type: '.$ctype);
 if(isset($download))
-	header("Content-Disposition: attachment; filename=\"".addslashes($entry['filename'])."\";");
+	header("Content-Disposition: attachment; filename=\"".addslashes(rawurlencode($entry['filename']))."\";");
 else
-	header("Content-Disposition: filename=\"".addslashes($entry['filename'])."\"");
+	header("Content-Disposition: filename=\"".addslashes(rawurlencode($entry['filename']))."\"");
 header('Content-Transfer-Encoding: binary');
-header('Content-Length: '.$fsize);
+header('Content-Length: '.rawurlencode($fsize));
 
 readfile(basename(realpath($path)));
 

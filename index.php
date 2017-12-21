@@ -17,7 +17,10 @@ $layout_actionlinks = '';
 
 if (isset($_GET['forcelayout'])) {
 	setcookie('forcelayout', (int)$_GET['forcelayout'], time()+365*24*3600, URL_ROOT, '', false, true);
-	trigger_error(header('Location: '.$_SERVER['HTTP_REFERER']));
+	//fix del open-redirect in sicurezza
+	$server = $_SERVER['HTTP_REFERER'];
+	$server = check($server);
+	trigger_error(header('Location: '.rawurlencode($server)));
 }
 
 $layout_birthdays = getBirthdaysText();

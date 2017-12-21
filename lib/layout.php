@@ -186,41 +186,47 @@ function doThreadPreview($tid, $maxdate=0, $loguser=null) {
 
 	RenderTemplate('threadreview', ['review' => $review]);
 }
-function rForaQuery($parent, $viewableforums, $viewhidden,$boardlol='', $loguserid=null) {
+function rForaQuery($parent, $viewableforums, $viewhidden,$boardlol='', $loguserid=null){
 
-    if(!isset($loguserid))
-        return;
+    if (!isset($loguserid))
+        $rFora = null;
+    else {
 
-    $rFora = Query('	SELECT f.*,
-							c.name cname,
-							'.($loguserid ? '(NOT ISNULL(i.fid))' : '0').' ignored,
-							(SELECT COUNT(*) FROM {threads} t'.($loguserid ? ' LEFT JOIN {threadsread} tr ON tr.thread=t.id AND tr.id={0}' : '').
-        'WHERE t.forum=f.id AND t.lastpostdate>'.($loguserid ? 'IFNULL(tr.date,0)' : time()-900).') numnew,
-							lu.(_userfields)
-						FROM {forums} f
-							LEFT JOIN {categories} c ON c.id=f.catid
-							'.($loguserid ? 'LEFT JOIN {ignoredforums} i ON i.fid=f.id AND i.uid={0}' : '').'
-							LEFT JOIN {users} lu ON lu.id=f.lastpostuser
-						WHERE f.id IN ({1c}) AND '.($parent==0 ? 'c.board={2} AND f.catid>0' : 'f.catid={3}').(!$viewhidden ? ' AND f.hidden=0' : '').'
-						ORDER BY c.corder, c.id, f.forder, f.id',
-        $loguserid, $viewableforums, $boardlol, -$parent);
+        $rFora = Query('	SELECT f.*,
+                                c.name cname,
+                                ' . ($loguserid ? '(NOT ISNULL(i.fid))' : '0') . ' ignored,
+                                (SELECT COUNT(*) FROM {threads} t' . ($loguserid ? ' LEFT JOIN {threadsread} tr ON tr.thread=t.id AND tr.id={0}' : '') .
+            'WHERE t.forum=f.id AND t.lastpostdate>' . ($loguserid ? 'IFNULL(tr.date,0)' : time() - 900) . ') numnew,
+                                lu.(_userfields)
+                            FROM {forums} f
+                                LEFT JOIN {categories} c ON c.id=f.catid
+                                ' . ($loguserid ? 'LEFT JOIN {ignoredforums} i ON i.fid=f.id AND i.uid={0}' : '') . '
+                                LEFT JOIN {users} lu ON lu.id=f.lastpostuser
+                            WHERE f.id IN ({1c}) AND ' . ($parent == 0 ? 'c.board={2} AND f.catid>0' : 'f.catid={3}') . (!$viewhidden ? ' AND f.hidden=0' : '') . '
+                            ORDER BY c.corder, c.id, f.forder, f.id',
+            $loguserid, $viewableforums, $boardlol, -$parent);
+    }
     return $rFora;
 }
 
 function rSubfora($parent, $viewableforums, $viewhidden, $boardlol='',$loguserid=null) {
     if(!isset($loguserid))
-        return;
-    $f = Fetch(Query('SELECT MIN(l) minl, MAX(r) maxr FROM {forums} WHERE '.($parent==0 ? 'board={0}' : 'catid={1}'), $boardlol, -$parent));
-    $rSubfora = Query('	SELECT f.*,
-							'.($loguserid ? '(NOT ISNULL(i.fid))' : '0').' ignored,
-							(SELECT COUNT(*) FROM {threads} t'.($loguserid ? ' LEFT JOIN {threadsread} tr ON tr.thread=t.id AND tr.id={0}' : '').'
-								WHERE t.forum=f.id AND t.lastpostdate>'.($loguserid ? 'IFNULL(tr.date,0)' : time()-900).') numnew
+        $rSubfora = null;
+
+    else {
+        $f = Fetch(Query('SELECT MIN(l) minl, MAX(r) maxr FROM {forums} WHERE ' . ($parent == 0 ? 'board={0}' : 'catid={1}'), $boardlol, -$parent));
+        $rSubfora = Query('	SELECT f.*,
+							' . ($loguserid ? '(NOT ISNULL(i.fid))' : '0') . ' ignored,
+							(SELECT COUNT(*) FROM {threads} t' . ($loguserid ? ' LEFT JOIN {threadsread} tr ON tr.thread=t.id AND tr.id={0}' : '') . '
+								WHERE t.forum=f.id AND t.lastpostdate>' . ($loguserid ? 'IFNULL(tr.date,0)' : time() - 900) . ') numnew
 						FROM {forums} f
-							'.($loguserid ? 'LEFT JOIN {ignoredforums} i ON i.fid=f.id AND i.uid={0}' : '').'
-						WHERE f.id IN ({1c}) AND f.l>{2} AND f.r<{3} AND f.catid!={4}'.(!$viewhidden ? ' AND f.hidden=0' : '').'
+							' . ($loguserid ? 'LEFT JOIN {ignoredforums} i ON i.fid=f.id AND i.uid={0}' : '') . '
+						WHERE f.id IN ({1c}) AND f.l>{2} AND f.r<{3} AND f.catid!={4}' . (!$viewhidden ? ' AND f.hidden=0' : '') . '
 						ORDER BY f.forder, f.id',
-        $loguserid, $viewableforums, $f['minl'], $f['maxr'], -$parent);
+            $loguserid, $viewableforums, $f['minl'], $f['maxr'], -$parent);
+    }
     return $rSubfora;
+
 }
 
 function rMods($parent, $boardlol) {
@@ -239,18 +245,20 @@ function rMods($parent, $boardlol) {
 }
 function sForums($parent, $boardlol='',$loguserid=null) {
     if(!isset($loguserid))
-        return;
-    $f = Fetch(Query('SELECT MIN(l) minl, MAX(r) maxr FROM {forums} WHERE '.($parent==0 ? 'board={0}' : 'catid={1}'), $boardlol, -$parent));
-    $sForums = Query('	SELECT f.id, f.numthreads, f.numposts, f.lastpostid, f.lastpostname, f.lastpostuser, f.lastpostdate,
-											'.($loguserid ? '(NOT ISNULL(i.fid))' : '0').' ignored,
-											(SELECT COUNT(*), t.title FROM {threads} t'.($loguserid ? ' LEFT JOIN {threadsread} tr ON tr.thread=t.id AND tr.id={0}' : '').'
-												WHERE t.forum=f.id AND t.lastpostdate>'.($loguserid ? 'IFNULL(tr.date,0)' : time()-900).') numnew,
+        $sForums = null;
+    else {
+        $f = Fetch(Query('SELECT MIN(l) minl, MAX(r) maxr FROM {forums} WHERE ' . ($parent == 0 ? 'board={0}' : 'catid={1}'), $boardlol, -$parent));
+        $sForums = Query('	SELECT f.id, f.numthreads, f.numposts, f.lastpostid, f.lastpostname, f.lastpostuser, f.lastpostdate,
+											' . ($loguserid ? '(NOT ISNULL(i.fid))' : '0') . ' ignored,
+											(SELECT COUNT(*), t.title FROM {threads} t' . ($loguserid ? ' LEFT JOIN {threadsread} tr ON tr.thread=t.id AND tr.id={0}' : '') . '
+												WHERE t.forum=f.id AND t.lastpostdate>' . ($loguserid ? 'IFNULL(tr.date,0)' : time() - 900) . ') numnew,
 											lu.(_userfields)
 										FROM {forums} f
-											'.($loguserid ? 'LEFT JOIN {ignoredforums} i ON i.fid=f.id AND i.uid={0}' : '').'
+											' . ($loguserid ? 'LEFT JOIN {ignoredforums} i ON i.fid=f.id AND i.uid={0}' : '') . '
 											LEFT JOIN {users} lu ON lu.id=f.lastpostuser
 										WHERE f.l>={1} AND f.r<={2}',
-        $loguserid, $f['minl'], $f['maxr']);
+            $loguserid, $f['minl'], $f['maxr']);
+    }
     return $sForums;
 }
 

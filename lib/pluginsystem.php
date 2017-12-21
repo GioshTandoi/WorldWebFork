@@ -37,7 +37,7 @@ class BadPluginException extends Exception { }
 
 
 // TODO cache all those data so we don't have to scan directories at each run
-function getPluginData($plugin, $load = true, $router) {
+function getPluginData($plugin, $router, $load = true) {
     if(!isset($router))
         return;
     $pluginbuckets = [];
