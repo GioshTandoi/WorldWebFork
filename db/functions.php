@@ -24,7 +24,8 @@ function Import($sqlFile, $dblink=null, $dbpref=null) {
 	}
 
 	if ($dblink->errno)  { 
-		echo "MySQL Error when importing file $sqlFile at statement $i: \n";
+		echo "MySQL Error when importing file $sqlFile: \n";
+       /* echo "MySQL Error when importing file $sqlFile at statement $i: \n";*/
 		echo $dblink->error, "\n";
 		trigger_error();
 	}
