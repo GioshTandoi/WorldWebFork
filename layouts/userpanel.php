@@ -17,7 +17,7 @@ if(isset($loguserid) && $loguserid == true) {
 		$userMenu[pageLink('admin')] = __('Dashboard');
 }
 
-$bucket = 'userMenu'; include(__DIR__.'/../lib/pluginloader.php');
+$bucket = 'userMenu'; include __DIR__.'/../lib/pluginloader.php';
 
 $layout_userpanel = $userMenu;
 ?>

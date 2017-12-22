@@ -24,7 +24,7 @@ function Import($sqlFile, $dblink=null, $dbpref=null) {
 	}
 
 	if ($dblink->errno)  { 
-		echo "MySQL Error when importing file $sqlFile at statement".htmlspecialchars($i)."\n";
+		echo "MySQL Error when importing file ".htmlspecialchars($sqlFile)." at statement".htmlspecialchars($i)."\n";
 
 		echo $dblink->error, "\n";
 		trigger_error();
@@ -67,7 +67,7 @@ function Upgrade($dbname=null, $dbpref=null) {
     $tables=[];
 
 	//Load the board tables.
-	include(__DIR__ . '/schema.php');
+	include __DIR__ . '/schema.php';
 	//Allow plugins to add their own tables!
 	if (NumRows(Query("show table status from $dbname like '{enabledplugins}'"))) {
 		$rPlugins = Query('select * from {enabledplugins}');
@@ -79,7 +79,7 @@ function Upgrade($dbname=null, $dbpref=null) {
 			$path = __DIR__."/../plugins/$plugin/installSchema.php";
 
 			if(file_exists($path))
-				include($path);
+				include $path;
 		}
 	}
 	foreach($tables as $table => $tableSchema) {

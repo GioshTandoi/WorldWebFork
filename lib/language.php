@@ -8,9 +8,9 @@ if (!defined('BLARG')) trigger_error();
 
 $language = Settings::get('defaultLanguage');
 
-include_once(__DIR__.'/lang/'.$language.'.php');
+include_once __DIR__.'/lang/'.$language.'.php';
 if($language != 'en_US')
-	include_once(__DIR__.'/lang/'.$language.'_lang.php');
+	include_once __DIR__.'/lang/'.$language.'_lang.php';
 
 // Funzione creata da Gabriele Pisciotta per bypassare vulnerabilità di SSRF
 function get_data()

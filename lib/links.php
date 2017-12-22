@@ -192,9 +192,9 @@ function userLink($user,$usergroups=null, $poptart=null, $dorainbow=null, $newTo
 	}
 
 	$fname = $minipic.$fname;
-
+   // $classing='';
 	if ($customID)
-		$classing .= " id=\"$customID\"";
+		//$classing .= " id=\"$customID\"";
     //Non è utilizzata
 	//$title = htmlspecialchars($user['displayname'] ? $user['displayname'] : $user['name']) . ' ('.$user['id'].') ['.htmlspecialchars($fgroup['title']).']';
 	if ($returnOnlyHref) {

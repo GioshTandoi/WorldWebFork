@@ -61,12 +61,12 @@ class Settings {
 
 		//Get the setting list.
 		if($pluginname == 'main')
-			include(__DIR__.'/settingsfile.php');
+			include __DIR__.'/settingsfile.php';
 		else {
 		    if(!isset($plugins))
 		        return false;
             error_reporting(0);
-			include(__DIR__.'/../plugins/'.$plugins[$pluginname]['dir'].'/settingsfile.php');
+			include __DIR__.'/../plugins/'.$plugins[$pluginname]['dir'].'/settingsfile.php';
 		}
 		return $settings;
 	}

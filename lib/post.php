@@ -52,7 +52,7 @@ function loadBlockLayouts( $blocklayouts, $loguserid) {
 }
 
 function getSyndrome($activity, $syndromes) {
-	include(__DIR__.'/syndromes.php');
+	include __DIR__.'/syndromes.php';
 	$soFar = '';
 	foreach($syndromes as $minAct => $syndrome)
 		if($activity >= $minAct)
@@ -345,7 +345,7 @@ function modificaVars($poster, $post, $loguser){
 	if($poster['lastactivity'] > time() - 300)
         $sidebar['isonline'] = __('User is <strong>online</strong>');
 	$sidebarExtra = [];
-	$bucket = 'sidebar'; include(__DIR__.'/pluginloader.php');
+	$bucket = 'sidebar'; include __DIR__.'/pluginloader.php';
 	$sidebar['extra'] = $sidebarExtra;
 	$post['sidebar'] = $sidebar;
 	$post['haslayout'] = false;

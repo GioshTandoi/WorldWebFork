@@ -2,7 +2,7 @@
 // AcmlmBoard XD support - MySQL database wrapper functions
 if (!defined('BLARG')) trigger_error();
 
-include(__DIR__.'/../config/database.php');
+include __DIR__.'/../config/database.php';
 
 $queries = 0;
 
@@ -218,5 +218,5 @@ $fieldLists = [
 function loadFieldLists() {
 	//Allow plugins to add their own!
 
-	include(__DIR__.'/pluginloader.php');
+	include __DIR__.'/pluginloader.php';
 }

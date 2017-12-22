@@ -109,13 +109,13 @@ function SendNotification($type, $id, $user, $args=null) {
 		$type, $id, $user, $now, $argstr);
 
 	//$bucket = 'sendNotification';
-	include(__DIR__.'/pluginloader.php');
+	include __DIR__.'/pluginloader.php';
 }
 
 function DismissNotification($type, $id, $user) {
 	Query('DELETE FROM {notifications} WHERE type={0} AND id={1} AND user={2}', $type, $id, $user);
 
 	//$bucket = 'dismissNotification';
-	include(__DIR__.'/pluginloader.php');
+	include __DIR__.'/pluginloader.php';
 }
 

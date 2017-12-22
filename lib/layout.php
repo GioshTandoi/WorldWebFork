@@ -42,7 +42,7 @@ function makeCrumbs($path) {
     if(count($path) != 0) {
         $pathPrefix = [actionLink(0) => Settings::get('breadcrumbsMainName')];
 
-        $bucket = 'breadcrumbs'; include(__DIR__.'/pluginloader.php');
+       // $bucket = 'breadcrumbs'; include __DIR__.'/pluginloader.php';
 
         $path = $pathPrefix + $path;
     }
@@ -55,7 +55,7 @@ function makeBreadcrumbs($path) {
 
     $path->addStart(new PipeMenuLinkEntry(Settings::get('breadcrumbsMainName'), 'board'));
 	$path->setClass('breadcrumbs');
-	$bucket = 'breadcrumbs'; include('lib/pluginloader.php');
+	$bucket = 'breadcrumbs'; include 'lib/pluginloader.php';
 	return $path;
 }
 
@@ -566,7 +566,7 @@ function DoPostHelp() {
 				[user=##] &mdash; '.__('link to users profile by ID').' <br />
 	');
 	//$bucket = 'postHelpLinks';
-	include('./lib/pluginloader.php');
+	include './lib/pluginloader.php';
 
 	write('
 				<br />
@@ -582,7 +582,7 @@ function DoPostHelp() {
 				<h4>'.__('Embeds').'</h4>
 	');
 	//$bucket = 'postHelpEmbeds';
-    include('./lib/pluginloader.php');
+    include './lib/pluginloader.php';
 	write('
 			</div>
 			<br />

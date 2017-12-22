@@ -51,8 +51,8 @@ $dropdownlinks = [
 	],
 ];
 
-$bucket = 'headerlinks'; include(BOARD_ROOT.'lib/pluginloader.php');
-$bucket = 'sidelinks'; include(BOARD_ROOT.'lib/pluginloader.php');
-$bucket = 'dropdownlinks'; include(BOARD_ROOT.'lib/pluginloader.php');
+$bucket = 'headerlinks'; include BOARD_ROOT.'lib/pluginloader.php';
+$bucket = 'sidelinks'; include BOARD_ROOT.'lib/pluginloader.php';
+$bucket = 'dropdownlinks'; include BOARD_ROOT.'lib/pluginloader.php';
 
 ?>

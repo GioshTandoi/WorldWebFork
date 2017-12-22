@@ -10,7 +10,7 @@ $ajaxPage = false;
 if(isset($_GET['ajax']))
 	$ajaxPage = true;
 
-require(__DIR__ . '/lib/common.php');
+require __DIR__ . '/lib/common.php';
 
 $layout_crumbs = '';
 $layout_actionlinks = '';
@@ -73,7 +73,7 @@ if ($fakeerror == false) {
 	try {
 		// Throw the 404 page if we don't have a match already.
 		if ($match === false)
-			require_once(__DIR__.'/pages/404.php');
+			require_once __DIR__.'/pages/404.php';
 		else {
 			// Set up the stuff for our page loader.
 			$pageName = $match['target'];
@@ -89,19 +89,19 @@ if ($fakeerror == false) {
 				$addonABXD = __DIR__ . '/plugins/' .$self['dir'].'/page_'.$pageName.'.php';
 
 				if (file_exists($addonWWXD))
-					require_once($addonWWXD);
+					require_once $addonWWXD;
 				elseif (file_exists($addonABXD))
-					require_once($addonABXD);
+					require_once $addonABXD;
 				else
-					require_once(__DIR__.'/pages/404.php');
+					require_once __DIR__.'/pages/404.php';
 			} else {
 				// Check now for core pages.
 				$page = __DIR__ . '/pages/' .$pageName.'.php';
 
 				if (file_exists($page))
-					require_once($page);
+					require_once $page;
 				else
-					require_once(__DIR__.'/pages/404.php');
+					require_once __DIR__.'/pages/404.php';
 			}
 		}
 	} catch(KillException $e) {
@@ -121,14 +121,14 @@ $layout_contents = ob_get_contents();
 ob_end_clean();
 
 //Do these things only if it's not an ajax page.
-include(__DIR__ . '/lib/views.php');
+include __DIR__ . '/lib/views.php';
 setLastActivity();
 
 //=======================
 // Panels and footer
 
-require(__DIR__ . '/layouts/userpanel.php');
-require(__DIR__ . '/layouts/menus.php');
+require __DIR__ . '/layouts/userpanel.php';
+require __DIR__ . '/layouts/menus.php';
 
 $mobileswitch = '';
 
@@ -145,7 +145,7 @@ if (Settings::get('defaultLayout') !== 'mobile') {
 $notifications = getNotifications();
 
 ob_start();
-$bucket = 'userBar'; include('./lib/pluginloader.php');
+$bucket = 'userBar'; include './lib/pluginloader.php';
 /*
 if($rssBar)
 {
@@ -156,7 +156,7 @@ if($rssBar)
 	</div>
 ", $rssBar, $rssWidth + 4);
 }*/
-$bucket = 'topBar'; include('./lib/pluginloader.php');
+$bucket = 'topBar'; include './lib/pluginloader.php';
 $layout_bars = ob_get_contents();
 ob_end_clean();
 
@@ -274,7 +274,7 @@ $perfdata = 'Page rendered in '.sprintf('%.03f',microtime(true)-$starttime).' se
 	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 	<script src="//twemoji.maxcdn.com/twemoji.min.js"></script>
 
-	<?php $bucket = 'pageHeader'; include(__DIR__ . '/lib/pluginloader.php'); ?>
+	<?php $bucket = 'pageHeader'; include __DIR__ . '/lib/pluginloader.php'; ?>
 </head>
 <body style="width:100%; font-size: <?php echo $loguser['fontsize']; ?>%;">
 <form action="<?php echo htmlentities(pageLink('logout')); ?>" method="post" id="logout" style="display:none;"><input type="hidden" name="action" value="logout"></form>
@@ -309,6 +309,6 @@ $perfdata = 'Page rendered in '.sprintf('%.03f',microtime(true)-$starttime).' se
 </html>
 <?php
 
-$bucket = 'finish'; include(__DIR__ . '/lib/pluginloader.php');
+$bucket = 'finish'; include __DIR__ . '/lib/pluginloader.php';
 
 ?>

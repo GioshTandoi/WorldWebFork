@@ -17,7 +17,7 @@ if(isset($bucket)){
         foreach ($pluginbuckets[$bucket] as $plugin) {
             if (isset($plugins[$plugin])) {
                 $self = $plugins[$plugin];
-                include(__DIR__.'/../plugins/'.$self['dir'].'/'.$bucket.'.php');
+                include __DIR__.'/../plugins/'.$self['dir'].'/'.$bucket.'.php';
                 unset($self);
             }
         }

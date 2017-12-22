@@ -11,7 +11,7 @@ function fixyoutube($m)
 	return '<a href=\"'.htmlspecialchars($url).'\">(video)</a>';
 }
 
-require(__DIR__ . '/lib/common.php');
+require __DIR__ . '/lib/common.php';
 
 $fid = Settings::get('newsForum');
 if(!HasPermission('forum.viewforum', $fid))

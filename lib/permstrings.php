@@ -67,4 +67,4 @@ $permDescs = [
 
 $guestPerms = ['forum.viewforum'];
 
-$bucket = 'permStrings'; include(__DIR__.'/pluginloader.php');
+$bucket = 'permStrings'; include __DIR__.'/pluginloader.php';

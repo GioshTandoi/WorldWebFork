@@ -55,7 +55,7 @@ $bbcodeCallbacks = [
 ];
 
 //Allow plugins to register their own callbacks (new bbcode tags)
-$bucket = 'bbcode'; include(__DIR__.'/pluginloader.php');
+$bucket = 'bbcode'; include __DIR__.'/pluginloader.php';
 
 function bbcodeBold($contents)
 {
@@ -105,7 +105,7 @@ function bbcodeURLAuto($match) {
 	return '<a href="'.htmlspecialchars($text).'">'.htmlspecialchars($text).'</a>';
 }
 
-function bbcodeImage($contents, $arg)
+function bbcodeImage($contents, $arg, $ishttps=false)
 {
 	$dest = $contents;
 	$title ='';
@@ -130,7 +130,7 @@ function bbcodeImage($contents, $arg)
 }
 
 
-function bbcodeImageScale($contents, $arg)
+function bbcodeImageScale($contents, $arg, $ishttps=false)
 {
 	$dest = $contents;
 	$orig = $dest;
