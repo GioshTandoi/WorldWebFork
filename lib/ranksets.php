@@ -5,17 +5,22 @@ da
 function loadRanksets() {
 	global $ranksetData, $ranksetNames;
 a
-function loadRanksets($ranksetNames)
-con aggiunta di return $ranksetData
+function loadRanksets($ranksetNames=null) {
 
-$jsonfile aggiunta tra i parametri perchè non era definita da nessuna parte nel codice
+	if(isset($ranksetNames)) return;
+
+e  alla fine:
+
+
 From Giosh96  */
-function loadRanksets($ranksetNames, $jsonfile='') {
+function loadRanksets($ranksetNames=null) {
 
 	if(isset($ranksetNames)) return;
 
 	$ranksetData = [];
 	$ranksetNames = [];
+
+    $jsonfile='';
 
 	$dir = 'img/ranksets/';
 
@@ -58,11 +63,19 @@ function loadRanksets($ranksetNames, $jsonfile='') {
 						array_push($ranksetData[$file],['num' => $num, 'image' => $image, 'text' => $text]);
 					}
 				}
-				else if(file_exists($phpinfofile))
-					include($phpinfofile);
+				else if (file_exists($phpinfofile)){
+                    $page = pathinfo($phpinfofile)['basename'];
+                    include "$dir/$page"; // FIXED
+
+                }
+
+
+
+
+
 			}
 			closedir($dh);
-			return $ranksetData;
+			return arrray($ranksetData, $ranksetNames);
 		}
 	}
 }
